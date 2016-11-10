@@ -1,0 +1,36 @@
+::-webkit-input-placeholder {
+  font-weight: 300;
+  color: #999; }
+
+::-moz-placeholder {
+  font-weight: 300;
+  color: #999; }
+
+::-ms-input-placeholder {
+  font-weight: 300;
+  color: #999; }
+
+.loader {
+  display: none; }
+
+body.complete .loader,
+body.complete input[type='button'],
+body.complete input[type='submit'] {
+  display: none; }
+
+body.busy input[type='button'],
+body.busy input[type='submit'] {
+  background: #ccc;
+  border-color: #bbb;
+  cursor: default; }
+
+body.busy .loader {
+  display: block; }
+
+input.ng-invalid {
+  background-color: #FFD3D3; }
+
+input[type='text']:placeholder-shown:required,
+input[type='number']:placeholder-shown:required,
+input[type='email']:placeholder-shown:required {
+  border: 1px solid #f77; }

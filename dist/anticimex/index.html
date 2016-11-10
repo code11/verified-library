@@ -1,0 +1,178 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/anticimex-demo.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono|Open+Sans' rel='stylesheet' type='text/css'>
+<!-- THESE WILL NEED REFACTORING -->
+
+<!-- CHANGE ME ONCE IT's FINAL PLEASE OK ?  -->
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/ajv/4.8.2/ajv.min.js"></script>
+	<script type="text/javascript" src="scripts/anticimex-demo.js"></script>
+	<script src="scripts/anticimex-demo.js"></script>
+	<!-- <script src="../ve.js"></script> -->
+</head>
+<body>
+	<div ng-app="mainApp" ng-controller="mainController">
+	<img src="assets/anticimex_logo.svg" style="width: 300px"/>
+
+	<div ng-if="!data.selectedBranch">
+		<p>Velg skjematype:</p>
+		<span ng-repeat="item in schema.step0.buttons">
+			<input type="button" value={{item.label}} ng-click="button(item)"/>&nbsp;
+		</span>
+	</div>
+
+	<div ng-if="data.selectedBranch == 'contract'">
+		<h1>Kontrakt</h1>
+	</div>
+	<div ng-if="data.selectedBranch == 'service'">
+		<h1>Serviceoppdrag</h1>
+	</div>
+	<!--------------------------------------------------------------- Mandatory section 1 -->
+	<div class="flex-columns" ng-if="validateAll()">
+		<div ng-repeat="item in schema.step1.fields" class={{item.class}}>
+			<b ng-if="item.text">{{ item.text }}</b>
+			<label ng-if="item.label">{{item.label}}</label>
+			<input ng-if="item.input" type={{item.input.type}} ng-model="data[item.model]" />
+			<input ng-if="item.checkbox" name={{item.name}} type="checkbox" id={{item.id}} ng-model="data[item.model]" />
+			<label ng-if="item.checkbox" for={{item.id}}>{{item.checkbox}}</label>
+		</div>
+	</div>
+	<p>&nbsp;</p>
+	<!--------------------------------------------------------------- Mandatory section 2 -->
+	<div class="flex-columns" ng-if="valid['step0'] && valid['step1']">
+		<div ng-repeat="item in schema.step2.fields" class={{item.class}}>
+			<b ng-if="item.text">{{ item.text }}</b>
+			<label ng-if="item.label">{{item.label}}</label>
+			<input ng-if="item.input" type={{item.input.type}} ng-model="data[item.model]" />
+			<input ng-if="item.vinput" type={{item.vinput.type}} ng-model="data[item.model]" model={{item.model}} step="step2" instant-validator />
+			<input ng-if="item.checkbox" name={{item.name}} type="checkbox" id={{item.id}} ng-model="data[item.model]" />
+			<label ng-if="item.checkbox" for={{item.id}}>{{item.checkbox}}</label>
+			<input ng-if="item.searchbrregnr" type="text" ng-model="data[item.model]" get-brreg-nr placeholder={{item.placeholder}} step="step2" />
+			<input ng-if="item.searchbrreg" type="text" ng-model="data[item.model]" list={{item.list}} get-brreg-name  placeholder={{item.placeholder}} />
+			<datalist ng-if="item.searchbrreg" id={{item.list}}>
+				<option ng-repeat="(name,nr) in lists[item.list]" value={{name}}>
+			</datalist>
+		</div>
+	</div>
+	<p>&nbsp;</p>
+	<!--------------------------------------------------------------- Mandatory section 3 -->
+	<div class="flex-columns" ng-if="valid['step0'] && valid['step1'] && valid['step2']">
+		<div ng-repeat="item in schema.step3.fields" class={{item.class}}>
+			<b ng-if="item.text">{{ item.text }}</b>
+			<label ng-if="item.label">{{item.label}}</label>
+			<input ng-if="item.input" type={{item.input.type}} ng-model="data[item.model]" />
+			<input ng-if="item.vinput" type={{item.vinput.type}} ng-model="data[item.model]" model={{item.model}} step="step3" instant-validator />
+		</div>
+	</div>
+	<p>&nbsp;</p>
+	<!--------------------------------------------------------------- Mandatory section 4 -->
+	<div class="flex-columns" ng-if="valid['step0'] && valid['step1'] && valid['step2'] && valid['step3']">
+		<div ng-repeat="item in schema.step4.fields" class={{item.class}}>
+			<b ng-if="item.text">{{ item.text }}</b>
+			<label ng-if="item.label">{{item.label}}</label>
+			<input ng-if="item.input" type={{item.input.type}} ng-model="data[item.model]" />
+			<input ng-if="item.vinput" type={{item.vinput.type}} ng-model="data[item.model]" model={{item.model}} step="step4" instant-validator />
+		</div>
+	</div>
+	<p>&nbsp;</p>
+	<!--------------------------------------------------------------- Mandatory section 5 -->
+	<div class="flex-columns" ng-if="valid['step0'] && valid['step1'] && valid['step2'] && valid['step3'] && valid['step4'] && data.selectedBranch == 'contract'">
+		<div ng-repeat="item in schema.contract.fields" class={{item.class}}>
+			<b ng-if="item.text">{{ item.text }}</b>
+			<label ng-if="item.label">{{item.label}}</label>
+			<input ng-if="item.input" type={{item.input.type}} ng-model="data[item.model]" />
+			<input ng-if="item.vinput" type={{item.vinput.type}} ng-model="data[item.model]" model={{item.model}} step="contract" instant-validator />
+			<input ng-if="item.boolean" type="radio" id="new1" name={{item.model}} ng-checked="!!(data[item.model] == true)" ng-click="data[item.model] = false" />
+			<label ng-if="item.boolean" for="new1">{{ item.yes }}</label>
+			<input ng-if="item.boolean" type="radio" id="new2" name={{item.model}} ng-checked="!!data[item.model]" ng-click="data[item.model] = true" />
+			<label ng-if="item.boolean" for="new2">{{ item.no }}</label>
+			<div ng-if="item.boolean && data.oldContract">
+				<label>Endring avtalenr: </label>
+				<input type="text" ng-model="data.oldContractNo" />
+			</div>
+		</div>
+		<div class="flex-columns" ng-repeat="(i,x) in data.contracts track by $index">
+			<div class="col col-8">
+				<input type="text" placeholder="Produktnr" ng-model="data.contracts[i].product" />
+			</div>
+			<div class="col col-2">
+				<input type="text" placeholder="Beskrivelse" ng-model="data.contracts[i].description" />
+			</div>
+			<div class="col col-8">
+				<input type="text" placeholder="Antall" ng-model="data.contracts[i].count" />
+			</div>
+			<div class="col col-4">
+				<input type="text" placeholder="Pris" ng-model="data.contracts[i].price" />
+			</div>
+		</div>
+	</div>
+	<div ng-if="valid['step0'] && valid['step1'] && valid['step2'] && valid['step3'] && valid['step4'] && data.selectedBranch == 'contract'">
+		<p>
+			<input name="b1" type="button" value="Legg til produkt" ng-click="data.contracts.push({product:'',description:'',count:'',price:''});" />
+			<input name="b2" type="button" value="Fjern produkt" ng-click="data.contracts.pop();" />
+		</p>
+	</div>
+	<p>&nbsp;</p>
+	<!--------------------------------------------------------------- Assignments  -->
+	<div class="flex-columns" ng-if="valid['step0'] && valid['step1'] && valid['step2'] && valid['step3'] && valid['step4']">
+		<!---
+		<div ng-repeat="item in schema.service.fields" class={{item.class}}>
+			<b ng-if="item.text">{{ item.text }}</b>
+			<label ng-if="item.label">{{item.label}}</label>
+			<input ng-if="item.input" type={{item.input.type}} ng-model="data[item.model]" />
+			<textarea ng-if="item.textarea" ng-model="data[item.model]"></textarea>
+		</div>
+		--->
+		<div class="col col-1">
+			<b>Oppdrag og Produktsalg:</b>
+		</div>
+		<div class="col col-1">
+			<label for="delivery">Tid for levering: </label>
+			<input type="text" ng-model="data.productDeliveryTime" placeholder=" " >
+		</div>
+		<div class="flex-columns" ng-repeat="(i,x) in data.products track by $index">
+			<div class="col col-8">
+				<input type="text" placeholder="Produktnr" ng-model="data.products[i].product" />
+			</div>
+			<div class="col col-2">
+				<input type="text" placeholder="Beskrivelse" ng-model="data.products[i].description" />
+			</div>
+			<div class="col col-8">
+				<input type="text" placeholder="Antall" ng-model="data.products[i].count" />
+			</div>
+			<div class="col col-4">
+				<input type="text" placeholder="Pris" ng-model="data.products[i].price" />
+			</div>
+		</div>
+		<div class="col col-1">
+			<label>Detaljer og notater:</label>
+			<textarea ng-model="data.detailsAndNotes"></textarea>
+		</div>
+	</div>
+	<div ng-if="valid['step0'] && valid['step1'] && valid['step2'] && valid['step3'] && valid['step4']">
+		<p>
+			<input name="b1" type="button" value="Legg til produkt" ng-click="data.products.push({product:'',description:'',count:'',price:''});" />
+			<input name="b2" type="button" value="Fjern produkt" ng-click="data.products.pop();" />
+		</p>
+	</div>
+	<div ng-if="badstep" >
+		<h3>{{ badstep }} is not valid</h3>
+		<p>Data: {{ data }}</p>
+		<p>Errors: {{ errors[badstep] }}</p>
+	</div>
+	<span class="loader" id="loader-step1"></span>
+	<div ng-if="valid['step0'] && valid['step1'] && valid['step2'] && valid['step3'] && valid['step4'] && valid['contract']">
+		<p><input name="b1" type="button" value="Submit" onclick="submit();" /></p>
+	</div>
+</div>
+</body>
+</html>

@@ -134,7 +134,10 @@ VeLib.helpers = {
 		});
 	}
 };
-VeLib.validator = {};
+
+VeLib.validate = function (schema, data) {
+	console.log(" i should say what is going on right ?");
+};
 
 VeLib.init = function () {
 	VeLib.state['params'] = VeLib.helpers.getParamsAsObjects();
@@ -155,8 +158,7 @@ VeLib.init = function () {
 };
 
 //________________________________________________________________________ MAIN
-
-VeLib.init();
-VeLib.ready.then(function () {
-	console.log("ready state is", VeLib.state);
-});
+// VeLib.init()
+// VeLib.ready.then(() => {
+// 	console.log("ready state is", VeLib.state )
+// })

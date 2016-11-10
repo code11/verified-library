@@ -49,6 +49,7 @@ VeLib.helpers = {
 		})
 	}
 }
+
 VeLib.validate = (schema, data) => { console.log(" i should say what is going on right ?") }
 
 VeLib.init = () => {
@@ -57,8 +58,8 @@ VeLib.init = () => {
 
 	VeLib.ready = new Promise(function(resolve,reject){
 			Promise.all([
-				VeLib.helpers.fetchDefinition().then((definition) => VeLib.state.descriptor = definition), //.then(() => console.log(VeLib.state.descriptor))
-				VeLib.helpers.fetchTemplateData().then((userData) => VeLib.state.userData = userData)//.then(() => console.log(VeLib.state.userData))
+				VeLib.helpers.fetchDefinition().then((definition) => VeLib.state.descriptor = definition), 	//.then(() => console.log(VeLib.state.descriptor))
+				VeLib.helpers.fetchTemplateData().then((userData) => VeLib.state.userData = userData)		//.then(() => console.log(VeLib.state.userData))
 			]).then(() => {
 				VeLib.state.busy = false
 				resolve()
@@ -67,8 +68,7 @@ VeLib.init = () => {
 }
 
 //________________________________________________________________________ MAIN
-
-VeLib.init()
-VeLib.ready.then(() => {
-	console.log("ready state is", VeLib.state )
-})
+// VeLib.init()
+// VeLib.ready.then(() => {
+// 	console.log("ready state is", VeLib.state )
+// })
