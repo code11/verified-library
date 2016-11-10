@@ -12,7 +12,7 @@ gulp.task('babel', function(){
     })})
 
 gulp.task('webserver', function(){
-	return gulp.src('./dist')
+	return gulp.src('./dist/anticimex')
 		.pipe(webserver({
 			host: "0.0.0.0",
 			port: 3001,
