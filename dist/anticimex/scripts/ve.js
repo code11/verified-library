@@ -86,7 +86,8 @@
 var VeLib = {
 	defaults: {
 		apiBase: '/api-v2',
-		descriptorUrl: '/envelope-descriptors/'
+		descriptorUrl: '/envelope-descriptors/',
+		userDataEndpoint: '/user-data'
 	},
 	state: {
 		busy: true,
@@ -129,8 +130,18 @@ VeLib.helpers = {
 			})
 		}).then(function (response) {
 			return response.json().then(function (json) {
-				return json[0].userData;
+				return json.userData;
 			});
+		});
+	},
+	sendTemplateData: function sendTemplateData(data) {
+		return fetch(VeLib.defaults.apiBase + VeLib.state.params.data_endpoint + VeLib.defaults.userDataEndpoint, {
+			method: 'POST',
+			headers: new Headers({
+				"Authorization": VeLib.state.accessToken,
+				"Content-Type": "application/json"
+			}),
+			body: JSON.stringify(data)
 		});
 	}
 };
@@ -152,7 +163,7 @@ VeLib.init = function () {
 		}) //.then(() => console.log(VeLib.state.userData))
 		]).then(function () {
 			VeLib.state.busy = false;
-			resolve();
+			resolve(VeLib.state);
 		});
 	});
 };

@@ -5,63 +5,40 @@ var app = angular.module('mainApp', []);
 app.controller('mainController',function($scope,$http,BrReg){
 	$scope.brreg = {};
 	$scope.brreg.update = function(d) {
-		$scope.data.orgNo = d.organisasjonsnummer;
-		$scope.data.customerName = d.navn;
+		$scope.data.orgNo         = d.organisasjonsnummer;
+		$scope.data.customerName  = d.navn;
 		$scope.data.postalAddress = d.forretningsadresse.adresse;
-		$scope.data.postalCode = d.forretningsadresse.postnummer;
-		$scope.data.postalTown = d.forretningsadresse.poststed;
-		$scope.data.Country = d.forretningsadresse.land;
-		$scope.data.business = d.naeringskode1.beskrivelse;
-		$scope.data.businessCode = d.naeringskode1.kode;
-		$scope.data.InBrReg = true;
-		$scope.data.InFoReg = d.registrertIForetaksregisteret == "J";
-		$scope.data.InMvaReg = d.registrertIMvaregisteret == "J";
-		$scope.data.Konkurs = d.konkurs == "J";
-		$scope.data.Avvikling = d.underAvvikling == "J";
-		$scope.data.Tvangs = d.underTvangsavviklingEllerTvangsopplosning == "J";
+		$scope.data.postalCode    = d.forretningsadresse.postnummer;
+		$scope.data.postalTown    = d.forretningsadresse.poststed;
+		$scope.data.Country       = d.forretningsadresse.land;
+		$scope.data.business      = d.naeringskode1.beskrivelse;
+		$scope.data.businessCode  = d.naeringskode1.kode;
+		$scope.data.InBrReg       = true;
+		$scope.data.InFoReg       = d.registrertIForetaksregisteret == "J";
+		$scope.data.InMvaReg      = d.registrertIMvaregisteret == "J";
+		$scope.data.Konkurs       = d.konkurs == "J";
+		$scope.data.Avvikling     = d.underAvvikling == "J";
+		$scope.data.Tvangs        = d.underTvangsavviklingEllerTvangsopplosning == "J";
 	};
 
 	$scope.button = function(b) { $scope.data[b.set] = b.value; };
 
-	$scope.lists = {};
-	$scope.data = {};
+	$scope.lists               = {};
+	$scope.data                = {};
 	$scope.data.selectedBranch = 0;
-	$scope.data.contracts = [];
+	$scope.data.contracts      = [];
 	$scope.data.contracts.push({product:'',description:'',count:'',price:''})
-	$scope.data.products = [];
+	$scope.data.products       = [];
 	$scope.data.products.push({product:'',description:'',count:'',price:''})
-	$scope.contents = null;
-	$scope.validateAll = function() {
-		if ( !$scope.validator ) return false;
-		$scope.valid = [];
-		$scope.errors = [];
-		$scope.badstep = "";
-		// Disable validation:
-		Object.keys($scope.schema).forEach(function(step) {
-			$scope.valid[step] = true;
-		});
-		$scope.valid['step0'] = $scope.validator.validate('step0', $scope.data);
-/*
-		Object.keys($scope.schema).forEach(function(step) {
-			$scope.valid[step] = $scope.validator.validate(step, $scope.data);
-			$scope.errors[step] = $scope.validator.errors;
-			if ( !$scope.badstep && !$scope.valid[step] )
-				$scope.badstep = step;
-		});
-*/
-		return $scope.valid['step0'];
-	}
-	$http.get('schema/anticimex.json')
-	.success(function(d) {
-		$scope.validator = ajvValidator;
-		var schema = $scope.schema = d.documents[0].formSchema;
-		Object.keys(schema).forEach(function(step) {
-			ajvValidator.addSchema(schema[step], step);
-		});
+	$scope.contents            = null;
+
+	VeLib.init()
+	VeLib.ready.then((state) => {
+		var schema = state.descriptor.documents[0].validationSchema._prefill
+		console.log("schema is", schema)
+			$scope.validator = ajvValidator;
+			$scope.validator.addSchema(schema, "schema")
 	})
-	.error(function(data,status,error,config){
-		$scope.contents = [{heading:"Error", description:"Could not load JSON data"}];
-	});
 });
 
 app.service('BrReg', function($q, $http){

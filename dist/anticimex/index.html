@@ -17,7 +17,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/ajv/4.8.2/ajv.min.js"></script>
 	<script type="text/javascript" src="scripts/anticimex-demo.js"></script>
 	<script src="scripts/anticimex-demo.js"></script>
-	<!-- <script src="../ve.js"></script> -->
+	<script src="scripts/ve.js"></script>
 </head>
 <body>
 	<div ng-app="mainApp" ng-controller="mainController">
@@ -25,8 +25,9 @@
 
 	<div ng-if="!data.selectedBranch">
 		<p>Velg skjematype:</p>
-		<span ng-repeat="item in schema.step0.buttons">
-			<input type="button" value={{item.label}} ng-click="button(item)"/>&nbsp;
+		<span>
+			<input type="button" value="Kontrakt" ng-click="data.selectedBranch = 'contract'"/>&nbsp;
+			<input type="button" value="Serviceppdrag" ng-click="data.selectedBranch = 'service' "/>
 		</span>
 	</div>
 
