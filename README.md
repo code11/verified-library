@@ -1,1 +1,1 @@
-npm install && gulp
+npm install && webpack --watch [--p]

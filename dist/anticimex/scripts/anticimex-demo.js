@@ -32,12 +32,12 @@ app.controller('mainController',function($scope,$http,BrReg){
 	$scope.data.products.push({product:'',description:'',count:'',price:''})
 	$scope.contents            = null;
 
-	VeLib.init()
-	VeLib.ready.then((state) => {
-		var schema = state.descriptor.documents[0].validationSchema._prefill
-		console.log("schema is", schema)
-			$scope.validator = ajvValidator;
-			$scope.validator.addSchema(schema, "schema")
+	VeLib.actions.init().then((state) => {
+		console.log("VeLib ready is,", state);
+		// var schema = state.descriptor.documents[0].validationSchema._prefill
+		// console.log("schema is", schema)
+		// 	$scope.validator = ajvValidator;
+		// 	$scope.validator.addSchema(schema, "schema")
 	})
 });
 

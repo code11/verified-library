@@ -1,17 +1,7 @@
-const babel = require('gulp-babel');
 var gulp = require('gulp'),
-    watch = require('gulp-watch');
+	webserver = require('gulp-webserver');
 
-webserver = require('gulp-webserver');
-
-gulp.task('babel', function(){
-    return watch('src/ve.js', function () {
-        gulp.src('src/ve.js')
-        .pipe(babel({ presets: ['es2015'] }))
-        .pipe(gulp.dest('./dist/anticimex/scripts'))
-    })})
-
-gulp.task('webserver', function(){
+gulp.task('default', function(){
 	return gulp.src('./dist/anticimex')
 		.pipe(webserver({
 			host: "0.0.0.0",
@@ -28,5 +18,3 @@ gulp.task('webserver', function(){
 			]
 		}));
 });
-
-gulp.task('default',['webserver','babel'])

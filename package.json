@@ -9,13 +9,19 @@
   "author": "marius@code11.com",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",
     "gulp-babel": "^6.1.2",
     "gulp-dev-server": "^1.1.3",
     "gulp-watch": "^4.3.10",
-    "gulp-webserver": "^0.9.1"
+    "gulp-webserver": "^0.9.1",
+    "webpack": "^1.13.3"
   },
   "dependencies": {
-    "gulp-dev-server": "^1.1.3"
+    "gulp-concat-js": "^0.1.0",
+    "gulp-dev-server": "^1.1.3",
+    "query-string": "^4.2.3",
+    "underscore": "^1.8.3"
   }
 }
