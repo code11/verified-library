@@ -30,23 +30,29 @@ var methods =  {
 	},
 	putTemplateData: (data) => {
 		var params = state.get().params
-		helpers._call("POST",
+		return helpers._call("POST",
 			`${ configs.envelopesUrl }/
 			${ params.envelope_id }
 			${ configs.documentsAppendix }/
-			${ params.document_id }/${ configs.templatesAppendix }/
+			${ params.document_id }
+			${ configs.templatesAppendix }/
 			${ params.template_id }
 			${ configs.userDataAppendix }`
 		, data)
 	},
 	getTemplateData: () => {
 		var t = state.get().remoteEntities.template
-		if (t && t.hasOwnProperty(userData)) { return new Promise((resolve, reject) => resolve(t.userData)) }
+		if (t) {
+			return new Promise((resolve, reject) => {
+				if (t.hasOwnProperty('userData')) { resolve(t.userData) }
+				else resolve({})
+			})
+		}
 		else return helpers._call("GET",
 			`${ configs.envelopesUrl }/
 			${ params.envelope_id }
 			${ configs.documentsAppendix }/
-			${ params.document_id }/
+			${ params.document_id }
 			${ configs.templatesAppendix }/
 			${ params.template_id }`
 		).then((t) => t.userData || {})

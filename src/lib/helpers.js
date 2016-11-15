@@ -6,14 +6,15 @@ const namings = require("./namings").entityMap;
 const methods = {
 	getQueryParams() { return qs.parse(location.search)},
 	_call(method, url, _body){
-		if (!_body) { _body = null }
+		if (!_body) { _body = null } else { _body = JSON.stringify(_body) }
 		return fetch(url, {
 			method: method,
 			headers: new Headers({
-				"Authorization": "JWT " + state.get().internal.accessToken
+				"Authorization": "JWT " + state.get().internal.accessToken,
+				"Content-Type": "application/json"
 			}),
-			body: JSON.parse(_body)
-		}).then(function(response) { return response.json().then(function(json) { return json }) })
+			body: _body
+		}).then(function(response) { return response.json().then(function(json) { return json }).catch((err) => null) })
 	},
 	setToken(qParams){
 		return new Promise((resolve, reject) => {
@@ -55,7 +56,8 @@ const methods = {
 				`${ configs.envelopesUrl }/
 				${ params.envelope_id }
 				${ configs.documentsAppendix }/
-				${ params.document_id }/${ configs.templatesAppendix }/
+				${ params.document_id }
+				${ configs.templatesAppendix }/
 				${ params.template_id }`
 			)
 		}

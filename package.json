@@ -4,7 +4,10 @@
   "description": "",
   "main": "ve.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p",
+    "watch": "webpack --watch && gulp",
+    "start": "webpack --watch && gulp"
   },
   "author": "marius@code11.com",
   "license": "ISC",
