@@ -52,7 +52,7 @@ var VeLib =
 	VeLib.validation = __webpack_require__(9);
 	VeLib.actions = __webpack_require__(10);
 	VeLib.configs = __webpack_require__(7);
-
+	VeLib.bankId = __webpack_require__(11);
 	// This is the only module with mutable state style so it's instanced, it's "Spechul"
 	VeLib.state = __webpack_require__(5);
 
@@ -120,6 +120,9 @@ var VeLib =
 
 			if (params['template_id']) {
 				entityPromises[namings.template_id] = this._call.bind(null, "GET", configs.envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + configs.documentsAppendix + "/\n\t\t\t\t" + params.document_id + "\n\t\t\t\t" + configs.templatesAppendix + "/\n\t\t\t\t" + params.template_id);
+			}
+			if (params['access_token']) {
+				entityPromises[namings.access_token] = this._call.bind(null, "GET", "" + configs.userinfoUrl);
 			}
 			// This should return an array of calls that have to be made, along with their corresponding state key
 			return entityPromises;
@@ -1933,15 +1936,21 @@ var VeLib =
 	"use strict";
 
 	var domain = "",
-	    apiBase = "/api-v2";
+	    apiBase = "/api-v2",
+	    apiBaseAuth = "/api";
 
 	var config = {
 		descriptorUrl: "" + domain + apiBase + "/envelope-descriptors",
 		envelopesUrl: "" + domain + apiBase + "/envelopes",
+		userinfoUrl: "" + domain + apiBaseAuth + "/auth/userinfo",
 		documentsAppendix: '/documents',
 		templatesAppendix: '/templates',
-		userDataAppendix: '/user-data'
-
+		userDataAppendix: '/user-data',
+		bankId: {
+			"baseUrl": "http://nothingfornow.com"
+		}
+		// definition_id: null, //58244bd7069a89001226e102
+		// data_endpoint: null, // /envelopes/58249226c934690014cef799/documents/58249227c934690014cef79b/templates
 	};
 
 	module.exports = config;
@@ -1961,6 +1970,7 @@ var VeLib =
 			"template_id": "template",
 			"envelope_id": "envelope",
 			"document_id": "document",
+			"access_token": "user",
 			"userData": "userData"
 		}
 	};
@@ -2024,6 +2034,31 @@ var VeLib =
 				});
 			} else return helpers._call("GET", configs.envelopesUrl + "/\n\t\t\t" + params.envelope_id + "\n\t\t\t" + configs.documentsAppendix + "/\n\t\t\t" + params.document_id + "\n\t\t\t" + configs.templatesAppendix + "/\n\t\t\t" + params.template_id).then(function (t) {
 				return t.userData || {};
+			});
+		}
+	};
+
+	module.exports = methods;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var configs = __webpack_require__(7);
+	var bankIdConfigs = configs.bankId;
+
+	var methods = {
+		openOnElement: function openOnElement(el) {
+			return new Promise(function (resolve, reject) {
+				if (!el) {
+					reject("This function needs a DOM element to be passed as params so an i-frame can be opened");
+				} else {
+					var iframeSrc = "" + bankIdConfigs.fullUrl;
+					elem.innerHtml = "<iframe src=" + iframeSrc + "></iframe>";
+					resolve(elem.innerHtml);
+				}
 			});
 		}
 	};

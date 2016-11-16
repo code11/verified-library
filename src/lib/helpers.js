@@ -61,6 +61,11 @@ const methods = {
 				${ params.template_id }`
 			)
 		}
+		if (params['access_token']) {
+			entityPromises[namings.access_token] = this._call.bind(null, "GET",
+				`${ configs.userinfoUrl }`
+			)
+		}
 		// This should return an array of calls that have to be made, along with their corresponding state key
 		return entityPromises
 	}

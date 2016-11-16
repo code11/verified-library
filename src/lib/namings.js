@@ -7,6 +7,7 @@ module.exports = {
 		"template_id"  : "template",
 		"envelope_id"  : "envelope",
 		"document_id"  : "document",
+		"access_token" : "user",
 		"userData"     : "userData"
 	}
 }
