@@ -1,9 +1,9 @@
-var _ = require("underscore");
+var _ = require("lodash");
 
 var _state = {
 	internal: {
 		accessToken: null,
-		descriptor_id: null
+		domain: null
 	},
 	params:{},
 	remoteEntities:{
@@ -20,11 +20,11 @@ const methods = {
 		return _state;
 	},
 	set(newState) {
-		_state = _.extendOwn({}, newState);
+		_state = _.merge({}, newState);
 		console.log("State has been set", _state);
 	},
 	merge(mergeObj) {
-		_state = _.extendOwn(_state, mergeObj)
+		_state = _.merge({}, _state, mergeObj)
 		console.log("State has been merged", _state);
 	}
 };

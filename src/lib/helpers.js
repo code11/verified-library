@@ -14,7 +14,12 @@ const methods = {
 				"Content-Type": "application/json"
 			}),
 			body: _body
-		}).then(function(response) { return response.json().then(function(json) { return json }).catch((err) => null) })
+		}).then(function(response) {
+			if (Number(response.status) > 399 ){
+				throw new Error({msg: "Error", status: status, response: response})
+			}
+			else return response.json().then(function(json) { return json })
+		})
 	},
 	setToken(qParams){
 		return new Promise((resolve, reject) => {

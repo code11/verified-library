@@ -3,7 +3,11 @@ var state = require("./state");
 var configs = require("./configs");
 
 var methods =  {
-	init: () => {
+	init: (domain) => {
+
+		// TODO SET DOMAIN after setting up please....
+		// if (domain && domain.length){ configs.setDomain(domain) }
+
 		var qParams = helpers.getQueryParams();
 		state.merge({ params: qParams });
 
