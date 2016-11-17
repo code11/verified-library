@@ -91,6 +91,8 @@ var VeLib =
 					throw new Error({ msg: "Error", status: status, response: response });
 				} else return response.json().then(function (json) {
 					return json;
+				}).catch(function () {
+					return response.text;
 				});
 			});
 		},
@@ -17465,11 +17467,9 @@ var VeLib =
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	"use strict";
-
-	var state = __webpack_require__(5);
 
 	var apiBase = "/api-v2",
 	    apiBaseAuth = "/api";

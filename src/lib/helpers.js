@@ -18,7 +18,9 @@ const methods = {
 			if (Number(response.status) > 399 ){
 				throw new Error({msg: "Error", status: status, response: response})
 			}
-			else return response.json().then(function(json) { return json })
+			else return response.json()
+			.then((json) => json)
+			.catch(() => response.text)
 		})
 	},
 	setToken(qParams){

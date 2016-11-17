@@ -1,5 +1,3 @@
-const state = require("./state");
-
 const apiBase = "/api-v2",
 	  apiBaseAuth = "/api"
 
