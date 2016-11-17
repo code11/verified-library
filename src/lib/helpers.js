@@ -11,7 +11,7 @@ const methods = {
 			method: method,
 			headers: new Headers({
 				"Authorization": "JWT " + state.get().internal.accessToken,
-				"Content-Type": "application/json"
+				"Content-Type" : "application/json"
 			}),
 			body: _body
 		}).then(function(response) {
@@ -73,9 +73,21 @@ const methods = {
 				`${ configs.userinfoUrl }`
 			)
 		}
-		// This should return an array of calls that have to be made, along with their corresponding state key
+		// This should return an array of calls that have to be made
 		return entityPromises
-	}
+	},
+	// /// Derives who you are based on state user and envelope instance object
+	// getMyMainAction(){
+	// 	var recipients = state.get().remoteEntities.document.recipients
+	// 	var userId     = state.get().user.id
+	// 	var me         = {}
+	//
+	// 	recipients.forEach((recipient) => {
+	// 		// me = some recipient there
+	// 		// M
+	// 	})
+	// 	// if me (signed this thing then mainAction = fill && finalise or just fill )
+	// }
 }
 
 module.exports = methods

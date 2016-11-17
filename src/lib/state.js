@@ -11,7 +11,8 @@ var _state = {
 		descriptor: null,
 		envelope  : null,
 		template  : null,
-		doc       : null
+		doc       : null,
+		user      : null
 	}
 };
 

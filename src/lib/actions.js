@@ -13,6 +13,7 @@ var methods =  {
 
 		return helpers.setToken(qParams)
 		.then(() => {
+			// This should solve only the remote entites calls
 			return new Promise((resolve, reject) => {
 				var entityPromises = helpers.getRemoteEntitiesPromise()
 				var remoteEntities = {}

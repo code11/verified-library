@@ -126,7 +126,7 @@ var VeLib =
 			if (params['access_token']) {
 				entityPromises[namings.access_token] = this._call.bind(null, "GET", "" + configs.userinfoUrl);
 			}
-			// This should return an array of calls that have to be made, along with their corresponding state key
+			// This should return an array of calls that have to be made
 			return entityPromises;
 		}
 	};
@@ -357,7 +357,8 @@ var VeLib =
 			descriptor: null,
 			envelope: null,
 			template: null,
-			doc: null
+			doc: null,
+			user: null
 		}
 	};
 
@@ -17542,6 +17543,7 @@ var VeLib =
 			state.merge({ params: qParams });
 
 			return helpers.setToken(qParams).then(function () {
+				// This should solve only the remote entites calls
 				return new Promise(function (resolve, reject) {
 					var entityPromises = helpers.getRemoteEntitiesPromise();
 					var remoteEntities = {};
