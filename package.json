@@ -22,6 +22,7 @@
     "webpack": "^1.13.3"
   },
   "dependencies": {
+    "ajv": "^4.9.0",
     "gulp-concat-js": "^0.1.0",
     "gulp-dev-server": "^1.1.3",
     "lodash": "^4.17.2",
