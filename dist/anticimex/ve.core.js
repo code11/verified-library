@@ -1,5 +1,14 @@
-var VeLib =
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["core"] = factory();
+	else
+		root["VeLib"] = root["VeLib"] || {}, root["VeLib"]["core"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -45,19 +54,19 @@ var VeLib =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
 	var _actions = __webpack_require__(1);
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _helpers = __webpack_require__(3);
+	var _helpers = __webpack_require__(6);
 
 	var _helpers2 = _interopRequireDefault(_helpers);
 
 	var _configs = __webpack_require__(2);
 
-	var _state = __webpack_require__(4);
+	var _state = __webpack_require__(3);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -69,6 +78,10 @@ var VeLib =
 		helpers: _helpers2.default,
 		state: _state.state
 	};
+
+	var veLibDef = !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+		return VeLib;
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 	module.exports = VeLib;
 
@@ -86,9 +99,9 @@ var VeLib =
 
 	var _configs = __webpack_require__(2);
 
-	var _state = __webpack_require__(4);
+	var _state = __webpack_require__(3);
 
-	var _helpers = __webpack_require__(3);
+	var _helpers = __webpack_require__(6);
 
 	var _helpers2 = _interopRequireDefault(_helpers);
 
@@ -228,111 +241,9 @@ var VeLib =
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _namings = __webpack_require__(10);
-
-	var _configs = __webpack_require__(2);
-
-	var _state = __webpack_require__(4);
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var qs = __webpack_require__(7);
-
-	var Helpers = function () {
-		function Helpers() {
-			_classCallCheck(this, Helpers);
-		}
-
-		_createClass(Helpers, [{
-			key: "getQueryParams",
-			value: function getQueryParams() {
-				return qs.parse(location.search);
-			}
-		}, {
-			key: "_call",
-			value: function _call(method, url, _body) {
-				if (!_body) {
-					_body = null;
-				} else {
-					_body = JSON.stringify(_body);
-				}
-				return fetch(url, {
-					method: method,
-					headers: new Headers({
-						"Authorization": "JWT " + _state.state.get().internal.accessToken,
-						"Content-Type": "application/json"
-					}),
-					body: _body
-				}).then(function (response) {
-					if (Number(response.status) > 399) {
-						throw new Error({ msg: "Error", status: status, response: response });
-					} else return response.json().then(function (json) {
-						return json;
-					}).catch(function () {
-						return response.text;
-					});
-				});
-			}
-		}, {
-			key: "setToken",
-			value: function setToken(qParams) {
-				return new Promise(function (resolve, reject) {
-					if (qParams.access_token) {
-						_state.state.merge({ internal: { accessToken: qParams.access_token } });
-						resolve(qParams.access_token);
-					} else reject("no token found in query params");
-				});
-			}
-		}, {
-			key: "getRemoteEntitiesPromise",
-			value: function getRemoteEntitiesPromise() {
-				console.log(_configs.configs, "At this stage....");
-				var entityPromises = {};
-				var params = _state.state.get().params;
-
-				if (params['descriptor_id']) {
-					entityPromises[_namings.entityMap.descriptor_id] = this._call.bind(null, "GET", _configs.configs.get().descriptorUrl + "/\n\t\t\t" + params.descriptor_id);
-				}
-
-				if (params['envelope_id']) {
-					entityPromises[_namings.entityMap.envelope_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id);
-				}
-
-				if (params['document_id']) {
-					entityPromises[_namings.entityMap.document_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + _configs.configs.get().documentsAppendix + "/\n\t\t\t\t" + params.document_id);
-				}
-
-				if (params['template_id']) {
-					entityPromises[_namings.entityMap.template_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + _configs.configs.get().documentsAppendix + "/\n\t\t\t\t" + params.document_id + "\n\t\t\t\t" + _configs.configs.get().templatesAppendix + "/\n\t\t\t\t" + params.template_id);
-				}
-				if (params['access_token']) {
-					entityPromises[_namings.entityMap.access_token] = this._call.bind(null, "GET", "" + _configs.configs.get().userinfoUrl);
-				}
-				return entityPromises;
-			}
-		}]);
-
-		return Helpers;
-	}();
-
-	var helpers = new Helpers();
-	exports.default = helpers;
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var _ = __webpack_require__(5);
+	var _ = __webpack_require__(4);
 
 	var State = exports.State = function () {
 		function State(initialState) {
@@ -375,7 +286,7 @@ var VeLib =
 	var state = exports.state = new State();
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -17444,10 +17355,10 @@ var VeLib =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(6)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(5)(module)))
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -17463,12 +17374,131 @@ var VeLib =
 
 
 /***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _namings = __webpack_require__(7);
+
+	var _configs = __webpack_require__(2);
+
+	var _state = __webpack_require__(3);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var qs = __webpack_require__(8);
+
+	var Helpers = function () {
+		function Helpers() {
+			_classCallCheck(this, Helpers);
+		}
+
+		_createClass(Helpers, [{
+			key: "getQueryParams",
+			value: function getQueryParams() {
+				return qs.parse(location.search);
+			}
+		}, {
+			key: "_call",
+			value: function _call(method, url, _body) {
+				if (!_body) {
+					_body = null;
+				} else {
+					_body = JSON.stringify(_body);
+				}
+				return fetch(url, {
+					method: method,
+					headers: new Headers({
+						"Authorization": "JWT " + _state.state.get().internal.accessToken,
+						"Content-Type": "application/json"
+					}),
+					body: _body
+				}).then(function (response) {
+					if (Number(response.status) > 399) {
+						throw new Error({ msg: "Error", status: status, response: response });
+					} else return response.json().then(function (json) {
+						return json;
+					}).catch(function () {
+						return response.text;
+					});
+				});
+			}
+		}, {
+			key: "setToken",
+			value: function setToken(qParams) {
+				return new Promise(function (resolve, reject) {
+					if (qParams.access_token) {
+						_state.state.merge({ internal: { accessToken: qParams.access_token } });
+						resolve(qParams.access_token);
+					} else reject("no token found in query params");
+				});
+			}
+		}, {
+			key: "getRemoteEntitiesPromise",
+			value: function getRemoteEntitiesPromise() {
+				console.log(_configs.configs, "At this stage....");
+				var entityPromises = {};
+				var params = _state.state.get().params;
+
+				if (params['descriptor_id']) {
+					entityPromises[_namings.entityMap.descriptor_id] = this._call.bind(null, "GET", _configs.configs.get().descriptorUrl + "/\n\t\t\t" + params.descriptor_id);
+				}
+
+				if (params['envelope_id']) {
+					entityPromises[_namings.entityMap.envelope_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id);
+				}
+
+				if (params['document_id']) {
+					entityPromises[_namings.entityMap.document_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + _configs.configs.get().documentsAppendix + "/\n\t\t\t\t" + params.document_id);
+				}
+
+				if (params['template_id']) {
+					entityPromises[_namings.entityMap.template_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + _configs.configs.get().documentsAppendix + "/\n\t\t\t\t" + params.document_id + "\n\t\t\t\t" + _configs.configs.get().templatesAppendix + "/\n\t\t\t\t" + params.template_id);
+				}
+				if (params['access_token']) {
+					entityPromises[_namings.entityMap.access_token] = this._call.bind(null, "GET", "" + _configs.configs.get().userinfoUrl);
+				}
+				return entityPromises;
+			}
+		}]);
+
+		return Helpers;
+	}();
+
+	var helpers = new Helpers();
+	exports.default = helpers;
+
+/***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+		"entityMap": {
+			"descriptor_id": "descriptor",
+			"template_id": "template",
+			"envelope_id": "envelope",
+			"document_id": "document",
+			"access_token": "user",
+			"userData": "userData"
+		}
+	};
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var strictUriEncode = __webpack_require__(8);
-	var objectAssign = __webpack_require__(9);
+	var strictUriEncode = __webpack_require__(9);
+	var objectAssign = __webpack_require__(10);
 
 	function encode(value, opts) {
 		if (opts.encode) {
@@ -17567,7 +17597,7 @@ var VeLib =
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -17579,7 +17609,7 @@ var VeLib =
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -17667,22 +17697,7 @@ var VeLib =
 	};
 
 
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = {
-		"entityMap": {
-			"descriptor_id": "descriptor",
-			"template_id": "template",
-			"envelope_id": "envelope",
-			"document_id": "document",
-			"access_token": "user",
-			"userData": "userData"
-		}
-	};
-
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;
