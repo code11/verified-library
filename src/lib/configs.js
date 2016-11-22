@@ -1,20 +1,32 @@
-const apiBase = "/api-v2",
-	  apiBaseAuth = "/api"
+export class Configs {
 
-var domain = ""
+	constructor(domain){
+		this.domain            =  this.domain || this.getDomain()
+		// -----------------------------------------------
+		this.apiBase           = "/api-v2",
+		this.apiBaseAuth       = "/api"
+		// -----------------------------------------------
 
-var config = {
-	descriptorUrl       : `${ domain }${ apiBase }/envelope-descriptors`,
-	envelopesUrl        : `${ domain }${ apiBase }/envelopes`,
-	userinfoUrl         : `${ domain }${ apiBaseAuth }/auth/userinfo`,
-	documentsAppendix   : '/documents',
-	templatesAppendix   : '/templates',
-	userDataAppendix    : '/user-data',
-	bankId: {
-		"baseUrl": "http://nothingfornow.com"
+		this.documentsAppendix = '/documents',
+		this.templatesAppendix = '/templates',
+		this.userDataAppendix  = '/user-data'
 	}
-		// definition_id: null, //58244bd7069a89001226e102
-		// data_endpoint: null, // /envelopes/58249226c934690014cef799/documents/58249227c934690014cef79b/templates
+	setDomain(domain){ this.domain = domain }
+	getDomain() { return this.domain || "" }
+
+	get(){
+		return {
+			descriptorUrl    : `${ this.domain }${ this.apiBase }/envelope-descriptors`,
+			envelopesUrl     :`${ this.domain }${ this.apiBase }/envelopes`,
+			userinfoUrl      :`${ this.domain }${ this.apiBaseAuth }/auth/userinfo`,
+			domain           : this.domain,
+			apiBase          : this.apiBase,
+			apiBaseAuth      : this.apiBaseAuth,
+			documentsAppendix: this.documentsAppendix,
+			templatesAppendix: this.templatesAppendix,
+			userDataAppendix : this.userDataAppendix
+		}
+	}
 }
 
-module.exports = config
+export let configs = new Configs()

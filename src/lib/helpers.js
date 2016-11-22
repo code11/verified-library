@@ -1,10 +1,13 @@
-const qs      = require("query-string");
-const state   = require("./state");
-const configs = require("./configs");
-const namings = require("./namings").entityMap;
+const qs = require("query-string");
+import { entityMap } from "./namings"
 
-const methods = {
-	getQueryParams() { return qs.parse(location.search)},
+import { configs } from "./configs";
+import { state } from "./state";
+
+class Helpers {
+	constructor(){}
+	getQueryParams() { return qs.parse(location.search)}
+
 	_call(method, url, _body){
 		if (!_body) { _body = null } else { _body = JSON.stringify(_body) }
 		return fetch(url, {
@@ -22,7 +25,8 @@ const methods = {
 			.then((json) => json)
 			.catch(() => response.text)
 		})
-	},
+	}
+
 	setToken(qParams){
 		return new Promise((resolve, reject) => {
 			if (qParams.access_token){
@@ -30,64 +34,54 @@ const methods = {
 				resolve(qParams.access_token);
 			} else reject("no token found in query params");
 		})
-	},
+	}
+
 	getRemoteEntitiesPromise() {
+		console.log(configs, "At this stage....")
 		var entityPromises = {}
 		var params = state.get().params;
 
 		if (params['descriptor_id']) {
-			entityPromises[namings.descriptor_id] = this._call.bind(null , "GET",
-			`${ configs.descriptorUrl }/
+			entityPromises[entityMap.descriptor_id] = this._call.bind(null , "GET",
+			`${ configs.get().descriptorUrl }/
 			${ params.descriptor_id }`
 			)
 		}
 
 		if (params['envelope_id']) {
-			entityPromises[namings.envelope_id] = this._call.bind(null, "GET",
-				`${ configs.envelopesUrl }/
+			entityPromises[entityMap.envelope_id] = this._call.bind(null, "GET",
+				`${ configs.get().envelopesUrl }/
 				${ params.envelope_id }`
 			)
 		}
 
 		if (params['document_id']) {
-			entityPromises[namings.document_id] = this._call.bind(null, "GET",
-				`${ configs.envelopesUrl }/
+			entityPromises[entityMap.document_id] = this._call.bind(null, "GET",
+				`${ configs.get().envelopesUrl }/
 				${ params.envelope_id }
-				${ configs.documentsAppendix }/
+				${ configs.get().documentsAppendix }/
 				${ params.document_id }`
 			)
 		}
 
 		if (params['template_id']) {
-			entityPromises[namings.template_id] = this._call.bind(null, "GET",
-				`${ configs.envelopesUrl }/
+			entityPromises[entityMap.template_id] = this._call.bind(null, "GET",
+				`${ configs.get().envelopesUrl }/
 				${ params.envelope_id }
-				${ configs.documentsAppendix }/
+				${ configs.get().documentsAppendix }/
 				${ params.document_id }
-				${ configs.templatesAppendix }/
+				${ configs.get().templatesAppendix }/
 				${ params.template_id }`
 			)
 		}
 		if (params['access_token']) {
-			entityPromises[namings.access_token] = this._call.bind(null, "GET",
-				`${ configs.userinfoUrl }`
+			entityPromises[entityMap.access_token] = this._call.bind(null, "GET",
+				`${ configs.get().userinfoUrl }`
 			)
 		}
-		// This should return an array of calls that have to be made
 		return entityPromises
-	},
-	// /// Derives who you are based on state user and envelope instance object
-	// getMyMainAction(){
-	// 	var recipients = state.get().remoteEntities.document.recipients
-	// 	var userId     = state.get().user.id
-	// 	var me         = {}
-	//
-	// 	recipients.forEach((recipient) => {
-	// 		// me = some recipient there
-	// 		// M
-	// 	})
-	// 	// if me (signed this thing then mainAction = fill && finalise or just fill )
-	// }
+	}
 }
 
-module.exports = methods
+let helpers = new Helpers()
+export default helpers

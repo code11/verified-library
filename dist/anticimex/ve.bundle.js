@@ -47,14 +47,28 @@ var VeLib =
 
 	'use strict';
 
-	VeLib = {};
-	VeLib.helpers = __webpack_require__(1);
-	VeLib.validation = __webpack_require__(10);
-	VeLib.actions = __webpack_require__(11);
-	VeLib.configs = __webpack_require__(8);
-	VeLib.bankId = __webpack_require__(12);
-	// This is the only module with mutable state style so it's instanced, it's "Spechul"
-	VeLib.state = __webpack_require__(5);
+	var _actions = __webpack_require__(1);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
+	var _helpers = __webpack_require__(3);
+
+	var _helpers2 = _interopRequireDefault(_helpers);
+
+	var _configs = __webpack_require__(2);
+
+	var _state = __webpack_require__(4);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// imports with {} means singleton instances/they have state
+
+	var VeLib = {
+		actions: _actions2.default,
+		configs: _configs.configs,
+		helpers: _helpers2.default,
+		state: _state.state
+	};
 
 	module.exports = VeLib;
 
@@ -62,324 +76,306 @@ var VeLib =
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
-	var qs = __webpack_require__(2);
-	var state = __webpack_require__(5);
-	var configs = __webpack_require__(8);
-	var namings = __webpack_require__(9).entityMap;
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
 
-	var methods = {
-		getQueryParams: function getQueryParams() {
-			return qs.parse(location.search);
-		},
-		_call: function _call(method, url, _body) {
-			if (!_body) {
-				_body = null;
-			} else {
-				_body = JSON.stringify(_body);
-			}
-			return fetch(url, {
-				method: method,
-				headers: new Headers({
-					"Authorization": "JWT " + state.get().internal.accessToken,
-					"Content-Type": "application/json"
-				}),
-				body: _body
-			}).then(function (response) {
-				if (Number(response.status) > 399) {
-					throw new Error({ msg: "Error", status: status, response: response });
-				} else return response.json().then(function (json) {
-					return json;
-				}).catch(function () {
-					return response.text;
-				});
-			});
-		},
-		setToken: function setToken(qParams) {
-			return new Promise(function (resolve, reject) {
-				if (qParams.access_token) {
-					state.merge({ internal: { accessToken: qParams.access_token } });
-					resolve(qParams.access_token);
-				} else reject("no token found in query params");
-			});
-		},
-		getRemoteEntitiesPromise: function getRemoteEntitiesPromise() {
-			var entityPromises = {};
-			var params = state.get().params;
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-			if (params['descriptor_id']) {
-				entityPromises[namings.descriptor_id] = this._call.bind(null, "GET", configs.descriptorUrl + "/\n\t\t\t" + params.descriptor_id);
-			}
+	var _configs = __webpack_require__(2);
 
-			if (params['envelope_id']) {
-				entityPromises[namings.envelope_id] = this._call.bind(null, "GET", configs.envelopesUrl + "/\n\t\t\t\t" + params.envelope_id);
-			}
+	var _state = __webpack_require__(4);
 
-			if (params['document_id']) {
-				entityPromises[namings.document_id] = this._call.bind(null, "GET", configs.envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + configs.documentsAppendix + "/\n\t\t\t\t" + params.document_id);
-			}
+	var _helpers = __webpack_require__(3);
 
-			if (params['template_id']) {
-				entityPromises[namings.template_id] = this._call.bind(null, "GET", configs.envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + configs.documentsAppendix + "/\n\t\t\t\t" + params.document_id + "\n\t\t\t\t" + configs.templatesAppendix + "/\n\t\t\t\t" + params.template_id);
-			}
-			if (params['access_token']) {
-				entityPromises[namings.access_token] = this._call.bind(null, "GET", "" + configs.userinfoUrl);
-			}
-			// This should return an array of calls that have to be made
-			return entityPromises;
+	var _helpers2 = _interopRequireDefault(_helpers);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Actions = function () {
+		function Actions() {
+			_classCallCheck(this, Actions);
 		}
-	};
 
-	module.exports = methods;
+		_createClass(Actions, [{
+			key: 'init',
+			value: function init(domain) {
+				domain && domain.length && _configs.configs.setDomain(domain);
+				var qParams = _helpers2.default.getQueryParams();
+
+				_state.state.merge({ params: qParams });
+
+				return _helpers2.default.setToken(qParams).then(function () {
+					// This should solve only the remote entites calls
+					return new Promise(function (resolve, reject) {
+						var entityPromises = _helpers2.default.getRemoteEntitiesPromise();
+						var remoteEntities = {};
+						var totalCallsToBeDone = Object.keys(entityPromises).length;
+
+						Object.keys(entityPromises).forEach(function (key) {
+							entityPromises[key]().then(function (data) {
+								remoteEntities[key] = data;
+
+								totalCallsToBeDone--;
+								if (totalCallsToBeDone === 0) {
+									_state.state.merge({ remoteEntities: remoteEntities });
+									resolve(_state.state.get());
+								}
+							});
+						});
+					});
+				});
+			}
+		}, {
+			key: 'putTemplateData',
+			value: function putTemplateData(data) {
+				var params = _state.state.get().params;
+				return _helpers2.default._call("POST", _configs.configs.get().envelopesUrl + '/\n\t\t\t' + params.envelope_id + '\n\t\t\t' + _configs.configs.get().documentsAppendix + '/\n\t\t\t' + params.document_id + '\n\t\t\t' + _configs.configs.get().templatesAppendix + '/\n\t\t\t' + params.template_id + '\n\t\t\t' + _configs.configs.get().userDataAppendix, data);
+			}
+		}, {
+			key: 'getTemplateData',
+			value: function getTemplateData() {
+				var t = _state.state.get().remoteEntities.template;
+				if (t) {
+					return new Promise(function (resolve, reject) {
+						if (t.hasOwnProperty('userData')) {
+							resolve(t.userData);
+						} else resolve({});
+					});
+				} else return _helpers2.default._call("GET", _configs.configs.get().envelopesUrl + '/\n\t\t\t' + params.envelope_id + '\n\t\t\t' + _configs.configs.get().documentsAppendix + '/\n\t\t\t' + params.document_id + '\n\t\t\t' + _configs.configs.get().templatesAppendix + '/\n\t\t\t' + params.template_id).then(function (t) {
+					return t.userData || {};
+				});
+			}
+		}]);
+
+		return Actions;
+	}();
+
+	var actions = new Actions();
+	exports.default = actions;
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	'use strict';
-	var strictUriEncode = __webpack_require__(3);
-	var objectAssign = __webpack_require__(4);
+	"use strict";
 
-	function encode(value, opts) {
-		if (opts.encode) {
-			return opts.strict ? strictUriEncode(value) : encodeURIComponent(value);
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Configs = exports.Configs = function () {
+		function Configs(domain) {
+			_classCallCheck(this, Configs);
+
+			this.domain = this.domain || this.getDomain();
+			// -----------------------------------------------
+			this.apiBase = "/api-v2", this.apiBaseAuth = "/api";
+			// -----------------------------------------------
+
+			this.documentsAppendix = '/documents', this.templatesAppendix = '/templates', this.userDataAppendix = '/user-data';
 		}
 
-		return value;
-	}
-
-	exports.extract = function (str) {
-		return str.split('?')[1] || '';
-	};
-
-	exports.parse = function (str) {
-		// Create an object with no prototype
-		// https://github.com/sindresorhus/query-string/issues/47
-		var ret = Object.create(null);
-
-		if (typeof str !== 'string') {
-			return ret;
-		}
-
-		str = str.trim().replace(/^(\?|#|&)/, '');
-
-		if (!str) {
-			return ret;
-		}
-
-		str.split('&').forEach(function (param) {
-			var parts = param.replace(/\+/g, ' ').split('=');
-			// Firefox (pre 40) decodes `%3D` to `=`
-			// https://github.com/sindresorhus/query-string/pull/37
-			var key = parts.shift();
-			var val = parts.length > 0 ? parts.join('=') : undefined;
-
-			key = decodeURIComponent(key);
-
-			// missing `=` should be `null`:
-			// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-			val = val === undefined ? null : decodeURIComponent(val);
-
-			if (ret[key] === undefined) {
-				ret[key] = val;
-			} else if (Array.isArray(ret[key])) {
-				ret[key].push(val);
-			} else {
-				ret[key] = [ret[key], val];
+		_createClass(Configs, [{
+			key: "setDomain",
+			value: function setDomain(domain) {
+				this.domain = domain;
 			}
-		});
-
-		return ret;
-	};
-
-	exports.stringify = function (obj, opts) {
-		var defaults = {
-			encode: true,
-			strict: true
-		};
-
-		opts = objectAssign(defaults, opts);
-
-		return obj ? Object.keys(obj).sort().map(function (key) {
-			var val = obj[key];
-
-			if (val === undefined) {
-				return '';
+		}, {
+			key: "getDomain",
+			value: function getDomain() {
+				return this.domain || "";
 			}
-
-			if (val === null) {
-				return encode(key, opts);
+		}, {
+			key: "get",
+			value: function get() {
+				return {
+					descriptorUrl: "" + this.domain + this.apiBase + "/envelope-descriptors",
+					envelopesUrl: "" + this.domain + this.apiBase + "/envelopes",
+					userinfoUrl: "" + this.domain + this.apiBaseAuth + "/auth/userinfo",
+					domain: this.domain,
+					apiBase: this.apiBase,
+					apiBaseAuth: this.apiBaseAuth,
+					documentsAppendix: this.documentsAppendix,
+					templatesAppendix: this.templatesAppendix,
+					userDataAppendix: this.userDataAppendix
+				};
 			}
+		}]);
 
-			if (Array.isArray(val)) {
-				var result = [];
+		return Configs;
+	}();
 
-				val.slice().forEach(function (val2) {
-					if (val2 === undefined) {
-						return;
-					}
-
-					if (val2 === null) {
-						result.push(encode(key, opts));
-					} else {
-						result.push(encode(key, opts) + '=' + encode(val2, opts));
-					}
-				});
-
-				return result.join('&');
-			}
-
-			return encode(key, opts) + '=' + encode(val, opts);
-		}).filter(function (x) {
-			return x.length > 0;
-		}).join('&') : '';
-	};
-
+	var configs = exports.configs = new Configs();
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
-
-	'use strict';
-	module.exports = function (str) {
-		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-			return '%' + c.charCodeAt(0).toString(16).toUpperCase();
-		});
-	};
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	'use strict';
-	/* eslint-disable no-unused-vars */
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-	function toObject(val) {
-		if (val === null || val === undefined) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	function shouldUseNative() {
-		try {
-			if (!Object.assign) {
-				return false;
-			}
-
-			// Detect buggy property enumeration order in older V8 versions.
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-			var test1 = new String('abc');  // eslint-disable-line
-			test1[5] = 'de';
-			if (Object.getOwnPropertyNames(test1)[0] === '5') {
-				return false;
-			}
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test2 = {};
-			for (var i = 0; i < 10; i++) {
-				test2['_' + String.fromCharCode(i)] = i;
-			}
-			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-				return test2[n];
-			});
-			if (order2.join('') !== '0123456789') {
-				return false;
-			}
-
-			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-			var test3 = {};
-			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-				test3[letter] = letter;
-			});
-			if (Object.keys(Object.assign({}, test3)).join('') !==
-					'abcdefghijklmnopqrst') {
-				return false;
-			}
-
-			return true;
-		} catch (e) {
-			// We don't expect any of the above to throw, but better to be safe.
-			return false;
-		}
-	}
-
-	module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-		var from;
-		var to = toObject(target);
-		var symbols;
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = Object(arguments[s]);
-
-			for (var key in from) {
-				if (hasOwnProperty.call(from, key)) {
-					to[key] = from[key];
-				}
-			}
-
-			if (Object.getOwnPropertySymbols) {
-				symbols = Object.getOwnPropertySymbols(from);
-				for (var i = 0; i < symbols.length; i++) {
-					if (propIsEnumerable.call(from, symbols[i])) {
-						to[symbols[i]] = from[symbols[i]];
-					}
-				}
-			}
-		}
-
-		return to;
-	};
-
-
-/***/ },
-/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _ = __webpack_require__(6);
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
 
-	var _state = {
-		internal: {
-			accessToken: null,
-			domain: null
-		},
-		params: {},
-		remoteEntities: {
-			// Only here for documentation purposes to see the keys, same for above
-			descriptor: null,
-			envelope: null,
-			template: null,
-			doc: null,
-			user: null
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _namings = __webpack_require__(10);
+
+	var _configs = __webpack_require__(2);
+
+	var _state = __webpack_require__(4);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var qs = __webpack_require__(7);
+
+	var Helpers = function () {
+		function Helpers() {
+			_classCallCheck(this, Helpers);
 		}
-	};
 
-	var methods = {
-		get: function get() {
-			return _state;
-		},
-		set: function set(newState) {
-			_state = _.merge({}, newState);
-			console.log("State has been set", _state);
-		},
-		merge: function merge(mergeObj) {
-			_state = _.merge({}, _state, mergeObj);
-			console.log("State has been merged", _state);
-		}
-	};
+		_createClass(Helpers, [{
+			key: "getQueryParams",
+			value: function getQueryParams() {
+				return qs.parse(location.search);
+			}
+		}, {
+			key: "_call",
+			value: function _call(method, url, _body) {
+				if (!_body) {
+					_body = null;
+				} else {
+					_body = JSON.stringify(_body);
+				}
+				return fetch(url, {
+					method: method,
+					headers: new Headers({
+						"Authorization": "JWT " + _state.state.get().internal.accessToken,
+						"Content-Type": "application/json"
+					}),
+					body: _body
+				}).then(function (response) {
+					if (Number(response.status) > 399) {
+						throw new Error({ msg: "Error", status: status, response: response });
+					} else return response.json().then(function (json) {
+						return json;
+					}).catch(function () {
+						return response.text;
+					});
+				});
+			}
+		}, {
+			key: "setToken",
+			value: function setToken(qParams) {
+				return new Promise(function (resolve, reject) {
+					if (qParams.access_token) {
+						_state.state.merge({ internal: { accessToken: qParams.access_token } });
+						resolve(qParams.access_token);
+					} else reject("no token found in query params");
+				});
+			}
+		}, {
+			key: "getRemoteEntitiesPromise",
+			value: function getRemoteEntitiesPromise() {
+				console.log(_configs.configs, "At this stage....");
+				var entityPromises = {};
+				var params = _state.state.get().params;
 
-	module.exports = methods;
+				if (params['descriptor_id']) {
+					entityPromises[_namings.entityMap.descriptor_id] = this._call.bind(null, "GET", _configs.configs.get().descriptorUrl + "/\n\t\t\t" + params.descriptor_id);
+				}
+
+				if (params['envelope_id']) {
+					entityPromises[_namings.entityMap.envelope_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id);
+				}
+
+				if (params['document_id']) {
+					entityPromises[_namings.entityMap.document_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + _configs.configs.get().documentsAppendix + "/\n\t\t\t\t" + params.document_id);
+				}
+
+				if (params['template_id']) {
+					entityPromises[_namings.entityMap.template_id] = this._call.bind(null, "GET", _configs.configs.get().envelopesUrl + "/\n\t\t\t\t" + params.envelope_id + "\n\t\t\t\t" + _configs.configs.get().documentsAppendix + "/\n\t\t\t\t" + params.document_id + "\n\t\t\t\t" + _configs.configs.get().templatesAppendix + "/\n\t\t\t\t" + params.template_id);
+				}
+				if (params['access_token']) {
+					entityPromises[_namings.entityMap.access_token] = this._call.bind(null, "GET", "" + _configs.configs.get().userinfoUrl);
+				}
+				return entityPromises;
+			}
+		}]);
+
+		return Helpers;
+	}();
+
+	var helpers = new Helpers();
+	exports.default = helpers;
 
 /***/ },
-/* 6 */
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var _ = __webpack_require__(5);
+
+	var State = exports.State = function () {
+		function State(initialState) {
+			_classCallCheck(this, State);
+
+			// Only here for documentation purposes to see the keys, same for above
+			this.state = initialState || {};
+			this.internal = { accessToken: null };
+			this.params = {};
+
+			this.remoteEntities = {
+				descriptor: null,
+				envelope: null,
+				template: null,
+				doc: null,
+				user: null
+			};
+		}
+
+		_createClass(State, [{
+			key: "get",
+			value: function get() {
+				return this.state;
+			}
+		}, {
+			key: "set",
+			value: function set(newState) {
+				this.state = _.merge({}, newState);
+			}
+		}, {
+			key: "merge",
+			value: function merge(mergeObj) {
+				this.state = _.merge({}, this.state, mergeObj);
+			}
+		}]);
+
+		return State;
+	}();
+
+	var state = exports.state = new State();
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -17448,10 +17444,10 @@ var VeLib =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(7)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(6)(module)))
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -17467,42 +17463,217 @@ var VeLib =
 
 
 /***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var strictUriEncode = __webpack_require__(8);
+	var objectAssign = __webpack_require__(9);
+
+	function encode(value, opts) {
+		if (opts.encode) {
+			return opts.strict ? strictUriEncode(value) : encodeURIComponent(value);
+		}
+
+		return value;
+	}
+
+	exports.extract = function (str) {
+		return str.split('?')[1] || '';
+	};
+
+	exports.parse = function (str) {
+		// Create an object with no prototype
+		// https://github.com/sindresorhus/query-string/issues/47
+		var ret = Object.create(null);
+
+		if (typeof str !== 'string') {
+			return ret;
+		}
+
+		str = str.trim().replace(/^(\?|#|&)/, '');
+
+		if (!str) {
+			return ret;
+		}
+
+		str.split('&').forEach(function (param) {
+			var parts = param.replace(/\+/g, ' ').split('=');
+			// Firefox (pre 40) decodes `%3D` to `=`
+			// https://github.com/sindresorhus/query-string/pull/37
+			var key = parts.shift();
+			var val = parts.length > 0 ? parts.join('=') : undefined;
+
+			key = decodeURIComponent(key);
+
+			// missing `=` should be `null`:
+			// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+			val = val === undefined ? null : decodeURIComponent(val);
+
+			if (ret[key] === undefined) {
+				ret[key] = val;
+			} else if (Array.isArray(ret[key])) {
+				ret[key].push(val);
+			} else {
+				ret[key] = [ret[key], val];
+			}
+		});
+
+		return ret;
+	};
+
+	exports.stringify = function (obj, opts) {
+		var defaults = {
+			encode: true,
+			strict: true
+		};
+
+		opts = objectAssign(defaults, opts);
+
+		return obj ? Object.keys(obj).sort().map(function (key) {
+			var val = obj[key];
+
+			if (val === undefined) {
+				return '';
+			}
+
+			if (val === null) {
+				return encode(key, opts);
+			}
+
+			if (Array.isArray(val)) {
+				var result = [];
+
+				val.slice().forEach(function (val2) {
+					if (val2 === undefined) {
+						return;
+					}
+
+					if (val2 === null) {
+						result.push(encode(key, opts));
+					} else {
+						result.push(encode(key, opts) + '=' + encode(val2, opts));
+					}
+				});
+
+				return result.join('&');
+			}
+
+			return encode(key, opts) + '=' + encode(val, opts);
+		}).filter(function (x) {
+			return x.length > 0;
+		}).join('&') : '';
+	};
+
+
+/***/ },
 /* 8 */
 /***/ function(module, exports) {
 
-	"use strict";
-
-	var apiBase = "/api-v2",
-	    apiBaseAuth = "/api";
-
-	var domain = "";
-
-	var config = {
-		descriptorUrl: "" + domain + apiBase + "/envelope-descriptors",
-		envelopesUrl: "" + domain + apiBase + "/envelopes",
-		userinfoUrl: "" + domain + apiBaseAuth + "/auth/userinfo",
-		documentsAppendix: '/documents',
-		templatesAppendix: '/templates',
-		userDataAppendix: '/user-data',
-		bankId: {
-			"baseUrl": "http://nothingfornow.com"
-		}
-		// definition_id: null, //58244bd7069a89001226e102
-		// data_endpoint: null, // /envelopes/58249226c934690014cef799/documents/58249227c934690014cef79b/templates
+	'use strict';
+	module.exports = function (str) {
+		return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+			return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+		});
 	};
 
-	module.exports = config;
 
 /***/ },
 /* 9 */
 /***/ function(module, exports) {
 
+	'use strict';
+	/* eslint-disable no-unused-vars */
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+	function toObject(val) {
+		if (val === null || val === undefined) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	function shouldUseNative() {
+		try {
+			if (!Object.assign) {
+				return false;
+			}
+
+			// Detect buggy property enumeration order in older V8 versions.
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+			var test1 = new String('abc');  // eslint-disable-line
+			test1[5] = 'de';
+			if (Object.getOwnPropertyNames(test1)[0] === '5') {
+				return false;
+			}
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test2 = {};
+			for (var i = 0; i < 10; i++) {
+				test2['_' + String.fromCharCode(i)] = i;
+			}
+			var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+				return test2[n];
+			});
+			if (order2.join('') !== '0123456789') {
+				return false;
+			}
+
+			// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+			var test3 = {};
+			'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+				test3[letter] = letter;
+			});
+			if (Object.keys(Object.assign({}, test3)).join('') !==
+					'abcdefghijklmnopqrst') {
+				return false;
+			}
+
+			return true;
+		} catch (e) {
+			// We don't expect any of the above to throw, but better to be safe.
+			return false;
+		}
+	}
+
+	module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+		var from;
+		var to = toObject(target);
+		var symbols;
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = Object(arguments[s]);
+
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+
+			if (Object.getOwnPropertySymbols) {
+				symbols = Object.getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
+			}
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
 	"use strict";
 
 	module.exports = {
-		"accessToken": "access_token",
-		// This should map params to state objects by those keys
-
 		"entityMap": {
 			"descriptor_id": "descriptor",
 			"template_id": "template",
@@ -17512,101 +17683,6 @@ var VeLib =
 			"userData": "userData"
 		}
 	};
-
-/***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = {
-		// Blank for now...will require functions :)
-	};
-
-/***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var helpers = __webpack_require__(1);
-	var state = __webpack_require__(5);
-	var configs = __webpack_require__(8);
-
-	var methods = {
-		init: function init(domain) {
-
-			// TODO SET DOMAIN after setting up please....
-			// if (domain && domain.length){ configs.setDomain(domain) }
-
-			var qParams = helpers.getQueryParams();
-			state.merge({ params: qParams });
-
-			return helpers.setToken(qParams).then(function () {
-				// This should solve only the remote entites calls
-				return new Promise(function (resolve, reject) {
-					var entityPromises = helpers.getRemoteEntitiesPromise();
-					var remoteEntities = {};
-					var totalCallsToBeDone = Object.keys(entityPromises).length;
-
-					Object.keys(entityPromises).forEach(function (key) {
-						entityPromises[key]().then(function (data) {
-							remoteEntities[key] = data;
-
-							totalCallsToBeDone--;
-							if (totalCallsToBeDone === 0) {
-								state.merge({ remoteEntities: remoteEntities });
-								resolve(state.get());
-							}
-						});
-					});
-				});
-			});
-		},
-		putTemplateData: function putTemplateData(data) {
-			var params = state.get().params;
-			return helpers._call("POST", configs.envelopesUrl + "/\n\t\t\t" + params.envelope_id + "\n\t\t\t" + configs.documentsAppendix + "/\n\t\t\t" + params.document_id + "\n\t\t\t" + configs.templatesAppendix + "/\n\t\t\t" + params.template_id + "\n\t\t\t" + configs.userDataAppendix, data);
-		},
-		getTemplateData: function getTemplateData() {
-			var t = state.get().remoteEntities.template;
-			if (t) {
-				return new Promise(function (resolve, reject) {
-					if (t.hasOwnProperty('userData')) {
-						resolve(t.userData);
-					} else resolve({});
-				});
-			} else return helpers._call("GET", configs.envelopesUrl + "/\n\t\t\t" + params.envelope_id + "\n\t\t\t" + configs.documentsAppendix + "/\n\t\t\t" + params.document_id + "\n\t\t\t" + configs.templatesAppendix + "/\n\t\t\t" + params.template_id).then(function (t) {
-				return t.userData || {};
-			});
-		}
-	};
-
-	module.exports = methods;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var configs = __webpack_require__(8);
-	var bankIdConfigs = configs.bankId;
-
-	var methods = {
-		openOnElement: function openOnElement(el) {
-			return new Promise(function (resolve, reject) {
-				if (!el) {
-					reject("This function needs a DOM element to be passed as params so an i-frame can be opened");
-				} else {
-					var iframeSrc = "" + bankIdConfigs.fullUrl;
-					elem.innerHtml = "<iframe src=" + iframeSrc + "></iframe>";
-					resolve(elem.innerHtml);
-				}
-			});
-		}
-	};
-
-	module.exports = methods;
 
 /***/ }
 /******/ ]);

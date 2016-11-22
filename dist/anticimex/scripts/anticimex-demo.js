@@ -32,7 +32,7 @@ app.controller('mainController',function($scope,$http,BrReg){
 	$scope.data.products.push({product:'',description:'',count:'',price:''})
 	$scope.contents            = null;
 
-	VeLib.actions.init("http://www.google.com").then((state) => {
+	VeLib.actions.init().then((state) => {
 		console.log("VeLib ready is,", state);
 		// var schema = state.descriptor.documents[0].validationSchema._prefill
 		// console.log("schema is", schema)

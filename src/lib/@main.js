@@ -1,10 +1,16 @@
-VeLib            = {};
-VeLib.helpers    = require('./helpers');
-VeLib.validation = require('./validation');
-VeLib.actions 	 = require('./actions');
-VeLib.configs = require('./configs');
-VeLib.bankId = require('./bankid');
-// This is the only module with mutable state style so it's instanced, it's "Spechul"
-VeLib.state = require('./state');
+import actions  from './actions'
+import helpers  from './helpers'
+
+// imports with {} means singleton instances/they have state
+
+import { configs }  from './configs'
+import { state } from './state'
+
+const VeLib = {
+	actions: actions,
+	configs: configs,
+	helpers: helpers,
+	state  : state
+}
 
 module.exports = VeLib

@@ -1,14 +1,14 @@
-var helpers = require("./helpers");
-var state = require("./state");
-var configs = require("./configs");
+import { configs } from './configs';
+import { state } from './state';
+import helpers from './helpers';
 
-var methods =  {
-	init: (domain) => {
+class Actions {
+	constructor(){}
 
-		// TODO SET DOMAIN after setting up please....
-		// if (domain && domain.length){ configs.setDomain(domain) }
-
+	init(domain){
+		domain && domain.length && configs.setDomain(domain)
 		var qParams = helpers.getQueryParams();
+
 		state.merge({ params: qParams });
 
 		return helpers.setToken(qParams)
@@ -32,20 +32,22 @@ var methods =  {
 				})
 			})
 		})
-	},
-	putTemplateData: (data) => {
+	}
+
+	putTemplateData(data){
 		var params = state.get().params
 		return helpers._call("POST",
-			`${ configs.envelopesUrl }/
+			`${ configs.get().envelopesUrl }/
 			${ params.envelope_id }
-			${ configs.documentsAppendix }/
+			${ configs.get().documentsAppendix }/
 			${ params.document_id }
-			${ configs.templatesAppendix }/
+			${ configs.get().templatesAppendix }/
 			${ params.template_id }
-			${ configs.userDataAppendix }`
+			${ configs.get().userDataAppendix }`
 		, data)
-	},
-	getTemplateData: () => {
+	}
+
+	getTemplateData(){
 		var t = state.get().remoteEntities.template
 		if (t) {
 			return new Promise((resolve, reject) => {
@@ -54,14 +56,15 @@ var methods =  {
 			})
 		}
 		else return helpers._call("GET",
-			`${ configs.envelopesUrl }/
+			`${ configs.get().envelopesUrl }/
 			${ params.envelope_id }
-			${ configs.documentsAppendix }/
+			${ configs.get().documentsAppendix }/
 			${ params.document_id }
-			${ configs.templatesAppendix }/
+			${ configs.get().templatesAppendix }/
 			${ params.template_id }`
 		).then((t) => t.userData || {})
 	}
 }
 
-module.exports = methods
+let actions = new Actions()
+export default actions
