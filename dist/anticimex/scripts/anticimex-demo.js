@@ -34,7 +34,7 @@ app.controller('mainController',function($scope,$http,BrReg){
 
 	VeLib.core.actions.init().then((state) => {
 		console.log("VeLib ready is,", state);
-		VeLib.bankid.init();
+		VeLib.bankid_se.init();
 	})
 });
 

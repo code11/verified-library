@@ -8,9 +8,12 @@ class Helpers {
 	constructor(){}
 	getQueryParams() { return qs.parse(location.search)}
 
-	_call(method, url, _body){
+	_call(method, url, _body, _params){
 		if (!_body) { _body = null } else { _body = JSON.stringify(_body) }
-		return fetch(url, {
+		var params = "?"
+		if (_params) { params += qs.stringify(params)} else params = ""
+
+		return fetch(url + params , {
 			method: method,
 			headers: new Headers({
 				"Authorization": "JWT " + state.get().internal.accessToken,

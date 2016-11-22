@@ -56,17 +56,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	var _actions = __webpack_require__(1);
+	var _actions = __webpack_require__(3);
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _helpers = __webpack_require__(6);
+	var _helpers = __webpack_require__(8);
 
 	var _helpers2 = _interopRequireDefault(_helpers);
 
-	var _configs = __webpack_require__(2);
+	var _configs = __webpack_require__(4);
 
-	var _state = __webpack_require__(3);
+	var _state = __webpack_require__(5);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -86,7 +86,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = VeLib;
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */,
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -97,11 +99,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _configs = __webpack_require__(2);
+	var _configs = __webpack_require__(4);
 
-	var _state = __webpack_require__(3);
+	var _state = __webpack_require__(5);
 
-	var _helpers = __webpack_require__(6);
+	var _helpers = __webpack_require__(8);
 
 	var _helpers2 = _interopRequireDefault(_helpers);
 
@@ -172,7 +174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = actions;
 
 /***/ },
-/* 2 */
+/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -230,7 +232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var configs = exports.configs = new Configs();
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -243,7 +245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var _ = __webpack_require__(4);
+	var _ = __webpack_require__(6);
 
 	var State = exports.State = function () {
 		function State(initialState) {
@@ -286,7 +288,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var state = exports.state = new State();
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -17355,10 +17357,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(5)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(7)(module)))
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -17374,7 +17376,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -17385,15 +17387,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _namings = __webpack_require__(7);
+	var _namings = __webpack_require__(9);
 
-	var _configs = __webpack_require__(2);
+	var _configs = __webpack_require__(4);
 
-	var _state = __webpack_require__(3);
+	var _state = __webpack_require__(5);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var qs = __webpack_require__(8);
+	var qs = __webpack_require__(10);
 
 	var Helpers = function () {
 		function Helpers() {
@@ -17407,13 +17409,18 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 		}, {
 			key: "_call",
-			value: function _call(method, url, _body) {
+			value: function _call(method, url, _body, _params) {
 				if (!_body) {
 					_body = null;
 				} else {
 					_body = JSON.stringify(_body);
 				}
-				return fetch(url, {
+				var params = "?";
+				if (_params) {
+					params += qs.stringify(params);
+				} else params = "";
+
+				return fetch(url + params, {
 					method: method,
 					headers: new Headers({
 						"Authorization": "JWT " + _state.state.get().internal.accessToken,
@@ -17476,7 +17483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = helpers;
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17493,12 +17500,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var strictUriEncode = __webpack_require__(9);
-	var objectAssign = __webpack_require__(10);
+	var strictUriEncode = __webpack_require__(11);
+	var objectAssign = __webpack_require__(12);
 
 	function encode(value, opts) {
 		if (opts.encode) {
@@ -17597,7 +17604,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -17609,7 +17616,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
