@@ -12,6 +12,4 @@ const VeLib = {
 	state  : state
 }
 
-var veLibDef = define("VeLib", () => VeLib)
-
 module.exports = VeLib

@@ -62,7 +62,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _actions2 = _interopRequireDefault(_actions);
 
-	var _state = __webpack_require__(2);
+	var _state = __webpack_require__(5);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -99,7 +99,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var call = VeLib.core.helpers._call;
-	var qs = __webpack_require__(10);
+	var qs = __webpack_require__(2);
 
 	var Actions = function () {
 		function Actions() {
@@ -159,51 +159,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var State = function () {
-		function State(initialState) {
-			_classCallCheck(this, State);
-
-			this.state = initialState || {};
-		}
-
-		_createClass(State, [{
-			key: "get",
-			value: function get() {
-				return { "test": "test " };
-			}
-		}]);
-
-		return State;
-	}();
-
-	var state = exports.state = new State();
-
-/***/ },
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var strictUriEncode = __webpack_require__(11);
-	var objectAssign = __webpack_require__(12);
+	var strictUriEncode = __webpack_require__(3);
+	var objectAssign = __webpack_require__(4);
 
 	function encode(value, opts) {
 		if (opts.encode) {
@@ -302,7 +262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 3 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -314,7 +274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 4 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -401,6 +361,39 @@ return /******/ (function(modules) { // webpackBootstrap
 		return to;
 	};
 
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var State = function () {
+		function State(initialState) {
+			_classCallCheck(this, State);
+
+			this.state = initialState || {};
+		}
+
+		_createClass(State, [{
+			key: "get",
+			value: function get() {
+				return { "test": "test " };
+			}
+		}]);
+
+		return State;
+	}();
+
+	var state = exports.state = new State();
 
 /***/ }
 /******/ ])
