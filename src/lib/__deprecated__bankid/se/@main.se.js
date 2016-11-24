@@ -4,7 +4,7 @@ import { state } from "./state"
 class Se {
 	constructor(){
 		this.actions = actions
-		this.state = state
+		this.state   = state
 	}
 	init(){ console.log("bankid SE init"); }
 }

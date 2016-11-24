@@ -3,7 +3,7 @@ var webpack = require("webpack");
 module.exports = {
 	entry: {
 		core  : "./src/lib/core/@main.js",
-		bankid_se: "./src/lib/bankid/se/@main.se.js"
+		public_templates: "./src/lib/public_templates/@main.js"
 	},
 	output: {
 		path: './dist/anticimex',

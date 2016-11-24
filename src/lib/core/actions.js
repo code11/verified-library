@@ -4,11 +4,13 @@ import helpers from './helpers';
 
 class Actions {
 	constructor(){}
-
+	// THIS INIT HANDLES INITIAL STATE LOAD, WITH ALL THE DATA FROM URL AND
+	// ALSO THINGS REGARDING domain
+	// ALL LIBRARIES WHICH USED INFO FROM THIS STATE SHOULD TAKE IT FROM HERE , from the global
+	// VeLib.core object
 	init(domain){
 		domain && domain.length && configs.setDomain(domain)
 		var qParams = helpers.getQueryParams();
-
 		state.merge({ params: qParams });
 
 		return helpers.setToken(qParams)
