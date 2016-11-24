@@ -12,4 +12,5 @@ const VeLib = {
 	state  : state
 }
 
+Object.setPrototypeOf(VeLib, actions)
 module.exports = VeLib

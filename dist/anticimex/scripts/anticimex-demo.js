@@ -32,11 +32,11 @@ app.controller('mainController',function($scope,$http,BrReg){
 	$scope.data.products.push({product:'',description:'',count:'',price:''})
 	$scope.contents            = null;
 
-	VeLib.core.actions.init().then((state) => {
+	VeLib.core.init().then((state) => {
 		console.log("VeLib ready is,", state);
-		VeLib.public_templates.actions.createFromDescriptor()
-		.then((url) => {
-			console.log("It should return an url, this URL", url)
+		VeLib.public_templates.init()
+		.then((templateObjectsArray) => {
+			console.log(templateObjectsArray, "these are templateObjects array with custom interface")
 		});
 	})
 });

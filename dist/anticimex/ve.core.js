@@ -79,6 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		state: _state.state
 	};
 
+	Object.setPrototypeOf(VeLib, _actions2.default);
 	module.exports = VeLib;
 
 /***/ },
