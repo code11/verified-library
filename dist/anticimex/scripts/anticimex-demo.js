@@ -34,9 +34,9 @@ app.controller('mainController',function($scope,$http,BrReg){
 
 	VeLib.core.init().then((state) => {
 		console.log("VeLib ready is,", state);
-		VeLib.public_templates.init()
+		VeLib.public_templates.getTemplateInterface()
 		.then((templateObjectsArray) => {
-			console.log(templateObjectsArray, "these are templateObjects array with custom interface")
+			templateObjectsArray[0].setData({ "testField" : "Test template data" })
 		});
 	})
 });

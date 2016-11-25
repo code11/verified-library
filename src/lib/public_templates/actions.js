@@ -9,17 +9,17 @@ class Actions {
 		console.log("big state is", this.state)
 
 	}
-	init(){
-		return helpers.createEnvelopeContext().then(() => {
-			return []
-		})
-		// Should give you a template interface to work on userData and so on ??
-		// Make a call to create Envelope Context
-	}
 	submit(){
+		let remoteTemplates = helpers.templateInterfaceToRemote()
+		console.log(remoteTemplates);
 		// import descriptorId from somewhere and possibly role ?
-		return new Promise((resolve, reject) => {
-			// @ Should take in role and descriptorId, should provide back data structures which
+		// .. This should also mutate templateUserData and transform it into a good structure before
+		// submitting, you have to transform that state someway somehow :)
+
+
+		// return helpers.createEnvelopeContext(role, descriptorId, templates).then((url) => {
+			// return url
+		// })
 			// allows FE user to post thta data
 
 			// This is available here for calls state.get()
@@ -32,9 +32,8 @@ class Actions {
 			//       (x) => console.log('Next: ' + x),
 			//       (err) => console.log('Error: ' + err),
 			//       () => console.log('Completed'));
-
-		})
 	}
+	getTemplateInterface(){ return helpers.getTemplateObjectsArrayInterface() }
 }
 
 module.exports = new Actions()
