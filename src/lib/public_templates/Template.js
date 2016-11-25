@@ -11,7 +11,7 @@ class Template {
 		this.info = { info }
 	}
 	getInfo(){ return this.info }
-	putData(data){
+	setData(data){
 		return new Promise((resolve, reject) => {
 			// This returns a promise that the user should call whenever he fees like submitting on this
 			// specific template
