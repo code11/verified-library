@@ -17201,8 +17201,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		_createClass(Actions, [{
 			key: "submit",
 			value: function submit() {
-				var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
-				console.log(remoteTemplates);
+				return new Promise(function (resolve, reject) {
+					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
+					resolve(remoteTemplates);
+				});
 				// import descriptorId from somewhere and possibly role ?
 				// .. This should also mutate templateUserData and transform it into a good structure before
 				// submitting, you have to transform that state someway somehow :)
@@ -17324,10 +17326,34 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function templateInterfaceToRemote() {
 				var remoteObject = {};
 				var arrayOfInterfaces = state.get().templates;
-				for (templateInterface in arrayOfInterfaces) {
-					remoteObject[templateInterface.info.descriptors] = remoteObject[templateInterface.info.descriptors] || [];
-					remoteObject[templateInterface.info.descriptors].push({ data: templateInterface.getData() });
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
+
+				try {
+					for (var _iterator = arrayOfInterfaces[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						var templateInterface = _step.value;
+
+						console.log("template interface is", templateInterface);
+						remoteObject[templateInterface.getInfo().descriptor] = remoteObject[templateInterface.getInfo().descriptor] || [];
+						remoteObject[templateInterface.getInfo().descriptor].push({ data: templateInterface.getData() });
+					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
+					}
 				}
+
+				return remoteObject;
 			}
 		}]);
 

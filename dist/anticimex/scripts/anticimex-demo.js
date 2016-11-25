@@ -37,6 +37,10 @@ app.controller('mainController',function($scope,$http,BrReg){
 		VeLib.public_templates.getTemplateInterface()
 		.then((templateObjectsArray) => {
 			templateObjectsArray[0].setData({ "testField" : "Test template data" })
+			console.log(templateObjectsArray[0].getInfo()) // Info about the template from descriptor
+			VeLib.public_templates.submit().then((url) => {
+				// After submit and polling
+			})
 		});
 	})
 });

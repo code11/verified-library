@@ -10,8 +10,10 @@ class Actions {
 
 	}
 	submit(){
-		let remoteTemplates = helpers.templateInterfaceToRemote()
-		console.log(remoteTemplates);
+		return new Promise((resolve, reject) => {
+			let remoteTemplates = helpers.templateInterfaceToRemote()
+			resolve(remoteTemplates)
+		})
 		// import descriptorId from somewhere and possibly role ?
 		// .. This should also mutate templateUserData and transform it into a good structure before
 		// submitting, you have to transform that state someway somehow :)

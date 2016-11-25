@@ -55,10 +55,12 @@ class Helpers {
 	templateInterfaceToRemote(){
 		let remoteObject      = {}
 		let arrayOfInterfaces = state.get().templates
-		for (templateInterface in arrayOfInterfaces) {
-			remoteObject[templateInterface.info.descriptors] = remoteObject[templateInterface.info.descriptors] || []
-			remoteObject[templateInterface.info.descriptors].push({ data: templateInterface.getData() })
+		for (let templateInterface of arrayOfInterfaces) {
+			console.log("template interface is", templateInterface)
+			remoteObject[templateInterface.getInfo().descriptor] = remoteObject[templateInterface.getInfo().descriptor] || []
+			remoteObject[templateInterface.getInfo().descriptor].push({ data: templateInterface.getData() })
 		}
+		return remoteObject
 	}
 
 }
