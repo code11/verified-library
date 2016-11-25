@@ -40,7 +40,6 @@ class Helpers {
 	}
 
 	getRemoteEntitiesPromise() {
-		console.log(configs, "At this stage....")
 		var entityPromises = {}
 		var params = state.get().params;
 

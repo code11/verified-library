@@ -17186,16 +17186,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var state = VeLib.core.state;
-
 	var Actions = function () {
 		function Actions() {
-			_classCallCheck(this, Actions);
-
 			// this.baseUrl = "???SOME BASE URL ? IF needed ?"
-			//
-			this.state = state;
-			console.log("big state is", this.state);
+
+
+			_classCallCheck(this, Actions);
 		}
 
 		_createClass(Actions, [{
@@ -17334,7 +17330,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					for (var _iterator = arrayOfInterfaces[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 						var templateInterface = _step.value;
 
-						console.log("template interface is", templateInterface);
 						remoteObject[templateInterface.getInfo().descriptor] = remoteObject[templateInterface.getInfo().descriptor] || [];
 						remoteObject[templateInterface.getInfo().descriptor].push({ data: templateInterface.getData() });
 					}

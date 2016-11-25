@@ -1,12 +1,9 @@
-var state = VeLib.core.state;
 import helpers from "./helpers";
 
 class Actions {
 	constructor(){
 		// this.baseUrl = "???SOME BASE URL ? IF needed ?"
-		//
-		this.state = state
-		console.log("big state is", this.state)
+
 
 	}
 	submit(){
