@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
 	entry: {
@@ -6,7 +7,7 @@ module.exports = {
 		public_templates: "./src/lib/public_templates/@main.js"
 	},
 	output: {
-		path: './dist/anticimex',
+		path: './dist/dev',
 		filename: "ve.[name].js",
 		libraryTarget: 'umd',
 		library: ["VeLib", "[name]"]
@@ -22,5 +23,16 @@ module.exports = {
 			}
 		  }
 		]
-	}
+	},
+	plugins:[
+		new CopyWebpackPlugin([
+			{
+				from: {
+					glob: './dist/dev/**',
+					dot: true
+				},
+				to: './../../@test_templates/'
+			}
+		])
+	]
 };

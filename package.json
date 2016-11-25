@@ -5,7 +5,7 @@
   "main": "ve.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -p",
+    "build": "webpack -p --output-path './dist/production' --output-filename 've.[name].min.js' ",
     "watch": "concurrently \"webpack --watch\" \"gulp\"",
     "start": "concurrently \"webpack --watch\" \"gulp\""
   },
@@ -17,6 +17,7 @@
     "babel-loader": "^6.2.7",
     "babel-preset-es2015": "^6.18.0",
     "concurrently": "^3.1.0",
+    "copy-webpack-plugin": "^4.0.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat-js": "^0.1.0",
     "gulp-dev-server": "^1.1.3",

@@ -1,0 +1,328 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title></title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/circlek-truck.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono|Open+Sans' rel='stylesheet' type='text/css'>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/ngMask/3.1.1/ngMask.min.js"></script>
+	<script type="text/javascript" src="scripts/circle-k.js"></script>
+</head>
+<body>
+	<div ng-app="mainApp" ng-controller="mainController">
+	<div class="flex-columns" style="align-items: center">
+		<div style="width: 240px">
+			<img src="assets/circle_k_logo.png" style="width: 200px"/>
+		</div>
+		<div style="font-size: 18pt; font-weight: bold">
+			ANSÖKAN CIRCLE K TRUCKDIESELKORT
+		</div>
+	</div>
+
+	<!--------------------------------------------------------------- CARD 1 INFO -->
+	<div>
+		<h2>Circle K Truckdieselkort</h2>
+		<p>
+			Ansök direkt online med e-legitimation eller Bank ID. Kortet är
+			avgiftsfritt och gäller på ca 780 tankställen i Sverige, varav ca 270 är speciellt anpassade för
+			tung trafik. Fördelen med Circle K Truckdieselkort är att du kan välja kort efter hur du vill
+			använda det. Kortinnehavaren kan ha begränsade inköps- rättigheter eller välj ett kort där
+			man kan handla allt som behövs på resande fot, även parkeringsavgifter. Du har möjlighet att
+			byta till personlig kod när du fått ditt kort.
+		</p>
+		<span class="tooltip open">
+			<span class="tooltip-message" ng-click="showCards = !showCards">Läs mer om våra korttyper här</span>
+			<span class="tooltip-box" ng-if="showCards">
+				<table class="stripped small" border="0" cellpadding="0" cellspacing="0">
+				<tbody>
+					<tr>
+						<td><strong>Circle K Truckdieselkort</strong></td>
+						<td><strong>A</strong></td>
+						<td><strong>B</strong></td>
+						<td><strong>C</strong></td>
+						<td><strong>D</strong></td>
+						<td><strong>E</strong></td>
+						<td><strong>F</strong></td>
+					</tr>
+					<tr>
+						<td><i>miles</i> bensin – E85 – Fordonsgas</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td><i>miles</i> diesel</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+					</tr>
+					<tr>
+						<td>Vägavgifter*</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+					</tr>
+					<tr>
+						<td>Påfyllnadsolja**</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+					</tr>
+					<tr>
+						<td>Trafikprodukter***</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+					</tr>
+					<tr>
+						<td>Parkering</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>Biltvätt</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>Biltillbehör</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>Däckservice</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>Bil- och släphyra</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>Gasol</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>Övrigt på stationen</td>
+						<td><span style="color:#ff8c00">⚫</span></td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					</tbody>
+				</table>
+				<small>
+					* För betalning av vägavgifter med Circle K Företagskort gäller maxgräns 1 500:-<br>
+					** Påfyllnadsolja innefattar motorolja, växellådsolja och hydraulolja.<br>
+					*** Trafikprodukter innefattar glykol, kylarvätska, spolarvätska, billampor, torkarblad, säkringar och låsolja.<br>
+				</small>
+			</span>
+		</span>
+	</div>
+
+	<h2>1. Jag önskar beställa följande antal kort av typ:</h2>
+
+	<div class="flex-columns">
+		<div class="col col-1">
+			Circle K Truckdieselkort&nbsp;<b class="required">*</b>
+		</div>
+		<div class="col col-6">
+			A-kort<br><input type="number" min=0 ng-model="data['Card_A']" ng-change="countCards()" />
+		</div>
+		<div class="col col-6">
+			B-kort<br><input type="number" min=0 ng-model="data['Card_B']" ng-change="countCards()" />
+		</div>
+		<div class="col col-6">
+			C-kort<br><input type="number" min=0 ng-model="data['Card_C']" ng-change="countCards()" />
+		</div>
+		<div class="col col-6">
+			D-kort<br><input type="number" min=0 ng-model="data['Card_D']" ng-change="countCards()" />
+		</div>
+		<div class="col col-6">
+			E-kort<br><input type="number" min=0 ng-model="data['Card_E']" ng-change="countCards()" />
+		</div>
+		<div class="col col-6">
+			F-kort<br><input type="number" min=0 ng-model="data['Card_F']" ng-change="countCards()" />
+		</div>
+	</div>
+
+	<!--------------------------------------------------------------- 1. BASIC COMPANY INFO -->
+
+	<h2>2. Uppgifter om företaget:</h2>
+
+	<div class="flex-columns" ng-if="!data['Status']">
+		<div class="col col-1">
+			<label  for="company">Organisationsnummer:&nbsp;<b class="required">*</b></label>
+			<input type="text" ng-model="data['OrgNr']" mask="999999-9999" restrict="reject" />
+		</div>
+		<p><input type="button" value="Fortsätt" ng-disabled="data['OrgNr'].length != 11 || nCards < 1" ng-click="data.Status = 'Filling'" /></p>
+		<span class="loader" id="loader-step1"></span>
+	</div>
+
+	<!--- 2. RETRIEVED COMPANY INFO -->
+	<div class="flex-columns" ng-if="data['Status'] && nCards > 0">
+		<div class="col col-2">
+			<label>Företagets registrerade namn: </label>
+			<input type="text" ng-model="data['Company_Name']" readonly />
+		</div>
+		<div class="col col-2">
+			<label>Organisationsnummer: </label>
+			<input type="text" ng-model="data['OrgNr']" readonly />
+		</div>
+		<div class="col col-2">
+			<label>Företagets registrerade adress: </label>
+			<input type="text" ng-model="data['Company_Address']"  />
+		</div>
+		<div class="col col-2">
+			<label >Postnr: </label>
+			<input type="text" ng-model="data['Company_Zip']" />
+		</div>
+		<div class="col col-2">
+			<label>Postort: </label>
+			<input type="text" ng-model="data['Company_Town']" />
+		</div>
+		<div class="col col-2">
+			<label>Inköp i SEK/månad:
+				<span class="tooltip open">
+					<span class="tooltip-message" ng-click="showTip = !showTip"></span>
+					<span class="tooltip-box" ng-if="showTip">Ange det belopp i kronor som du ungefär kommer handla för per månad.</span>
+				</span>
+			</label>
+			<input type="text" />
+		</div>
+		<div class="col col-2">
+			<label>Kontaktperson&nbsp;<b class="required">*</b></label>
+			<input type="text" ng-model="data['Contact_Person']" />
+		</div>
+		<div class="col col-2">
+			<label>Telefon/Mobilnr till kontaktperson:&nbsp;<b class="required">*</b></label>
+			<input type="text" ng-model="data['phone']" />
+		</div>
+		<div class="col col-1">
+			<input type="checkbox" id="c42" ng-model="data['Check_Meter']" />
+			<label for="c42">Krav på mätarställning</label>
+		</div>
+		<div class="col col-2">
+			<input type="checkbox" ng-model="data['PDF_Invoice']" id="c44" />
+			<label for="c44">PDF-Faktura</label>
+			<input ng-if="data['PDF_Invoice']" type="text" ng-model="data['PDF_Invoice_Email']" placeholder="E-mailadress fakturamottagare" />
+		</div>
+		<div class="show-portal col col-2">
+			<input type="checkbox" ng-model="data['Client_Portal']" id="c41"/>
+			<label for="c41">Kundportal</label>
+			<input ng-if="data['Client_Portal']" type="text" ng-model="data['Client_Portal_Email']" placeholder="E-mailadress till er huvudadministratör i Circle K kundportal" />
+		</div>
+
+		<div class="col col-1">
+			<label>Övriga upplysningar: </label>
+			<textarea ng-model="data['Other_Info']" ></textarea>
+		</div>
+		<p>
+			<small>
+				Genom att signera denna ansökan försäkrar jag/vi att lämnade uppgifter är riktiga och är medveten om att ansökan kreditprövas. Kortinnehavaren har vårt godkännande att använda företagskortet. Jag/Vi har tagit del av kontovillkoren vilka jag/vi förbinder mig/oss att följa. Kontovillkoren finns tillgängliga på circlek.se/foretag. Jag/Vi samtycker till den behandling av personuppgifter som framgår av <a target="_new" href="assets/allmanna-vilkor-truck.pdf">kontovillkoren</a>.
+			</small>
+		</p>
+		<p class="no-print" ng-if="data['Status'] == 'Filling'">
+			<input type="button" value="Signera" ng-click="sign()" />
+		</p>
+	</div>
+
+	<!--- 3. DIGITAL SIGNING -->
+
+	<div class="no-print" ng-if="data['Status'] == 'Sign'">
+		<h2>Signera med BankID:</h2>
+		<p>
+			Välj signeringsalternativ nedan. Observera att du måste vara behörig firmatecknare för att kortansökan skall gå igenom.
+			Är du inte firmatecknare? <a ong-click="data['Status'] = 'Forward'">Klicka här</a> för att skicka din förifyllda ansökan vidare för signering.
+		</p>
+		<p>
+			<input name="111" type="button" value="BankID" ng-click="data['Status'] = 'Signed'"/>
+			<input name="222" type="button" value="Mobilt BankID" ng-click="data['Status'] = 'Signed'"/>
+		</p>
+		<p><span class="alert alert-info">These are dummy buttons, and will not use BankID.</span></p>
+	</div>
+
+	<span class="loader" id="loader-step3"></span>
+
+	<!--------------------------------------------------------------- 4. CONFIRMATION -->
+
+	<div class="flex-columns" ng-if="data['Status'] == 'Signed'">
+		<p class="col-1 no-print">&nbsp;</p>
+		<span class="col-1 alert alert-success no-print">Ansökan klar</span>
+		<p class="col-1 no-print">Tack! Vi har tagit emot din ansökan och en bekräftelse har skickats till e-postadressen som du angav.</p>
+		<p class="col-1 no-print">Med vänlig hälsning</br>
+			Circle K</p>
+	</div>
+
+	<div ng-if="data['Status'] == 'Forward'">
+		<h2>Vidarebefordra ansökan:</h2>
+		<div class="flex-columns">
+			<p class="col-1">
+				Ange e-postadress till behörig firmatecknare för att skicka en förifylld kortansökan till denne för signering:
+			</p>
+			<div class="col col-1">
+				<input name="email" type="text" ng-model="email" placeholder="E-mailadress firmatecknare" />
+				<p class="col-1">
+					<input class="forward" type="button" value="Skicka" ng-click="forwarded()" />
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="flex-columns" ng-if="data['Status'] == 'Forwarded'">
+		<p class="col-1">&nbsp;</p>
+		<p class="col-1">Signeringsinbjudan er skickad till angivna e-postadressen.</p>
+		<p class="col-1">&nbsp;</p>
+	</div>
+	<small class="no-print"><br><i><b class="required">*</b> = obligatoriskt</i></small>
+	</div>
+</body>
+</html>
