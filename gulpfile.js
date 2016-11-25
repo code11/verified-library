@@ -2,7 +2,7 @@ var gulp = require('gulp'),
 	webserver = require('gulp-webserver');
 
 gulp.task('default', function(){
-	return gulp.src('./dist/anticimex')
+	return gulp.src('./@test_templates')
 		.pipe(webserver({
 			host: "0.0.0.0",
 			port: 3003,

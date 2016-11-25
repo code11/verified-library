@@ -6,6 +6,7 @@ class PublicTemplate {
 	}
 }
 
+
 var publicTemplate = new PublicTemplate()
 Object.setPrototypeOf(publicTemplate, actions)
 module.exports = publicTemplate
