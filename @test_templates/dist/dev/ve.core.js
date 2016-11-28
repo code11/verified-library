@@ -252,7 +252,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 			// Only here for documentation purposes to see the keys, same for above
 			this.state = initialState || {};
-			this.internal = { accessToken: null };
+			this.internal = {
+				accessToken: null
+			};
+
 			this.params = {};
 
 			this.remoteEntities = {
