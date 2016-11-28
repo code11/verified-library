@@ -17199,6 +17199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function submit() {
 				return new Promise(function (resolve, reject) {
 					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
+					console.log("Before sending, remote templates are", remoteTemplates);
 					resolve(remoteTemplates);
 				});
 				// import descriptorId from somewhere and possibly role ?
@@ -17348,7 +17349,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				}
 
-				return remoteObject;
+				return { "documents": remoteObject };
 			}
 		}]);
 

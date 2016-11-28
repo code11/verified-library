@@ -4,7 +4,13 @@ app.controller('mainController',function($scope,$http){
 	$scope.toolTip = false;
 
 	VeLib.core.init().then((ok) => {
-		console.log("initiation happened :)");
+		console.log("Core init loaded");
+		VeLib.public_templates.getTemplateInterface().then((templates) => {
+			templates[0].setData({"test":"testsSendingData"});
+			VeLib.public_templates.submit().then((response) =>{
+				console.log(response, "Finished submitting template data for everything");
+			})
+		})
 	})
 
 	var cards = ["Card_A","Card_B","Card_C","Card_D","Card_E","Card_F"];

@@ -9,6 +9,7 @@ class Actions {
 	submit(){
 		return new Promise((resolve, reject) => {
 			let remoteTemplates = helpers.templateInterfaceToRemote()
+			console.log("Before sending, remote templates are", remoteTemplates)
 			resolve(remoteTemplates)
 		})
 		// import descriptorId from somewhere and possibly role ?

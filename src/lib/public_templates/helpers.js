@@ -59,7 +59,7 @@ class Helpers {
 			remoteObject[templateInterface.getInfo().descriptor] = remoteObject[templateInterface.getInfo().descriptor] || []
 			remoteObject[templateInterface.getInfo().descriptor].push({ data: templateInterface.getData() })
 		}
-		return remoteObject
+		return { "documents": remoteObject }
 	}
 
 }
