@@ -7,9 +7,9 @@ app.controller('mainController',function($scope,$http){
 		console.log("Core init loaded");
 		VeLib.public_templates.getTemplateInterface().then((templates) => {
 			templates[0].setData({"test":"testsSendingData"});
-			VeLib.public_templates.submit().then((response) =>{
-				console.log(response, "Finished submitting template data for everything");
-			})
+			// VeLib.public_templates.submit().then((response) =>{
+			// 	console.log(response, "Finished submitting template data for everything");
+			// })
 		})
 	})
 

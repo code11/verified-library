@@ -17259,7 +17259,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var state = VeLib.core.state;
-	var call = VeLib.core.helpers._call;
 	var configs = VeLib.core.configs;
 
 	var Helpers = function () {
@@ -17267,11 +17266,53 @@ return /******/ (function(modules) { // webpackBootstrap
 			_classCallCheck(this, Helpers);
 		}
 
+		// THis one here is for location headers parse....
+
+
 		_createClass(Helpers, [{
+			key: "_call",
+			value: function _call(method, url, _body, _params) {
+				if (!_body) {
+					_body = null;
+				} else {
+					_body = JSON.stringify(_body);
+				}
+				var params = "?";
+				if (_params) {
+					params += qs.stringify(params);
+				} else params = "";
+
+				return fetch(url + params, {
+					method: method,
+					headers: new Headers({
+						"Authorization": "JWT " + state.get().internal.accessToken,
+						"Content-Type": "application/json"
+					}),
+					body: _body
+				}).then(function (response) {
+					if (Number(response.status) > 399 && response.headers && response.headers.location) {
+						throw new Error({ msg: "Error", status: status, response: response });
+					} else return response.headers.get('location');
+				});
+			}
+		}, {
 			key: "createEnvelopeContext",
 			value: function createEnvelopeContext(remoteReadyDocuments) {
-				return call("POST", createEnvelopePrefix + "/" + state.get().params.descriptor_id + "/envelopes", remoteReadyDocuments);
+				var endpoint = configs.get().createEnvelopePrefix + "/" + state.get().params.descriptor_id + "/envelopes";
+				return this._call("POST", "" + endpoint, remoteReadyDocuments).then(function (location) {
+					var envelopeId = location.split(configs.envelopesAppendix + "/")[1];
+					var mergeObj = {
+						params: {
+							envelope_id: envelopeId
+						}
+					};
+					state.merge(mergeObj);
+					console.log(state.get(), "new state");
+				});
 			}
+		}, {
+			key: "storeEnvelopeContext",
+			value: function storeEnvelopeContext() {}
 		}, {
 			key: "getTemplateObjectsArrayInterface",
 			value: function getTemplateObjectsArrayInterface() {

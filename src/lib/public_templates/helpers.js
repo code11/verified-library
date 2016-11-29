@@ -3,13 +3,50 @@ import _ from "lodash"
 import { Template } from "./Template"
 
 var state = VeLib.core.state
-var call = VeLib.core.helpers._call
 var configs = VeLib.core.configs
 
 class Helpers {
 	constructor(){}
+
+	// THis one here is for location headers parse....
+	_call(method, url, _body, _params){
+		if (!_body) { _body = null } else { _body = JSON.stringify(_body) }
+		var params = "?"
+		if (_params) { params += qs.stringify(params)} else params = ""
+
+		return fetch(url + params , {
+			method: method,
+			headers: new Headers({
+				"Authorization": "JWT " + state.get().internal.accessToken,
+				"Content-Type" : "application/json"
+			}),
+			body: _body
+		}).then(function(response) {
+			if (Number(response.status) > 399 && response.headers && response.headers.location){
+				throw new Error({msg: "Error", status: status, response: response})
+			}
+			else return response.headers.get('location')
+		})
+	}
+
 	createEnvelopeContext(remoteReadyDocuments){
-		return call("POST", `${ createEnvelopePrefix }/${ state.get().params.descriptor_id }/envelopes`, remoteReadyDocuments)
+		var endpoint = `${ configs.get().createEnvelopePrefix }/${ state.get().params.descriptor_id }/envelopes`
+		return this._call("POST", `${ endpoint }`, remoteReadyDocuments)
+		.then((location) => {
+			let envelopeId = location.split(`${ configs.envelopesAppendix }/`)[1]
+			var mergeObj = {
+				params: {
+					envelope_id: envelopeId
+				}
+			}
+			state.merge(mergeObj)
+			console.log(state.get(), "new state");
+
+		})
+	}
+
+	storeEnvelopeContext(){
+
 	}
 
 	getTemplateObjectsArrayInterface(){
