@@ -17199,8 +17199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function submit() {
 				return new Promise(function (resolve, reject) {
 					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
-					console.log("Before sending, remote templates are", remoteTemplates);
-					resolve(remoteTemplates);
+					return _helpers2.default.createEnvelopeContext(remoteTemplates);
 				});
 				// import descriptorId from somewhere and possibly role ?
 				// .. This should also mutate templateUserData and transform it into a good structure before
@@ -17261,6 +17260,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var state = VeLib.core.state;
 	var call = VeLib.core.helpers._call;
+	var configs = VeLib.core.configs;
 
 	var Helpers = function () {
 		function Helpers() {
@@ -17269,11 +17269,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		_createClass(Helpers, [{
 			key: "createEnvelopeContext",
-			value: function createEnvelopeContext() {
-				// This should also include a poller maybe, with rxJS retry
-				return new Promise(function (resolve, reject) {
-					resolve({ "status": "Created envelope context" });
-				});
+			value: function createEnvelopeContext(remoteReadyDocuments) {
+				return call("POST", createEnvelopePrefix + "/" + state.get().params.descriptor_id + "/envelopes", remoteReadyDocuments);
 			}
 		}, {
 			key: "getTemplateObjectsArrayInterface",

@@ -196,6 +196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			// -----------------------------------------------
 
 			this.documentsAppendix = '/documents', this.templatesAppendix = '/templates', this.userDataAppendix = '/user-data';
+			this.envelopesAppendix = '/envelopes', this.descriptorsAppendix = '/envelope-descriptors';
 		}
 
 		_createClass(Configs, [{
@@ -215,6 +216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					descriptorUrl: "" + this.domain + this.apiBase + "/envelope-descriptors",
 					envelopesUrl: "" + this.domain + this.apiBase + "/envelopes",
 					userinfoUrl: "" + this.domain + this.apiBaseAuth + "/auth/userinfo",
+					createEnvelopePrefix: "" + this.domain + this.apiBase + "/envelope-descriptors",
 					domain: this.domain,
 					apiBase: this.apiBase,
 					apiBaseAuth: this.apiBaseAuth,

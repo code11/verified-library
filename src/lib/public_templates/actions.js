@@ -9,8 +9,7 @@ class Actions {
 	submit(){
 		return new Promise((resolve, reject) => {
 			let remoteTemplates = helpers.templateInterfaceToRemote()
-			console.log("Before sending, remote templates are", remoteTemplates)
-			resolve(remoteTemplates)
+			return helpers.createEnvelopeContext(remoteTemplates);
 		})
 		// import descriptorId from somewhere and possibly role ?
 		// .. This should also mutate templateUserData and transform it into a good structure before

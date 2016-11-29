@@ -4,12 +4,12 @@ import { Template } from "./Template"
 
 var state = VeLib.core.state
 var call = VeLib.core.helpers._call
+var configs = VeLib.core.configs
 
 class Helpers {
 	constructor(){}
-	createEnvelopeContext(){
-		// This should also include a poller maybe, with rxJS retry
-		return new Promise((resolve, reject) => { resolve({"status":"Created envelope context"}) })
+	createEnvelopeContext(remoteReadyDocuments){
+		return call("POST", `${ createEnvelopePrefix }/${ state.get().params.descriptor_id }/envelopes`, remoteReadyDocuments)
 	}
 
 	getTemplateObjectsArrayInterface(){
