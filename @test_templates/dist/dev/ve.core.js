@@ -195,8 +195,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			this.apiBase = "/api-v2", this.apiBaseAuth = "/api";
 			// -----------------------------------------------
 
-			this.documentsAppendix = '/documents', this.templatesAppendix = '/templates', this.userDataAppendix = '/user-data';
-			this.envelopesAppendix = '/envelopes', this.descriptorsAppendix = '/envelope-descriptors';
+			this.documentsAppendix = '/documents', this.templatesAppendix = '/templates', this.userDataAppendix = '/user-data', this.envelopesAppendix = '/envelopes',
+			// Need to see if this publish appendix will be used
+			this.publishAppendix = '/publish-status';
+			this.descriptorsAppendix = '/envelope-descriptors';
 		}
 
 		_createClass(Configs, [{
@@ -231,6 +233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	var configs = exports.configs = new Configs();
+	// http://localhost:3001/api-v2/envelopes/583dbf8821ada500158780c9
 
 /***/ },
 /* 3 */

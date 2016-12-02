@@ -17199,8 +17199,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function submit() {
 				return new Promise(function (resolve, reject) {
 					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
-					return _helpers2.default.createEnvelopeContext(remoteTemplates);
+					return _helpers2.default.createEnvelopeContext(remoteTemplates).then(function (envelope) {
+						console.log("after polling ,received", envelope);
+						return _helpers2.default.publishEnvelope();
+					});
+					// After publishing..i must poll for status then go for that url redirect return
 				});
+
 				// import descriptorId from somewhere and possibly role ?
 				// .. This should also mutate templateUserData and transform it into a good structure before
 				// submitting, you have to transform that state someway somehow :)
@@ -17260,6 +17265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var state = VeLib.core.state;
 	var configs = VeLib.core.configs;
+	var callForData = VeLib.core.helpers._call;
 
 	var Helpers = function () {
 		function Helpers() {
@@ -17298,6 +17304,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: "createEnvelopeContext",
 			value: function createEnvelopeContext(remoteReadyDocuments) {
+				var _this = this;
+
 				var endpoint = configs.get().createEnvelopePrefix + "/" + state.get().params.descriptor_id + "/envelopes";
 				return this._call("POST", "" + endpoint, remoteReadyDocuments).then(function (location) {
 					var envelopeId = location.split(configs.envelopesAppendix + "/")[1];
@@ -17307,12 +17315,39 @@ return /******/ (function(modules) { // webpackBootstrap
 						}
 					};
 					state.merge(mergeObj);
-					console.log(state.get(), "new state");
+				}).then(function () {
+					return _this.pollForCreation();
+				}).then(function (envelope) {
+					var mergeObj = {
+						remoteEntities: {
+							envelope: envelope
+						}
+					};
+					state.merge(mergeObj);
+					return envelope;
 				});
 			}
 		}, {
-			key: "storeEnvelopeContext",
-			value: function storeEnvelopeContext() {}
+			key: "publishEnvelope",
+			value: function publishEnvelope() {
+				var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + "/publish-status";
+				return this._call("POST", "" + url, { published: true });
+			}
+		}, {
+			key: "pollForCreation",
+			value: function pollForCreation() {
+				return new Promise(function (resolve, reject) {
+					var getEnvelopeUrl = configs.get().envelopesUrl + "/" + state.get().params.envelope_id;
+
+					var source = _Rx.Observable.of("INIT SIGNAL").delay(1000).map(function () {
+						return _Rx.Observable.fromPromise(callForData('GET', "" + getEnvelopeUrl));
+					}).flatMap(function (x) {
+						return x;
+					}).retry().subscribe(function (x) {
+						resolve(x);
+					});
+				});
+			}
 		}, {
 			key: "getTemplateObjectsArrayInterface",
 			value: function getTemplateObjectsArrayInterface() {

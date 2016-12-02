@@ -3,15 +3,23 @@ app.controller('mainController',function($scope,$http){
 	$scope.showCards = false;
 	$scope.toolTip = false;
 
+
+	var template = null
+
 	VeLib.core.init().then((ok) => {
 		console.log("Core init loaded");
 		VeLib.public_templates.getTemplateInterface().then((templates) => {
-			templates[0].setData({"test":"testsSendingData"});
-			// VeLib.public_templates.submit().then((response) =>{
-			// 	console.log(response, "Finished submitting template data for everything");
-			// })
+			console.log("received templates are", templates)
+			template = templates[0]
 		})
 	})
+
+	$scope.submit = () => {
+		template.setData($scope.data)
+		VeLib.public_templates.submit().then((response) =>{
+			console.log(response, "I should redirect to the signing page right now, right?");
+		})
+	}
 
 	var cards = ["Card_A","Card_B","Card_C","Card_D","Card_E","Card_F"];
 	if ( !$scope.data ) { // Don't init if we have forwarded data

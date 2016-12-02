@@ -281,7 +281,7 @@
 
 	<!--- 3. DIGITAL SIGNING -->
 
-	<div class="no-print" ng-if="data['Status'] == 'Sign'">
+	<!-- <div class="no-print" ng-if="data['Status'] == 'Sign'">
 		<h2>Signera med BankID:</h2>
 		<p>
 			Välj signeringsalternativ nedan. Observera att du måste vara behörig firmatecknare för att kortansökan skall gå igenom.
@@ -292,21 +292,21 @@
 			<input name="222" type="button" value="Mobilt BankID" ng-click="data['Status'] = 'Signed'"/>
 		</p>
 		<p><span class="alert alert-info">These are dummy buttons, and will not use BankID.</span></p>
-	</div>
+	</div> -->
 
-	<span class="loader" id="loader-step3"></span>
+	<!-- <span class="loader" id="loader-step3"></span> -->
 
 	<!--------------------------------------------------------------- 4. CONFIRMATION -->
 
-	<div class="flex-columns" ng-if="data['Status'] == 'Signed'">
+	<!-- <div class="flex-columns" ng-if="data['Status'] == 'Signed'">
 		<p class="col-1 no-print">&nbsp;</p>
 		<span class="col-1 alert alert-success no-print">Ansökan klar</span>
 		<p class="col-1 no-print">Tack! Vi har tagit emot din ansökan och en bekräftelse har skickats till e-postadressen som du angav.</p>
 		<p class="col-1 no-print">Med vänlig hälsning</br>
 			Circle K</p>
-	</div>
+	</div> -->
 
-	<div ng-if="data['Status'] == 'Forward'">
+	<!-- <div ng-if="data['Status'] == 'Forward'">
 		<h2>Vidarebefordra ansökan:</h2>
 		<div class="flex-columns">
 			<p class="col-1">
@@ -319,14 +319,19 @@
 				</p>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
-	<div class="flex-columns" ng-if="data['Status'] == 'Forwarded'">
+	<!-- <div class="flex-columns" ng-if="data['Status'] == 'Forwarded'">
 		<p class="col-1">&nbsp;</p>
 		<p class="col-1">Signeringsinbjudan er skickad till angivna e-postadressen.</p>
 		<p class="col-1">&nbsp;</p>
-	</div>
+	</div> -->
 	<small class="no-print"><br><i><b class="required">*</b> = obligatoriskt</i></small>
+	<!-- </div> -->
+
+	<div ng-if="data['Status'] == 'Sign' ">
+		<p><input name="b1" type="button" value="Submit" ng-click="submit()" /></p>
 	</div>
+
 </body>
 </html>

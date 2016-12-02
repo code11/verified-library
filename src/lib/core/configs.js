@@ -9,8 +9,10 @@ export class Configs {
 
 		this.documentsAppendix = '/documents',
 		this.templatesAppendix = '/templates',
-		this.userDataAppendix  = '/user-data'
+		this.userDataAppendix  = '/user-data',
 		this.envelopesAppendix =  '/envelopes',
+		// Need to see if this publish appendix will be used
+		this.publishAppendix = '/publish-status'
 		this.descriptorsAppendix = '/envelope-descriptors'
 
 	}
@@ -28,9 +30,11 @@ export class Configs {
 			apiBaseAuth          : this.apiBaseAuth,
 			documentsAppendix    : this.documentsAppendix,
 			templatesAppendix    : this.templatesAppendix,
-			userDataAppendix     : this.userDataAppendix
+			userDataAppendix     : this.userDataAppendix,
+			// Used for public only
 		}
 	}
 }
 
 export let configs = new Configs()
+// http://localhost:3001/api-v2/envelopes/583dbf8821ada500158780c9

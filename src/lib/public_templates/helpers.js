@@ -1,9 +1,11 @@
 import { Observable } from 'rxjs/Rx'
+
 import _ from "lodash"
 import { Template } from "./Template"
 
 var state = VeLib.core.state
 var configs = VeLib.core.configs
+var callForData = VeLib.core.helpers._call
 
 class Helpers {
 	constructor(){}
@@ -40,13 +42,37 @@ class Helpers {
 				}
 			}
 			state.merge(mergeObj)
-			console.log(state.get(), "new state");
-
 		})
+		.then(() => this.pollForCreation())
+		.then((envelope) =>  {
+			var mergeObj = {
+				remoteEntities: {
+					envelope: envelope
+				}
+			}
+			state.merge(mergeObj)
+			return envelope
+			}
+		)
 	}
 
-	storeEnvelopeContext(){
+	publishEnvelope(){
+		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }/publish-status`
+		return this._call("POST",`${ url }`, { published: true })
+	}
 
+	pollForCreation(){
+		return new Promise((resolve, reject) => {
+			let getEnvelopeUrl = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id}`
+
+			let source =
+			Observable.of("INIT SIGNAL")
+			.delay(1000)
+			.map(() => Observable.fromPromise(callForData('GET', `${ getEnvelopeUrl }`)))
+			.flatMap((x) => x)
+			.retry()
+			.subscribe((x) => { resolve(x) })
+		})
 	}
 
 	getTemplateObjectsArrayInterface(){
