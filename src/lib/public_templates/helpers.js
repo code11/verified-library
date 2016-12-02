@@ -57,21 +57,34 @@ class Helpers {
 	}
 
 	publishEnvelope(){
-		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }/publish-status`
-		return this._call("POST",`${ url }`, { published: true })
+		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }/${ configs.get().publishAppendix}`
+		return this._call("PUT",`${ url }`, { published: true })
 	}
 
 	pollForCreation(){
 		return new Promise((resolve, reject) => {
 			let getEnvelopeUrl = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id}`
 
-			let source =
 			Observable.of("INIT SIGNAL")
 			.delay(1000)
-			.map(() => Observable.fromPromise(callForData('GET', `${ getEnvelopeUrl }`)))
-			.flatMap((x) => x)
+			.flatMap(() => Observable.fromPromise(callForData('GET', `${ getEnvelopeUrl }`)))
 			.retry()
 			.subscribe((x) => { resolve(x) })
+		})
+	}
+
+	pollForStatus(){
+		// Todo .. fix this part and make it work
+		let error = null
+		let flowName = state.get().remoteEntities.descriptor.flow.name
+		if (!flowName) {
+			error = { msg: "FATAL: Flow name not found , not possible to poll for changes " }
+		}
+		return new Promise((resolve, reject) => {
+			if (error) { reject(error) }
+			let getFlowUrl = `${ configs.get().flowInfoUrl }/${ flowName }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
+			Observable.fromPromise(callForData("GET", getFlowUrl))
+			.subscribe((x) => { console.log("got polling status for newly created envelope"); resolve(x)})
 		})
 	}
 

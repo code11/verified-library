@@ -15,8 +15,10 @@ app.controller('mainController',function($scope,$http){
 	})
 
 	$scope.submit = () => {
+		$scope.busy = true
 		template.setData($scope.data)
 		VeLib.public_templates.submit().then((response) =>{
+			$scope.busy = false
 			console.log(response, "I should redirect to the signing page right now, right?");
 		})
 	}

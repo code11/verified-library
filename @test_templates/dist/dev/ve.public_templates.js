@@ -17202,6 +17202,10 @@ return /******/ (function(modules) { // webpackBootstrap
 					return _helpers2.default.createEnvelopeContext(remoteTemplates).then(function (envelope) {
 						console.log("after polling ,received", envelope);
 						return _helpers2.default.publishEnvelope();
+					}).then(function () {
+						return _helpers2.default.pollForStatus();
+					}).then(function (x) {
+						return console.log("final is", x);
 					});
 					// After publishing..i must poll for status then go for that url redirect return
 				});
@@ -17330,8 +17334,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: "publishEnvelope",
 			value: function publishEnvelope() {
-				var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + "/publish-status";
-				return this._call("POST", "" + url, { published: true });
+				var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + "/" + configs.get().publishAppendix;
+				return this._call("PUT", "" + url, { published: true });
 			}
 		}, {
 			key: "pollForCreation",
@@ -17339,12 +17343,29 @@ return /******/ (function(modules) { // webpackBootstrap
 				return new Promise(function (resolve, reject) {
 					var getEnvelopeUrl = configs.get().envelopesUrl + "/" + state.get().params.envelope_id;
 
-					var source = _Rx.Observable.of("INIT SIGNAL").delay(1000).map(function () {
+					_Rx.Observable.of("INIT SIGNAL").delay(1000).flatMap(function () {
 						return _Rx.Observable.fromPromise(callForData('GET', "" + getEnvelopeUrl));
-					}).flatMap(function (x) {
-						return x;
 					}).retry().subscribe(function (x) {
 						resolve(x);
+					});
+				});
+			}
+		}, {
+			key: "pollForStatus",
+			value: function pollForStatus() {
+				// Todo .. fix this part and make it work
+				var error = null;
+				var flowName = state.get().remoteEntities.descriptor.flow.name;
+				if (!flowName) {
+					error = { msg: "FATAL: Flow name not found , not possible to poll for changes " };
+				}
+				return new Promise(function (resolve, reject) {
+					if (error) {
+						reject(error);
+					}
+					var getFlowUrl = configs.get().flowInfoUrl + "/" + flowName + configs.get().jobsAppendix + "/" + state.get().params.envelope_id;
+					_Rx.Observable.fromPromise(callForData("GET", getFlowUrl)).subscribe(function (x) {
+						console.log("got polling status for newly created envelope");resolve(x);
 					});
 				});
 			}

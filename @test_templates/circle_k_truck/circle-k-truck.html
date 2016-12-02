@@ -330,7 +330,7 @@
 	<!-- </div> -->
 
 	<div ng-if="data['Status'] == 'Sign' ">
-		<p><input name="b1" type="button" value="Submit" ng-click="submit()" /></p>
+		<p><input name="b1" type="button" ng-disabled="busy" value="Submit" ng-click="submit()" /></p>
 	</div>
 
 </body>

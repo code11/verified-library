@@ -13,6 +13,8 @@ class Actions {
 			.then((envelope) => {
 				console.log("after polling ,received", envelope);
 				return helpers.publishEnvelope()} )
+			.then(() => helpers.pollForStatus())
+			.then((x) => console.log("final is", x))
 			// After publishing..i must poll for status then go for that url redirect return
 		})
 
