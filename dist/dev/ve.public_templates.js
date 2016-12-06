@@ -17343,7 +17343,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				return new Promise(function (resolve, reject) {
 					var getEnvelopeUrl = configs.get().envelopesUrl + "/" + state.get().params.envelope_id;
 
-					_Rx.Observable.of("INIT SIGNAL").delay(1000).flatMap(function () {
+					_Rx.Observable.of("").delay(1000).flatMap(function () {
 						return _Rx.Observable.fromPromise(callForData('GET', "" + getEnvelopeUrl));
 					}).retry().subscribe(function (x) {
 						resolve(x);
@@ -17355,15 +17355,16 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function pollForStatus() {
 				// Todo .. fix this part and make it work
 				var error = null;
-				var flowName = state.get().remoteEntities.descriptor.flow.name;
-				if (!flowName) {
-					error = { msg: "FATAL: Flow name not found , not possible to poll for changes " };
+				var flowUid = state.get().remoteEntities.descriptor.flow.id;
+				if (!flowUid) {
+					error = { msg: "FATAL: Flow id not found , not possible to poll for changes " };
 				}
 				return new Promise(function (resolve, reject) {
 					if (error) {
 						reject(error);
 					}
-					var getFlowUrl = configs.get().flowInfoUrl + "/" + flowName + configs.get().jobsAppendix + "/" + state.get().params.envelope_id;
+
+					var getFlowUrl = "/" + flowUid + configs.get().jobsAppendix + "/" + state.get().params.envelope_id;
 					_Rx.Observable.fromPromise(callForData("GET", getFlowUrl)).subscribe(function (x) {
 						console.log("got polling status for newly created envelope");resolve(x);
 					});

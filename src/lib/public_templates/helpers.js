@@ -65,7 +65,7 @@ class Helpers {
 		return new Promise((resolve, reject) => {
 			let getEnvelopeUrl = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id}`
 
-			Observable.of("INIT SIGNAL")
+			Observable.of("")
 			.delay(1000)
 			.flatMap(() => Observable.fromPromise(callForData('GET', `${ getEnvelopeUrl }`)))
 			.retry()
@@ -76,13 +76,14 @@ class Helpers {
 	pollForStatus(){
 		// Todo .. fix this part and make it work
 		let error = null
-		let flowName = state.get().remoteEntities.descriptor.flow.name
-		if (!flowName) {
-			error = { msg: "FATAL: Flow name not found , not possible to poll for changes " }
+		let flowUid = state.get().remoteEntities.descriptor.flow.id
+		if (!flowUid) {
+			error = { msg: "FATAL: Flow id not found , not possible to poll for changes " }
 		}
 		return new Promise((resolve, reject) => {
 			if (error) { reject(error) }
-			let getFlowUrl = `${ configs.get().flowInfoUrl }/${ flowName }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
+
+			let getFlowUrl = `/${ flowUid }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
 			Observable.fromPromise(callForData("GET", getFlowUrl))
 			.subscribe((x) => { console.log("got polling status for newly created envelope"); resolve(x)})
 		})

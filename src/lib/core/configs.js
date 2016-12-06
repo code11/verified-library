@@ -3,7 +3,7 @@ export class Configs {
 	constructor(domain){
 		this.domain            =  this.domain || this.getDomain()
 		// -----------------------------------------------
-		this.apiBase           = "/api-v2"
+		this.apiBase           = "/api"
 		this.apiBaseAuth       = "/api"
 		// -----------------------------------------------
 
