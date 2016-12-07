@@ -28,6 +28,7 @@ export class Configs {
 			userinfoUrl          : `${ this.domain }${ this.apiBaseAuth }/auth/userinfo`,
 			createEnvelopePrefix : `${ this.domain }${ this.apiBase }/envelope-descriptors`,
 			flowInfoUrl          : `${ this.apiBaseAuth }/flows`,
+			apiBaseAndDomain     : `${ this.domain }${ this.apiBase }`,
 			domain               : this.domain,
 			apiBase              : this.apiBase,
 			apiBaseAuth          : this.apiBaseAuth,

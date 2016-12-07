@@ -9,12 +9,12 @@ class Actions {
 	submit(){
 		return new Promise((resolve, reject) => {
 			let remoteTemplates = helpers.templateInterfaceToRemote()
+
 			return helpers.createEnvelopeContext(remoteTemplates)
-			.then((envelope) => {
-				console.log("after polling ,received", envelope);
-				return helpers.publishEnvelope()} )
-			.then(() => helpers.pollForStatus())
-			.then((x) => console.log("final is", x))
+			.then(envelope => helpers.publishEnvelope() )
+			.then(() => helpers.pollForStatus() )
+			.then( signToken => console.log("Got signToken", signToken ) )
+
 			// After publishing..i must poll for status then go for that url redirect return
 		})
 
@@ -40,7 +40,7 @@ class Actions {
 			//       (err) => console.log('Error: ' + err),
 			//       () => console.log('Completed'));
 	}
-	getTemplateInterface(){ return helpers.getTemplateObjectsArrayInterface() }
+	getTemplateInterface(){ console.log("template Interface as array is", helpers); return helpers.getTemplateObjectsArrayInterface() }
 }
 
 module.exports = new Actions()
