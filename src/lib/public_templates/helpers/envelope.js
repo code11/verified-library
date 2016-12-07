@@ -34,5 +34,15 @@ export let EnvelopeHelpers = {
 		return RequestHelpers.callAndReturnLocation( "PUT", `${ url }`, {
 			published: true
 		} )
+	},
+
+	shouldCreateContext: () => {
+		if (state.get().params.envelope_id) return false
+		else return true
+	}
+
+	//TODO .. should forward this envelope
+	forward: () => {
+
 	}
 }
