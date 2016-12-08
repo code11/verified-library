@@ -11,17 +11,29 @@ class Actions {
 		})
 	}
 
-	submit(){
+	submitFormData(){
 		return new Promise((resolve, reject) => {
-			let remoteTemplates = helpers.templateInterfaceToRemote()
 
-			return helpers.createEnvelopeContext(remoteTemplates)
-			.then(envelope => helpers.publishEnvelope() )
-			.then(() => helpers.pollForStatus() )
-			.then( signToken => console.log("Got signToken", signToken ) )
+			let remoteTemplates  = helpers.templateInterfaceToRemote()
+			const envelopeExists = !helpers.shouldCreateContext()
+
+			var action = null
+
+			if (envelopeExists) { action =  helpers.submitRawUserdata }
+			else action = helpers.createEnvelopeContext
+
+			resolve(action(remoteTemplates))
+
 		})
 	}
+	publish(){
+		return helpers.publishEnvelope()
+		.then(() => helpers.pollForStatus() )
+		.then((signUrl) => helpers.buildSignUrl(signUrl))
+	}
+
 	getTemplateInterface(){ console.log("template Interface as array is", helpers); return helpers.getTemplateObjectsArrayInterface() }
+
 }
 
 module.exports = new Actions()

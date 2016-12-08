@@ -1,37 +1,67 @@
 var app = angular.module('mainApp', ['ngMask']);
-app.controller('mainController',function($scope,$http){
+app.controller('mainController',function($scope, $http, $window){
 	$scope.showCards = false;
 	$scope.toolTip = false;
 
 
 	var template = null
+	$scope.recipient = {}
+	$scope.signUrl = null
 
-	VeLib.core.init().then((ok) => {
-		console.log("Core init loaded");
+	// Load this as soon as possible, it fetches all the data from remote and sets up auth
+	VeLib.core.init()
+	.then((ok) => {
+		// Only need this when using public template
+		return VeLib.public_templates.init()
+	})
+	.then( (status) => {
+		// returns a status object with a needsContextCreation property
+		$scope.needsContextCreation = status.needsContextCreation
 
-		VeLib.public_templates.init().then( (status) => {
-			console.log("Here it should say if i should display the buttons for un-initiated envelopes", status)
-			console.log("This neeeds context creation", status.needsContextCreation)
-			// This part should run only if neccessary and status needs creation of Envelope Context
-			$scope.needsContextCreation = status.needsContextCreation
+		// Need this if you want to display something else based on the fact the
+		// form is forwarded..if it's forwarded this will return false
 
-			//
+		return VeLib.public_templates.getTemplateInterface() })
+	.then((templates) => {
+		// One template returned only, so we make all the necessary calls on that and we store it in
+		// the current context
 
-			if (status.needsContextCreation) {
-				VeLib.public_templates.getTemplateInterface().then((templates) => {
-					console.log("received templates are", templates)
-
-					template = templates[0]
-				})
-				// Create envelope context call instead of submit here.... PLEASE !!
-			}
-
-		})
+		template = templates[0]
 	})
 
-	$scope.finish = () => {
-		console.log("After sending template data, additional options shold be displayed based on status or not")
+	$scope.submitRecipient = () => {
+		$scope.busy= true
+		// console.log("After sending template data, additional options shold be displayed based on status or not ?")
 		// if !$scope.needsContextCreation, disable the finish button and jump
+		template.setData($scope.data)
+		// we set the userData for the template only now, since we want to defer
+		// everything until the user has completed everything including the 'who he is part' or
+		// forwarded depending on choice
+
+		VeLib.public_templates.submitFormData()
+		.then(() => { return template.getAvailableSigningMethods()})
+		// after submitting the data, we query the template for the available signing methods
+		.then((availableMethods) => {
+			console.log("i'm in available methods", availableMethods)
+			return template.addRecipient({
+				// We fetch this info from the scope to complete signatory data
+				email: $scope.recipient.email,
+				familyName   : $scope.recipient.familyName,
+				givenName    : $scope.recipient.givenName,
+				// we chose one, ( usually just 1 for 99% of the cases, and )
+				signingMethod: availableMethods[0]
+			})
+		})
+		// We publish it only if we are not going to forward it.
+		.then(() => { console.log("i'm in publish"); return VeLib.public_templates.publish()})
+		// Now i get the url for redirect if .publish called, othwise we do something
+		// after the  VeLib.public_templates.forware({recipient}), in the UI ( display message or whatever )
+		.then((url) => {
+			console.log("got sign url", url)
+			$scope.busy = false
+			$scope.signUrl = url
+			$scope.$digest()
+		})
 	}
 
 	// $scope.submit = () => {
@@ -63,13 +93,9 @@ app.controller('mainController',function($scope,$http){
 		console.log("N: ", n)
 		$scope.nCards = n;
 	}
-	$scope.sign = function() {
-		$scope.data['Status'] = 'Sign';
-		console.log("Submit: ", $scope.data);
-	}
+
 	$scope.forward = function() {
 		$scope.data['Status'] = 'Forward';
-		console.log("Submit: ", $scope.data);
 	}
 	$scope.forwarded = function() {
 		$scope.data['Status'] = 'Forwarded';

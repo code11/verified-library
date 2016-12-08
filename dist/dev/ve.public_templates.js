@@ -17218,18 +17218,29 @@ return /******/ (function(modules) { // webpackBootstrap
 				});
 			}
 		}, {
-			key: "submit",
-			value: function submit() {
+			key: "submitFormData",
+			value: function submitFormData() {
 				return new Promise(function (resolve, reject) {
-					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
 
-					return _helpers2.default.createEnvelopeContext(remoteTemplates).then(function (envelope) {
-						return _helpers2.default.publishEnvelope();
-					}).then(function () {
-						return _helpers2.default.pollForStatus();
-					}).then(function (signToken) {
-						return console.log("Got signToken", signToken);
-					});
+					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
+					var envelopeExists = !_helpers2.default.shouldCreateContext();
+
+					var action = null;
+
+					if (envelopeExists) {
+						action = _helpers2.default.submitRawUserdata;
+					} else action = _helpers2.default.createEnvelopeContext;
+
+					resolve(action(remoteTemplates));
+				});
+			}
+		}, {
+			key: "publish",
+			value: function publish() {
+				return _helpers2.default.publishEnvelope().then(function () {
+					return _helpers2.default.pollForStatus();
+				}).then(function (signUrl) {
+					return _helpers2.default.buildSignUrl(signUrl);
 				});
 			}
 		}, {
@@ -17258,7 +17269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _envelope = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./envelope\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _envelope = __webpack_require__(13);
 
 	var _pollers = __webpack_require__(15);
 
@@ -17274,7 +17285,73 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = helpers;
 
 /***/ },
-/* 13 */,
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.EnvelopeHelpers = undefined;
+
+	var _requests = __webpack_require__(14);
+
+	var _pollers = __webpack_require__(15);
+
+	var state = VeLib.core.state;
+	var configs = VeLib.core.configs;
+
+	var EnvelopeHelpers = exports.EnvelopeHelpers = {
+		createEnvelopeContext: function createEnvelopeContext(remoteReadyDocuments) {
+			var endpoint = configs.get().createEnvelopePrefix + "/" + state.get().params.descriptor_id + "/envelopes";
+			return _requests.RequestHelpers.callAndReturnLocation("POST", "" + endpoint, remoteReadyDocuments).then(function (location) {
+				var envelopeId = location.split(configs.envelopesAppendix + "/")[1];
+				var mergeObj = {
+					params: {
+						envelope_id: envelopeId
+					}
+				};
+				state.merge(mergeObj);
+			}).then(function () {
+				return _pollers.PollerHelpers.pollForCreation();
+			}).then(function (envelope) {
+				var mergeObj = {
+					remoteEntities: {
+						envelope: envelope
+					}
+				};
+				state.merge(mergeObj);
+				return new Promise(function (resolve, reject) {
+					return resolve(envelope);
+				});
+			});
+		},
+
+		publishEnvelope: function publishEnvelope() {
+			var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + "/" + configs.get().publishAppendix;
+			return _requests.RequestHelpers.callAndReturnLocation("PUT", "" + url, {
+				published: true
+			});
+		},
+
+		shouldCreateContext: function shouldCreateContext() {
+			if (state.get().params.envelope_id) return false;else return true;
+		},
+
+		//TODO .. should forward this envelope
+		forward: function forward() {},
+
+		buildSignUrl: function buildSignUrl(signToken) {
+			console.log("im in build sign url for now....");
+			return new Promise(function (resolve, reject) {
+				var url = "/#" + configs.get().domain + "/sign/envelopes/" + state.get().remoteEntities.envelope.id + "?access_token=" + signToken;
+				resolve(url);
+			});
+		}
+	};
+
+/***/ },
 /* 14 */
 /***/ function(module, exports) {
 
@@ -35778,7 +35855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 359 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -35787,7 +35864,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	/// Template is a helper class which provides an interface to send data
 	/// per that specific template to the api. This is exposed to the user
 
-	var _call = VeLib.core.helpers._call;
+	var callForData = VeLib.core.helpers._call;
+	var configs = VeLib.core.configs;
+	var state = VeLib.core.state;
 
 	var Template = function () {
 		function Template(info) {
@@ -35798,26 +35877,86 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 
 		_createClass(Template, [{
-			key: "getInfo",
+			key: 'getInfo',
 			value: function getInfo() {
 				return this.info;
 			}
 		}, {
-			key: "getData",
+			key: 'getData',
 			value: function getData() {
 				return this.data;
 			}
 		}, {
-			key: "setData",
+			key: 'setData',
 			value: function setData(data) {
 				this.data = data;
+			}
+
+			// @ local
+
+		}, {
+			key: 'getAvailableSigningMethods',
+			value: function getAvailableSigningMethods() {
+				var _this = this;
+
+				return new Promise(function (resolve, reject) {
+					var roles = _this.getInfo().roles;
+					if (!roles) reject({
+						message: "No roles found in descriptor, cannot get a signer from them"
+					});
+
+					var foundSigners = roles.filter(function (role) {
+						return role.action.type === 'review' || role.action.type === 'sign';
+					});
+
+					if (!foundSigners.length || foundSigners.length != 1) reject({
+						message: "No signer or reviewer found in descriptor roles, or there is more than 1"
+					});
+
+					resolve(foundSigners[0].action.methods);
+				});
+			}
+
+			// @ remote
+
+		}, {
+			key: 'addRecipient',
+			value: function addRecipient(config) {
+				if (config.action) {
+					console.log("Action is set manually ");
+				}
+
+				var recipient = {
+					familyName: config.familyName,
+					givenName: config.givenName,
+					email: config.email,
+					language: config.language || 'en',
+
+					role: {
+						name: "Public template client",
+						action: config.action || "sign",
+						label: "Public template client"
+					},
+					order: 1,
+					signingMethod: config.method
+				};
+
+				return callForData("POST", configs.get().envelopesUrl + '/' + state.get().remoteEntities.envelope.id + '/' + configs.get().recipientsAppendix, recipient);
+			}
+		}, {
+			key: 'submitRawUserdata',
+			value: function submitRawUserdata(remoteTemplate) {
+				//TODO WIP, make this work please
+				// console.log "WIP"
 			}
 		}]);
 
 		return Template;
 	}();
 
-	module.exports = { Template: Template };
+	module.exports = {
+		Template: Template
+	};
 
 /***/ }
 /******/ ])

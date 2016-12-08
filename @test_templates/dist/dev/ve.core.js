@@ -204,6 +204,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			// For public templates use only
 			this.publishAppendix = '/publish-status';
 			this.jobsAppendix = '/jobs';
+			this.recipientsAppendix = '/recipients';
 		}
 
 		_createClass(Configs, [{
@@ -233,7 +234,8 @@ return /******/ (function(modules) { // webpackBootstrap
 					templatesAppendix: this.templatesAppendix,
 					userDataAppendix: this.userDataAppendix,
 					publishAppendix: this.publishAppendix,
-					jobsAppendix: this.jobsAppendix
+					jobsAppendix: this.jobsAppendix,
+					recipientsAppendix: this.recipientsAppendix
 					// Used for public only
 				};
 			}

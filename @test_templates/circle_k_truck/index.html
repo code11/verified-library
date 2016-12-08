@@ -274,9 +274,11 @@
 				Genom att signera denna ansökan försäkrar jag/vi att lämnade uppgifter är riktiga och är medveten om att ansökan kreditprövas. Kortinnehavaren har vårt godkännande att använda företagskortet. Jag/Vi har tagit del av kontovillkoren vilka jag/vi förbinder mig/oss att följa. Kontovillkoren finns tillgängliga på circlek.se/foretag. Jag/Vi samtycker till den behandling av personuppgifter som framgår av <a target="_new" href="assets/allmanna-vilkor-truck.pdf">kontovillkoren</a>.
 			</small>
 		</p>
+
 		<p class="no-print" ng-if="data['Status'] == 'Filling'">
-			<input type="button" value="Signera" ng-click="sign()" />
+			<input type="button" value="Configure Recipients" ng-click="data.Status = 'RecipientFill' " />
 		</p>
+
 	</div>
 
 	<!--- 3. DIGITAL SIGNING -->
@@ -329,8 +331,32 @@
 	<small class="no-print"><br><i><b class="required">*</b> = obligatoriskt</i></small>
 	<!-- </div> -->
 
-	<div ng-if="data['Status'] == 'Sign' ">
-		<p><input name="b1" type="button" ng-disabled="busy" value="Submit" ng-click="submit()" /></p>
+	<div ng-show="data['Status'] == 'RecipientFill' ">
+		<div class="col col-2">
+			<label>E-mail:&nbsp;<b class="required">*</b></label>
+			<input type="text" ng-model="recipient.email" />
+		</div>
+
+		<div class="col col-2">
+			<label>Family Name:&nbsp;<b class="required">*</b></label>
+			<input type="text" ng-model="recipient.familyName" />
+		</div>
+
+		<div class="col col-2">
+			<label>Given Name:&nbsp;<b class="required">*</b></label>
+			<input type="text" ng-model="recipient.givenName" />
+		</div>
+	</div>
+
+
+	<div ng-if="data['Status'] == 'RecipientFill' ">
+		<p><input name="b1" type="button" ng-disabled="busy" value="Send" ng-click="submitRecipient()" /></p>
+	</div>
+
+	<div ng-show="signUrl">
+		<h1>
+			<a ng-href="{{ signUrl }}"> Proceed to signing </a>
+		</h1>
 	</div>
 
 </body>

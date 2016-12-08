@@ -15,6 +15,7 @@ export class Configs {
 		// For public templates use only
 		this.publishAppendix     = '/publish-status'
 		this.jobsAppendix        = '/jobs'
+		this.recipientsAppendix  = '/recipients'
 
 	}
 
@@ -36,7 +37,8 @@ export class Configs {
 			templatesAppendix    : this.templatesAppendix,
 			userDataAppendix     : this.userDataAppendix,
 			publishAppendix      : this.publishAppendix,
-			jobsAppendix         : this.jobsAppendix
+			jobsAppendix         : this.jobsAppendix,
+			recipientsAppendix   : this.recipientsAppendix
 			// Used for public only
 		}
 	}

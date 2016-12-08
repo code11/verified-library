@@ -25,7 +25,7 @@ export let EnvelopeHelpers = {
 					}
 				}
 				state.merge( mergeObj )
-				return envelope
+				return new Promise((resolve, reject) => resolve(envelope))
 			} )
 	},
 
@@ -39,10 +39,16 @@ export let EnvelopeHelpers = {
 	shouldCreateContext: () => {
 		if (state.get().params.envelope_id) return false
 		else return true
-	}
+	},
 
 	//TODO .. should forward this envelope
-	forward: () => {
-
+	forward: () => {}
+	,
+	buildSignUrl: (signToken) => {
+		console.log("im in build sign url for now....")
+		return new Promise((resolve, reject) => {
+			let url = `/#${ configs.get().domain }/sign/envelopes/${ state.get().remoteEntities.envelope.id }?access_token=${ signToken }`
+			resolve(url)
+		})
 	}
 }
