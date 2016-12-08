@@ -7,7 +7,7 @@ class PublicTemplate {
 	}
 	init(){
 		return {
-			forwarded: helpers.shouldCreateContext()
+			needsContextCreation: helpers.shouldCreateContext()
 		}
 	}
 }
