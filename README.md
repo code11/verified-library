@@ -109,7 +109,7 @@ getInfo() { return Object descriptorInformation }
 
 ___
 
-#### Practical example of method chaining and calling
+#### Practical example of method chaining and operations for a case of public template use
 
 ```javascript
 
