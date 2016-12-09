@@ -35943,7 +35943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						language: config.language || 'en',
 
 						role: {
-							name: role.name,
+							name: role.roleName,
 							action: config.action || "sign",
 							label: "Public template client"
 						},
