@@ -1,5 +1,6 @@
 /// Template is a helper class which provides an interface to send data
 /// per that specific template to the api. This is exposed to the user
+import helpers from "./helpers"
 
 var callForData = VeLib.core.helpers._call
 var configs     = VeLib.core.configs
@@ -23,50 +24,35 @@ class Template {
 		this.data = data
 	}
 
-	// @ local
-	getAvailableSigningMethods() {
-		return new Promise( ( resolve, reject ) => {
-			let roles = this.getInfo().roles
-			if ( !roles ) reject( {
-				message: "No roles found in descriptor, cannot get a signer from them"
-			} )
-
-			let foundSigners = roles.filter( role => role.action.type === 'review' || role.action.type === 'sign' )
-
-			if ( !foundSigners.length || foundSigners.length != 1 )
-				reject( {
-					message: "No signer or reviewer found in descriptor roles, or there is more than 1"
-				} )
-
-			resolve( foundSigners[ 0 ].action.methods )
-		} )
-
-	}
-
 	// @ remote
 	addRecipient( config ) {
-		if ( config.action ) {
-			console.log( "Action is set manually " )
-		}
+		console.log(" Helpers is", helpers)
+		return helpers.findMostSuitableRole()
+		.then( role => {
 
-		let recipient = {
-			familyName: config.familyName,
-			givenName: config.givenName,
-			email: config.email,
-			language: config.language || 'en',
+			if ( config.action ) { console.warn( "Action is set manually " ) }
 
-			role: {
-				name: "Public template client",
-				action: config.action || "sign",
-				label: "Public template client"
-			},
-			order: 1,
-			signingMethod: config.method
-		}
+			let recipient = {
+				familyName: config.familyName,
+				givenName: config.givenName,
+				email: config.email,
+				language: config.language || 'en',
 
-		return callForData( "POST",
-			`${ configs.get().envelopesUrl }/${ state.get().remoteEntities.envelope.id}/${ configs.get().recipientsAppendix }`,
-			recipient )
+				role: {
+					name  : role.name,
+					action: config.action || "sign",
+					label : "Public template client"
+				},
+				order: 1,
+				signingMethod: config.signingMethod
+			}
+			return recipient
+		})
+		.then( recipient => {
+			return callForData( "POST",
+				`${ configs.get().envelopesUrl }/${ state.get().remoteEntities.envelope.id}${ configs.get().recipientsAppendix }`,
+				recipient )
+		})
 	}
 
 	submitRawUserdata( remoteTemplate ) {

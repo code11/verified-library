@@ -33,6 +33,7 @@ class Actions {
 	}
 
 	getTemplateInterface(){ console.log("template Interface as array is", helpers); return helpers.getTemplateObjectsArrayInterface() }
+	getAvailableSigningMethods(){ return helpers.getAvailableSigningMethods() }
 
 }
 

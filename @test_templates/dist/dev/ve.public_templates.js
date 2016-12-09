@@ -77,7 +77,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			key: "init",
 			value: function init() {
 				return {
-					forwarded: helpers.shouldCreateContext()
+					needsContextCreation: helpers.shouldCreateContext()
 				};
 			}
 		}]);
@@ -17248,6 +17248,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			value: function getTemplateInterface() {
 				console.log("template Interface as array is", _helpers2.default);return _helpers2.default.getTemplateObjectsArrayInterface();
 			}
+		}, {
+			key: "getAvailableSigningMethods",
+			value: function getAvailableSigningMethods() {
+				return _helpers2.default.getAvailableSigningMethods();
+			}
 		}]);
 
 		return Actions;
@@ -17341,12 +17346,34 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		//TODO .. should forward this envelope
 		forward: function forward() {},
-
 		buildSignUrl: function buildSignUrl(signToken) {
 			console.log("im in build sign url for now....");
 			return new Promise(function (resolve, reject) {
 				var url = "/#" + configs.get().domain + "/sign/envelopes/" + state.get().remoteEntities.envelope.id + "?access_token=" + signToken;
 				resolve(url);
+			});
+		},
+
+		getAvailableSigningMethods: function getAvailableSigningMethods() {
+			return this.findMostSuitableRole().then(function (role) {
+				return role.action.methods;
+			});
+		},
+		findMostSuitableRole: function findMostSuitableRole() {
+			return new Promise(function (resolve, reject) {
+				var roles = state.get().remoteEntities.descriptor.roles;
+
+				if (!roles) reject({
+					message: "No roles found in descriptor, cannot get a signer from them"
+				});
+
+				var foundSigners = roles.filter(function (role) {
+					return role.action.type === 'review' || role.action.type === 'sign';
+				});
+
+				if (!foundSigners.length || foundSigners.length != 1) reject({
+					message: "No signer or reviewer found in descriptor roles, or there is more than 1"
+				});else resolve(foundSigners[0]);
 			});
 		}
 	};
@@ -35853,16 +35880,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 359 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /// Template is a helper class which provides an interface to send data
+	/// per that specific template to the api. This is exposed to the user
+
+
+	var _helpers = __webpack_require__(12);
+
+	var _helpers2 = _interopRequireDefault(_helpers);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	/// Template is a helper class which provides an interface to send data
-	/// per that specific template to the api. This is exposed to the user
 
 	var callForData = VeLib.core.helpers._call;
 	var configs = VeLib.core.configs;
@@ -35877,74 +35909,54 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 
 		_createClass(Template, [{
-			key: 'getInfo',
+			key: "getInfo",
 			value: function getInfo() {
 				return this.info;
 			}
 		}, {
-			key: 'getData',
+			key: "getData",
 			value: function getData() {
 				return this.data;
 			}
 		}, {
-			key: 'setData',
+			key: "setData",
 			value: function setData(data) {
 				this.data = data;
-			}
-
-			// @ local
-
-		}, {
-			key: 'getAvailableSigningMethods',
-			value: function getAvailableSigningMethods() {
-				var _this = this;
-
-				return new Promise(function (resolve, reject) {
-					var roles = _this.getInfo().roles;
-					if (!roles) reject({
-						message: "No roles found in descriptor, cannot get a signer from them"
-					});
-
-					var foundSigners = roles.filter(function (role) {
-						return role.action.type === 'review' || role.action.type === 'sign';
-					});
-
-					if (!foundSigners.length || foundSigners.length != 1) reject({
-						message: "No signer or reviewer found in descriptor roles, or there is more than 1"
-					});
-
-					resolve(foundSigners[0].action.methods);
-				});
 			}
 
 			// @ remote
 
 		}, {
-			key: 'addRecipient',
+			key: "addRecipient",
 			value: function addRecipient(config) {
-				if (config.action) {
-					console.log("Action is set manually ");
-				}
+				console.log(" Helpers is", _helpers2.default);
+				return _helpers2.default.findMostSuitableRole().then(function (role) {
 
-				var recipient = {
-					familyName: config.familyName,
-					givenName: config.givenName,
-					email: config.email,
-					language: config.language || 'en',
+					if (config.action) {
+						console.warn("Action is set manually ");
+					}
 
-					role: {
-						name: "Public template client",
-						action: config.action || "sign",
-						label: "Public template client"
-					},
-					order: 1,
-					signingMethod: config.method
-				};
+					var recipient = {
+						familyName: config.familyName,
+						givenName: config.givenName,
+						email: config.email,
+						language: config.language || 'en',
 
-				return callForData("POST", configs.get().envelopesUrl + '/' + state.get().remoteEntities.envelope.id + '/' + configs.get().recipientsAppendix, recipient);
+						role: {
+							name: role.name,
+							action: config.action || "sign",
+							label: "Public template client"
+						},
+						order: 1,
+						signingMethod: config.signingMethod
+					};
+					return recipient;
+				}).then(function (recipient) {
+					return callForData("POST", configs.get().envelopesUrl + "/" + state.get().remoteEntities.envelope.id + configs.get().recipientsAppendix, recipient);
+				});
 			}
 		}, {
-			key: 'submitRawUserdata',
+			key: "submitRawUserdata",
 			value: function submitRawUserdata(remoteTemplate) {
 				//TODO WIP, make this work please
 				// console.log "WIP"

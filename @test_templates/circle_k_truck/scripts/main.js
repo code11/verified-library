@@ -39,16 +39,17 @@ app.controller('mainController',function($scope, $http, $window){
 		// forwarded depending on choice
 
 		VeLib.public_templates.submitFormData()
-		.then(() => { return template.getAvailableSigningMethods()})
+		.then(() => { return VeLib.public_templates.getAvailableSigningMethods()})
 		// after submitting the data, we query the template for the available signing methods
 		.then((availableMethods) => {
-			console.log("i'm in available methods", availableMethods)
+			console.log("i'm in available methods, i selected", availableMethods[0])
 			return template.addRecipient({
 				// We fetch this info from the scope to complete signatory data
-				email: $scope.recipient.email,
+
+				email        : $scope.recipient.email,
 				familyName   : $scope.recipient.familyName,
 				givenName    : $scope.recipient.givenName,
-				// we chose one, ( usually just 1 for 99% of the cases, and )
+				// we chose one, ( usually just 1 for 99% of the cases)
 				signingMethod: availableMethods[0]
 			})
 		})

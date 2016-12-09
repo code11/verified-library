@@ -1,8 +1,12 @@
-var state   = VeLib.core.state
+var state = VeLib.core.state
 var configs = VeLib.core.configs
 
-import { RequestHelpers } from "./requests"
-import { PollerHelpers } from "./pollers"
+import {
+	RequestHelpers
+} from "./requests"
+import {
+	PollerHelpers
+} from "./pollers"
 
 export let EnvelopeHelpers = {
 	createEnvelopeContext: remoteReadyDocuments => {
@@ -25,7 +29,7 @@ export let EnvelopeHelpers = {
 					}
 				}
 				state.merge( mergeObj )
-				return new Promise((resolve, reject) => resolve(envelope))
+				return new Promise( ( resolve, reject ) => resolve( envelope ) )
 			} )
 	},
 
@@ -37,18 +41,43 @@ export let EnvelopeHelpers = {
 	},
 
 	shouldCreateContext: () => {
-		if (state.get().params.envelope_id) return false
+		if ( state.get().params.envelope_id ) return false
 		else return true
 	},
 
 	//TODO .. should forward this envelope
-	forward: () => {}
-	,
-	buildSignUrl: (signToken) => {
-		console.log("im in build sign url for now....")
-		return new Promise((resolve, reject) => {
-			let url = `/#${ configs.get().domain }/sign/envelopes/${ state.get().remoteEntities.envelope.id }?access_token=${ signToken }`
-			resolve(url)
-		})
+	forward: () => {},
+	buildSignUrl: ( signToken ) => {
+		console.log( "im in build sign url for now...." )
+		return new Promise( ( resolve, reject ) => {
+			let url =
+				`/#${ configs.get().domain }/sign/envelopes/${ state.get().remoteEntities.envelope.id }?access_token=${ signToken }`
+			resolve( url )
+		} )
+	},
+
+
+	getAvailableSigningMethods() {
+		return this.findMostSuitableRole()
+		.then( role => role.action.methods)
+	},
+
+	findMostSuitableRole() {
+		return new Promise( ( resolve, reject ) => {
+			let roles = state.get().remoteEntities.descriptor.roles
+
+			if ( !roles ) reject( {
+				message: "No roles found in descriptor, cannot get a signer from them"
+			} )
+
+			let foundSigners = roles.filter( role => role.action.type === 'review' || role.action.type === 'sign' )
+
+			if ( !foundSigners.length || foundSigners.length != 1 )
+				reject( {
+					message: "No signer or reviewer found in descriptor roles, or there is more than 1"
+				} )
+			else resolve( foundSigners[ 0 ] )
+
+		} )
 	}
 }
