@@ -34,5 +34,6 @@ module.exports = {
 				to: './../../@test_templates/'
 			}
 		])
-	]
+	],
+	devtool: "source-map"
 };

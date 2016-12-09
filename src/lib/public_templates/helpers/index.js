@@ -1,7 +1,6 @@
-import _ from "lodash"
+import _ from "lodash/object"
 import { EnvelopeHelpers } from "./envelope"
 import { PollerHelpers } from "./pollers"
-import { RequestHelpers } from "./requests"
 import { TemplateHelpers } from "./template"
 
 let helpers = _.merge({}, EnvelopeHelpers, TemplateHelpers, PollerHelpers)

@@ -1,4 +1,4 @@
-const _ = require("lodash");
+const _ = require("lodash/object");
 
 export class State {
 	constructor(initialState){
