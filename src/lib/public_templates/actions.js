@@ -19,6 +19,7 @@ class Actions {
 
 			var action = null
 
+			// This should be linked to the core putTemplateData actions
 			if (envelopeExists) { action =  helpers.submitRawUserdata }
 			else action = helpers.createEnvelopeContext
 
@@ -34,7 +35,7 @@ class Actions {
 
 	getTemplateInterface(){ console.log("template Interface as array is", helpers); return helpers.getTemplateObjectsArrayInterface() }
 	getAvailableSigningMethods(){ return helpers.getAvailableSigningMethods() }
-
+	addRecipient(data) { return helpers.addRecipient(data) }
 }
 
 module.exports = new Actions()

@@ -32,7 +32,7 @@ app.controller('mainController',function($scope,$http,BrReg){
 	$scope.data.products.push({product:'',description:'',count:'',price:''})
 	$scope.contents            = null;
 
-	VeLib.core.init().then((state) => {
+	VeLib.core.init().then(() => {
 		console.info("VeLib is ready", VeLib);
 		VeLib.public_templates.getTemplateInterface()
 		.then((templateObjectsArray) => {

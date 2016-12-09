@@ -25,35 +25,6 @@ class Template {
 	}
 
 	// @ remote
-	addRecipient( config ) {
-		console.log(" Helpers is", helpers)
-		return helpers.findMostSuitableRole()
-		.then( role => {
-
-			if ( config.action ) { console.warn( "Action is set manually " ) }
-
-			let recipient = {
-				familyName: config.familyName,
-				givenName: config.givenName,
-				email: config.email,
-				language: config.language || 'en',
-
-				role: {
-					name  : role.roleName,
-					action: config.action || "sign",
-					label : "Public template client"
-				},
-				order: 1,
-				signingMethod: config.signingMethod
-			}
-			return recipient
-		})
-		.then( recipient => {
-			return callForData( "POST",
-				`${ configs.get().envelopesUrl }/${ state.get().remoteEntities.envelope.id}${ configs.get().recipientsAppendix }`,
-				recipient )
-		})
-	}
 
 	submitRawUserdata( remoteTemplate ) {
 		//TODO WIP, make this work please

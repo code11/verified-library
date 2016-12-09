@@ -1,5 +1,6 @@
 var state = VeLib.core.state
 var configs = VeLib.core.configs
+var callForData = VeLib.core.helpers._call
 
 import {
 	RequestHelpers
@@ -79,5 +80,35 @@ export let EnvelopeHelpers = {
 			else resolve( foundSigners[ 0 ] )
 
 		} )
+	},
+
+	addRecipient( config ) {
+		return this.findMostSuitableRole()
+		.then( role => {
+
+			if ( config.action ) { console.warn( "Action is set manually " ) }
+
+			let recipient = {
+				familyName: config.familyName,
+				givenName: config.givenName,
+				email: config.email,
+				language: config.language || 'en',
+
+				role: {
+					name  : role.roleName,
+					action: config.action || "sign",
+					label : "Public template client"
+				},
+				order: 1,
+				signingMethod: config.signingMethod
+			}
+			return recipient
+		})
+		.then( recipient => {
+			return callForData( "POST",
+				`${ configs.get().envelopesUrl }/${ state.get().remoteEntities.envelope.id}${ configs.get().recipientsAppendix }`,
+				recipient )
+		})
 	}
+
 }
