@@ -1,12 +1,20 @@
 var app = angular.module('mainApp', ['ngMask']);
 app.controller('mainController',function($scope, $http, $window){
+
 	$scope.showCards = false;
 	$scope.toolTip = false;
-
 
 	var template = null
 	$scope.recipient = {}
 	$scope.signUrl = null
+
+	$scope.steps = {
+		cardAndCompanyInfo: {
+			ready: function(){
+
+			}
+		}
+	}
 
 	// Load this as soon as possible, it fetches all the data from remote and sets up auth
 	VeLib.core.init()
@@ -25,7 +33,6 @@ app.controller('mainController',function($scope, $http, $window){
 	.then((templates) => {
 		// One template returned only, so we make all the necessary calls on that and we store it in
 		// the current context
-
 		template = templates[0]
 	})
 
@@ -65,15 +72,6 @@ app.controller('mainController',function($scope, $http, $window){
 		})
 	}
 
-	// $scope.submit = () => {
-	// 	$scope.busy = true
-	// 	template.setData($scope.data)
-	// 	VeLib.public_templates.submit().then((response) =>{
-	// 		$scope.busy = false
-	// 		console.log(response, "I should redirect to the signing page right now, right?");
-	// 	})
-	// }
-
 	var cards = ["Card_A","Card_B","Card_C","Card_D","Card_E","Card_F"];
 	if ( !$scope.data ) { // Don't init if we have forwarded data
 		$scope.data = {};
@@ -86,12 +84,12 @@ app.controller('mainController',function($scope, $http, $window){
 	} else {
 		$scope.data.Status = "Filling";
 	}
+
 	$scope.countCards = function() {
 		var n=0;
 		cards.forEach(function(card) {
 			n += $scope.data[card];
 		});
-		console.log("N: ", n)
 		$scope.nCards = n;
 	}
 
@@ -102,4 +100,27 @@ app.controller('mainController',function($scope, $http, $window){
 		$scope.data['Status'] = 'Forwarded';
 		console.log("Submit to email: ", $scope.email, $scope.data);
 	}
+
+	$scope.fetchBisnodeData = function(orgNr) {
+		$scope.busy = true
+
+		VeLib.bisnode.getCompanyInfo(orgNr)
+		.then ((data) => {
+			console.log("data is", data)
+			$scope.data.Status = 'Filling';
+			$scope.data.Company_Name = data.companyName
+			$scope.data.OrgNr = data.regNumber
+			$scope.data.Company_Address = data.address
+			$scope.data.Company_Town = data.city
+			$scope.data.Company_Zip = data.postalCode
+			$scope.busy = false
+			$scope.data.Status = 'Filling'
+			$scope.$digest()
+		})
+	}
+
+	// If we are getting forwarded info..this should be done after retrieving the data...
+	$scope.countCards()
+
+
 });
