@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["bisnode"] = factory();
+		exports["id_rights"] = factory();
 	else
-		root["VeLib"] = root["VeLib"] || {}, root["VeLib"]["bisnode"] = factory();
+		root["VeLib"] = root["VeLib"] || {}, root["VeLib"]["id_rights"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -50,13 +50,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
-	var _actions = __webpack_require__(1);
+	var _actions = __webpack_require__(249);
 	
 	var _actions2 = _interopRequireDefault(_actions);
 	
@@ -64,32 +65,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var Bisnode = function Bisnode() {
-		_classCallCheck(this, Bisnode);
+	var IDrights = function IDrights() {
+		_classCallCheck(this, IDrights);
 	
 		this.actions = _actions2.default;
 	};
 	
-	var bisnode = new Bisnode();
+	var idrights = new IDrights();
 	
-	Object.setPrototypeOf(bisnode, _actions2.default);
+	Object.setPrototypeOf(idrights, _actions2.default);
 	
-	module.exports = bisnode;
+	module.exports = idrights;
 
 /***/ },
-/* 1 */
+
+/***/ 249:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _configs = __webpack_require__(2);
+	var _configs = __webpack_require__(250);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var callForData = VeLib.core.helpers._call;
 	
+	// TODO Change this reg number here to whatever the endpoint is
 	var Actions = function () {
 		function Actions() {
 			_classCallCheck(this, Actions);
@@ -98,7 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		_createClass(Actions, [{
 			key: "getCompanyInfo",
 			value: function getCompanyInfo(regNumber) {
-				return callForData("GET", _configs.configs.get().bisnodeUrl + "\n\t\t" + _configs.configs.get().companySuffix + "?regNumber=" + regNumber);
+				return callForData("GET", "" + _configs.configs.get().idrightsUrl + regNumber);
 			}
 		}]);
 	
@@ -108,10 +111,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = new Actions();
 
 /***/ },
-/* 2 */
+
+/***/ 250:
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -129,11 +133,12 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		_createClass(Configs, [{
-			key: 'get',
+			key: "get",
 			value: function get() {
 				return {
-					companySuffix: '/company',
-					bisnodeUrl: '' + coreConfigs.domain + coreConfigs.apiBase + '/bisnode'
+					// TODO need to update this after i know the url
+					// companySuffix: '/company',
+					idrightsUrl: "" + coreConfigs.domain + coreConfigs.apiBase + "/signing-procuration/"
 				};
 			}
 		}]);
@@ -144,7 +149,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var configs = exports.configs = new Configs();
 
 /***/ }
-/******/ ])
+
+/******/ })
 });
 ;
-//# sourceMappingURL=ve.bisnode.js.map
+//# sourceMappingURL=ve.id_rights.js.map

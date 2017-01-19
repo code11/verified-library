@@ -1,7 +1,5 @@
 var coreConfigs = VeLib.core.configs
 
-console.log("core configs are", coreConfigs)
-
 export class Configs {
 	get(){
 		return {

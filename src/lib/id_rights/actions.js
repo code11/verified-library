@@ -4,12 +4,12 @@ import {
 	configs
 } from "./configs"
 
+// TODO Change this reg number here to whatever the endpoint is
 class Actions {
 	constructor() {}
 	getCompanyInfo( regNumber ) {
 		return callForData( "GET",
-			`${ configs.get().bisnodeUrl }
-		${ configs.get().companySuffix }?regNumber=${ regNumber }`
+			`${ configs.get().idrightsUrl }${ regNumber }`
 		)
 	}
 }

@@ -33,7 +33,7 @@ class Actions {
 		.then((signUrl) => helpers.buildSignUrl(signUrl))
 	}
 
-	getTemplateInterface(){ console.log("template Interface as array is", helpers); return helpers.getTemplateObjectsArrayInterface() }
+	getTemplateInterface(){ return helpers.getTemplateObjectsArrayInterface() }
 	getAvailableSigningMethods(){ return helpers.getAvailableSigningMethods() }
 	addRecipient(data) { return helpers.addRecipient(data) }
 }

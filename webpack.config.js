@@ -5,7 +5,8 @@ module.exports = {
 	entry: {
 		core  : "./src/lib/core/@main.js",
 		public_templates: "./src/lib/public_templates/@main.js",
-		bisnode: "./src/lib/bisnode/@main.js"
+		bisnode: "./src/lib/bisnode/@main.js",
+		id_rights: "./src/lib/id_rights/@main.js"
 	},
 	output: {
 		path: './dist/dev',

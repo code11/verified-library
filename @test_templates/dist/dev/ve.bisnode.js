@@ -50,9 +50,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -78,21 +77,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = bisnode;
 
 /***/ },
-
-/***/ 1:
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _configs = __webpack_require__(374);
+	var _configs = __webpack_require__(2);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	var callForData = VeLib.core.helpers._call;
-	
-	console.log("Configs here are", _configs.configs);
 	
 	var Actions = function () {
 		function Actions() {
@@ -112,11 +108,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = new Actions();
 
 /***/ },
-
-/***/ 374:
+/* 2 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -128,19 +123,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var coreConfigs = VeLib.core.configs;
 	
-	console.log("core configs are", coreConfigs);
-	
 	var Configs = exports.Configs = function () {
 		function Configs() {
 			_classCallCheck(this, Configs);
 		}
 	
 		_createClass(Configs, [{
-			key: "get",
+			key: 'get',
 			value: function get() {
 				return {
 					companySuffix: '/company',
-					bisnodeUrl: "" + coreConfigs.domain + coreConfigs.apiBase + "/bisnode"
+					bisnodeUrl: '' + coreConfigs.domain + coreConfigs.apiBase + '/bisnode'
 				};
 			}
 		}]);
@@ -151,8 +144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var configs = exports.configs = new Configs();
 
 /***/ }
-
-/******/ })
+/******/ ])
 });
 ;
 //# sourceMappingURL=ve.bisnode.js.map

@@ -2,10 +2,6 @@
 /// per that specific template to the api. This is exposed to the user
 import helpers from "./helpers"
 
-var callForData = VeLib.core.helpers._call
-var configs     = VeLib.core.configs
-var state       = VeLib.core.state
-
 class Template {
 	constructor( info ) {
 		this.data = {}

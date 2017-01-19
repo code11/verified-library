@@ -47,8 +47,8 @@ export let TemplateHelpers = {
 				} )
 				// Caution dragons AHEAD!!! Interface of templates should provide state mutating changes without
 				// calling state.merge or state set....:), on behalf of the user
-
 			resolve( state.get().templates )
+			console.info("Managed to provide template interface")
 		} )
 	},
 

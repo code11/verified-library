@@ -33,7 +33,7 @@ export let PollerHelpers = {
 		let flowUid = state.get().remoteEntities.descriptor.flow.id
 		if ( !flowUid ) {
 			error = {
-				msg: "FATAL: Flow id not found , not possible to poll for changes "
+				msg: "FATAL: Flow uid not found , not possible to poll for changes "
 			}
 		}
 		return new Promise( ( resolve, reject ) => {

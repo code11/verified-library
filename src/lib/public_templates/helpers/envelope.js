@@ -30,7 +30,10 @@ export let EnvelopeHelpers = {
 					}
 				}
 				state.merge( mergeObj )
-				return new Promise( ( resolve, reject ) => resolve( envelope ) )
+				return new Promise( ( resolve, reject ) => {
+					console.info("Envelope context created")
+					resolve( envelope )
+				} )
 			} )
 	},
 
@@ -46,10 +49,8 @@ export let EnvelopeHelpers = {
 		else return true
 	},
 
-	//TODO .. should forward this envelope
-	forward: () => {},
+
 	buildSignUrl: ( signToken ) => {
-		console.log( "im in build sign url for now...." )
 		return new Promise( ( resolve, reject ) => {
 			let url =
 				`/#${ configs.get().domain }/sign/envelopes/${ state.get().remoteEntities.envelope.id }?access_token=${ signToken }`
@@ -60,7 +61,10 @@ export let EnvelopeHelpers = {
 
 	getAvailableSigningMethods() {
 		return this.findMostSuitableRole()
-		.then( role => role.action.methods)
+		.then( role => {
+			console.info("Got signing method for the most suitable role found")
+			role.action.methods
+		})
 	},
 
 	findMostSuitableRole() {
