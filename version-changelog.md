@@ -1,4 +1,4 @@
-### 1.0.1-mock
+### 1.0.1-unstable
 
 - Added support library (Testing still) for simple ID-rights GET separate module.
 
