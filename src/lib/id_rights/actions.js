@@ -7,7 +7,7 @@ import {
 // TODO Change this reg number here to whatever the endpoint is
 class Actions {
 	constructor() {}
-	getCompanyInfo( regNumber ) {
+	getCompanyAuthorities( regNumber ) {
 		return callForData( "GET",
 			`${ configs.get().idrightsUrl }${ regNumber }`
 		)

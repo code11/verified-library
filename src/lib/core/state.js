@@ -9,7 +9,7 @@ export class State {
 		}
 
 		this.params   = {}
-
+		this.errors = []
 		this.remoteEntities = {
 			descriptor: null,
 			envelope  : null,
@@ -26,6 +26,9 @@ export class State {
 	}
 	merge(mergeObj) {
 		this.state = _.merge({}, this.state, mergeObj)
+	}
+	addError(error) {
+		this.state.errors = _.merge({}, this.state.errors, error)
 	}
 }
 

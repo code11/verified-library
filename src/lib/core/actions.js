@@ -31,6 +31,16 @@ class Actions {
 							resolve(state.get());
 						}
 					})
+					.catch((error) => {
+						let err = {
+							msg: `resource retrieval fail - ${ key }` ,
+							context: "Fetching params entities",
+							fatal: true
+						}
+						key === 'user' && console.error("FATAL:" + err.msg + " at " +err.context)
+						console.error("FATAL: Invalid token")
+						state.addError(err)
+					})
 				})
 			})
 		})

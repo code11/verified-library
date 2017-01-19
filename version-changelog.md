@@ -7,3 +7,5 @@
 - Added more intuitive console.info steps
 
 - Removed some unused variables from webpack-lint
+
+- Changes in error handling for future use of them in FE

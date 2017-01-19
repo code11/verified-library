@@ -8253,7 +8253,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var helpers = _object2.default.merge({}, _envelope.EnvelopeHelpers, _template.TemplateHelpers, _pollers.PollerHelpers);
 	
-	console.log("all helpers is", helpers);
 	exports.default = helpers;
 
 /***/ },
@@ -10872,15 +10871,18 @@ return /******/ (function(modules) { // webpackBootstrap
 			return new Promise(function (resolve, reject) {
 				var descriptorDocuments = null;
 				// Making sure that property exists
-	
 				try {
 					descriptorDocuments = state.get().remoteEntities.descriptor.documents;
 				} catch (exception) {
 					var error = {
 						msg: "No documents found in descriptor or descriptor entity is missing",
-						err: exception
+						err: exception,
+						context: "Descriptor retrieval in public template",
+						fatal: true
 					};
-					throw error && reject(error);
+					state.addError(error);
+					console.error("Fatal: " + error.msg + " at " + error.context);
+					reject(error);
 				}
 				// making sure descriptor has at least one doc of type template
 				var templatesDescriptors = [];

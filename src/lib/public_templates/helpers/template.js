@@ -11,15 +11,18 @@ export let TemplateHelpers = {
 		return new Promise( ( resolve, reject ) => {
 			let descriptorDocuments = null
 				// Making sure that property exists
-
 			try {
 				descriptorDocuments = state.get().remoteEntities.descriptor.documents
 			} catch ( exception ) {
 				let error = {
 					msg: "No documents found in descriptor or descriptor entity is missing",
-					err: exception
+					err: exception,
+					context: "Descriptor retrieval in public template",
+					fatal: true
 				}
-				throw ( error ) && reject( error )
+				state.addError(error)
+				console.error("Fatal: " + error.msg + " at " + error.context)
+				reject( error )
 			}
 			// making sure descriptor has at least one doc of type template
 			let templatesDescriptors = []

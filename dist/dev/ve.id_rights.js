@@ -99,8 +99,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		_createClass(Actions, [{
-			key: "getCompanyInfo",
-			value: function getCompanyInfo(regNumber) {
+			key: "getCompanyAuthorities",
+			value: function getCompanyAuthorities(regNumber) {
 				return callForData("GET", "" + _configs.configs.get().idrightsUrl + regNumber);
 			}
 		}]);

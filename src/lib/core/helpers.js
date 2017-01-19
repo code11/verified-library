@@ -35,7 +35,17 @@ class Helpers {
 			if (qParams.access_token){
 				state.merge({ internal: {accessToken: qParams.access_token }})
 				resolve(qParams.access_token);
-			} else reject("no token found in query params");
+			} else {
+				let err = {
+						msg    : "missing resource - token",
+						context: "Token initialization",
+						fatal  : true
+					}
+
+				state.addError(err)
+				console.error("FATAL: " + err.msg + " at " + err.context)
+				reject("no token found in query params")
+			};
 		})
 	}
 

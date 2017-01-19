@@ -141,6 +141,15 @@ return /******/ (function(modules) { // webpackBootstrap
 									_state.state.merge({ remoteEntities: remoteEntities });
 									resolve(_state.state.get());
 								}
+							}).catch(function (error) {
+								var err = {
+									msg: 'resource retrieval fail - ' + key,
+									context: "Fetching params entities",
+									fatal: true
+								};
+								key === 'user' && console.error("FATAL:" + err.msg + " at " + err.context);
+								console.error("FATAL: Invalid token");
+								_state.state.addError(err);
 							});
 						});
 					});
@@ -275,7 +284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 	
 			this.params = {};
-	
+			this.errors = [];
 			this.remoteEntities = {
 				descriptor: null,
 				envelope: null,
@@ -299,6 +308,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			key: "merge",
 			value: function merge(mergeObj) {
 				this.state = _.merge({}, this.state, mergeObj);
+			}
+		}, {
+			key: "addError",
+			value: function addError(error) {
+				this.state.errors = _.merge({}, this.state.errors, error);
 			}
 		}]);
 	
@@ -8423,7 +8437,17 @@ return /******/ (function(modules) { // webpackBootstrap
 					if (qParams.access_token) {
 						_state.state.merge({ internal: { accessToken: qParams.access_token } });
 						resolve(qParams.access_token);
-					} else reject("no token found in query params");
+					} else {
+						var err = {
+							msg: "missing resource - token",
+							context: "Token initialization",
+							fatal: true
+						};
+	
+						_state.state.addError(err);
+						console.error("FATAL: " + err.msg + " at " + err.context);
+						reject("no token found in query params");
+					};
 				});
 			}
 		}, {
