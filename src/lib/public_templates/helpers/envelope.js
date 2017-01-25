@@ -62,7 +62,7 @@ export let EnvelopeHelpers = {
 	getAvailableSigningMethods() {
 		return this.findMostSuitableRole()
 		.then( role => {
-			console.info("Got signing method for the most suitable role found", methods)
+			console.info("Got signing method for the most suitable role found")
 			return role.action.methods
 		})
 	},
