@@ -38,7 +38,7 @@ export let EnvelopeHelpers = {
 	},
 
 	publishEnvelope: () => {
-		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }/${ configs.get().publishAppendix}`
+		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }${ configs.get().publishAppendix}`
 		return RequestHelpers.callAndReturnLocation( "PUT", `${ url }`, {
 			published: true
 		} )

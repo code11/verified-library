@@ -8302,7 +8302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		},
 	
 		publishEnvelope: function publishEnvelope() {
-			var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + "/" + configs.get().publishAppendix;
+			var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + configs.get().publishAppendix;
 			return _requests.RequestHelpers.callAndReturnLocation("PUT", "" + url, {
 				published: true
 			});
