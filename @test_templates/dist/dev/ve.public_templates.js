@@ -8321,8 +8321,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		getAvailableSigningMethods: function getAvailableSigningMethods() {
 			return this.findMostSuitableRole().then(function (role) {
-				console.info("Got signing method for the most suitable role found");
-				role.action.methods;
+				console.info("Got signing method for the most suitable role found", methods);
+				return role.action.methods;
 			});
 		},
 		findMostSuitableRole: function findMostSuitableRole() {
