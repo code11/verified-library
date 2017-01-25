@@ -10926,8 +10926,8 @@ return /******/ (function(modules) { // webpackBootstrap
 				for (var _iterator = arrayOfInterfaces[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 					var templateInterface = _step.value;
 	
-					remoteObject[templateInterface.getInfo().descriptor] = remoteObject[templateInterface.getInfo().descriptor] || [];
-					remoteObject[templateInterface.getInfo().descriptor].push({
+					remoteObject[templateInterface.getInfo().hash] = remoteObject[templateInterface.getInfo().hash] || [];
+					remoteObject[templateInterface.getInfo().hash].push({
 						data: templateInterface.getData()
 					});
 				}

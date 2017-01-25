@@ -60,9 +60,9 @@ export let TemplateHelpers = {
 		let arrayOfInterfaces = state.get().templates
 
 		for ( let templateInterface of arrayOfInterfaces ) {
-			remoteObject[ templateInterface.getInfo().descriptor ] = remoteObject[ templateInterface.getInfo().descriptor ] ||
+			remoteObject[ templateInterface.getInfo().hash ] = remoteObject[ templateInterface.getInfo().hash ] ||
 				[]
-			remoteObject[ templateInterface.getInfo().descriptor ].push( {
+			remoteObject[ templateInterface.getInfo().hash ].push( {
 				data: templateInterface.getData()
 			} )
 		}
