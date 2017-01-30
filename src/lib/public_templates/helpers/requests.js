@@ -3,12 +3,15 @@ var state = VeLib.core.state
 // -----------------------------------------------
 
 export let RequestHelpers = {
-	callAndReturnLocation( method, url, _body, _params ) {
+	callAndReturnLocation( method, url, _body, _params, overwriteToken) {
 		if ( !_body ) {
 			_body = null
 		} else {
 			_body = JSON.stringify( _body )
 		}
+
+		var tkn = overwriteToken
+		if (overwriteToken) { tkn = "JWT " + overwriteToken }
 
 		var params = "?"
 		if ( _params ) {
@@ -18,7 +21,7 @@ export let RequestHelpers = {
 		return fetch( url + params, {
 			method: method,
 			headers: new Headers( {
-				"Authorization": "JWT " + state.get().internal.accessToken,
+				"Authorization": tkn || ("JWT " + state.get().internal.accessToken),
 				"Content-Type": "application/json"
 			} ),
 			body: _body

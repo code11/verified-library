@@ -37,11 +37,11 @@ export let EnvelopeHelpers = {
 			} )
 	},
 
-	publishEnvelope: () => {
+	publishEnvelope: (token) => {
 		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }${ configs.get().publishAppendix}`
 		return RequestHelpers.callAndReturnLocation( "PUT", `${ url }`, {
 			published: true
-		} )
+		} , null , token)
 	},
 
 	shouldCreateContext: () => {

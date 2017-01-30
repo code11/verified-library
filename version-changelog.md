@@ -1,3 +1,6 @@
+### 1.0.3
+- Change polling so that PUBLISH is done with a token coming from "token" property..and nother for "signToken"
+
 ### 1.0.2
 - Changed descriptor to hash in document mappings and groupings, since error was thrown
 

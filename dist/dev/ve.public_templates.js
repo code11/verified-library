@@ -8201,10 +8201,12 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: "publish",
 			value: function publish() {
-				return _helpers2.default.publishEnvelope().then(function () {
-					return _helpers2.default.pollForStatus();
-				}).then(function (signUrl) {
-					return _helpers2.default.buildSignUrl(signUrl);
+				_helpers2.default.pollForStatus("token").then(function (token) {
+					return _helpers2.default.publishEnvelope(token);
+				}).then(function () {
+					return _helpers2.default.pollForStatus("signToken");
+				}).then(function (signToken) {
+					return _helpers2.default.buildSignUrl(signToken);
 				});
 			}
 		}, {
@@ -8301,11 +8303,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			});
 		},
 	
-		publishEnvelope: function publishEnvelope() {
+		publishEnvelope: function publishEnvelope(token) {
 			var url = configs.get().envelopesUrl + "/" + state.get().params.envelope_id + configs.get().publishAppendix;
 			return _requests.RequestHelpers.callAndReturnLocation("PUT", "" + url, {
 				published: true
-			});
+			}, null, token);
 		},
 	
 		shouldCreateContext: function shouldCreateContext() {
@@ -8384,11 +8386,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	// -----------------------------------------------
 	
 	var RequestHelpers = exports.RequestHelpers = {
-		callAndReturnLocation: function callAndReturnLocation(method, url, _body, _params) {
+		callAndReturnLocation: function callAndReturnLocation(method, url, _body, _params, overwriteToken) {
 			if (!_body) {
 				_body = null;
 			} else {
 				_body = JSON.stringify(_body);
+			}
+	
+			var tkn = overwriteToken;
+			if (overwriteToken) {
+				tkn = "JWT " + overwriteToken;
 			}
 	
 			var params = "?";
@@ -8399,7 +8406,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			return fetch(url + params, {
 				method: method,
 				headers: new Headers({
-					"Authorization": "JWT " + state.get().internal.accessToken,
+					"Authorization": tkn || "JWT " + state.get().internal.accessToken,
 					"Content-Type": "application/json"
 				}),
 				body: _body
@@ -8458,7 +8465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				});
 			});
 		},
-		pollForStatus: function pollForStatus() {
+		pollForStatus: function pollForStatus(property) {
 			// Todo .. fix this part and make it work
 			var error = null;
 			var flowUid = state.get().remoteEntities.descriptor.flow.id;
@@ -8477,11 +8484,11 @@ return /******/ (function(modules) { // webpackBootstrap
 				_Observable.Observable.of("").delay(1000).flatMap(function () {
 					return _Observable.Observable.fromPromise(callForData("GET", getFlowUrl));
 				}).map(function (data) {
-					if (data.signToken) return data;else return Rx.Observable.throw(new Error({
-						msg: "No token found yet, attemptying to retry"
+					if (data[property]) return data;else return Rx.Observable.throw(new Error({
+						msg: "No matching property found yet, attemptying to retry"
 					}));
 				}).retry().subscribe(function (data) {
-					return resolve(data.signToken);
+					return resolve(data[property]);
 				});
 			});
 		}

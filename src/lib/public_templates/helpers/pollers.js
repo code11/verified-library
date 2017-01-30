@@ -27,7 +27,7 @@ export let PollerHelpers = {
 		} )
 	},
 
-	pollForStatus() {
+	pollForStatus(property) {
 		// Todo .. fix this part and make it work
 		let error = null
 		let flowUid = state.get().remoteEntities.descriptor.flow.id
@@ -48,13 +48,13 @@ export let PollerHelpers = {
 				.delay( 1000 )
 				.flatMap( () => Observable.fromPromise( callForData( "GET", getFlowUrl ) ) )
 				.map( data => {
-					if ( data.signToken ) return data
+					if ( data[property] ) return data
 					else return Rx.Observable.throw( new Error( {
-						msg: "No token found yet, attemptying to retry"
+						msg: "No matching property found yet, attemptying to retry"
 					} ) )
 				} )
 				.retry()
-				.subscribe( data => resolve( data.signToken ) )
+				.subscribe( data => resolve( data[property] ) )
 		} )
 	}
 }
