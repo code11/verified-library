@@ -28,10 +28,10 @@ class Actions {
 		})
 	}
 	publish(){
-		helpers.pollForStatus("token")
+		return helpers.pollForStatus("token")
 		.then((token) => helpers.publishEnvelope(token))
 		.then(() => helpers.pollForStatus("signToken") )
-		.then((signToken) => helpers.buildSignUrl(signToken))
+		.then((signToken) => helpers.buildSignUrl(signToken) )
 	}
 
 	getTemplateInterface(){ return helpers.getTemplateObjectsArrayInterface() }

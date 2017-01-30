@@ -1,3 +1,6 @@
+### 1.0.4
+- Added long polling for idReg
+
 ### 1.0.3
 - Change polling so that PUBLISH is done with a token coming from "token" property..and nother for "signToken"
 
