@@ -10558,9 +10558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}, {
 			key: "publish",
 			value: function publish() {
-				return _helpers2.default.pollForStatus("token").then(function (token) {
-					return _helpers2.default.publishEnvelope(token);
-				}).then(function () {
+				return _helpers2.default.publishEnvelope().then(function () {
 					return _helpers2.default.pollForStatus("signToken");
 				}).then(function (signToken) {
 					return _helpers2.default.buildSignUrl(signToken);
@@ -10644,6 +10642,10 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				};
 				state.merge(mergeObj);
+			}).then(function () {
+				return _pollers.PollerHelpers.pollFoStatus("token");
+			}).then(function (token) {
+				return state.merge({ internal: { accessToken: token } });
 			}).then(function () {
 				return _pollers.PollerHelpers.pollForCreation();
 			}).then(function (envelope) {

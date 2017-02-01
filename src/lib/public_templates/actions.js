@@ -28,8 +28,7 @@ class Actions {
 		})
 	}
 	publish(){
-		return helpers.pollForStatus("token")
-		.then((token) => helpers.publishEnvelope(token))
+		return helpers.publishEnvelope()
 		.then(() => helpers.pollForStatus("signToken") )
 		.then((signToken) => helpers.buildSignUrl(signToken) )
 	}

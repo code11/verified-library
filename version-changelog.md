@@ -1,3 +1,8 @@
+### 0.1.0
+- Changed the way polling works in the process
+
+<!-- DEPRECATED !!!!! -->
+
 ### 1.0.4
 - Added long polling for idReg
 

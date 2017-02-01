@@ -22,7 +22,9 @@ export let EnvelopeHelpers = {
 				}
 				state.merge( mergeObj )
 			} )
-			.then( () => PollerHelpers.pollForCreation() )
+			.then( () => PollerHelpers.pollForStatus("token") )
+			.then( (token) => state.merge({ internal: { accessToken: token }}))
+			.then( () => PollerHelpers.pollForCreation())
 			.then( envelope => {
 				var mergeObj = {
 					remoteEntities: {
