@@ -58,7 +58,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _actions = __webpack_require__(294);
+	var _actions = __webpack_require__(285);
 	
 	var _actions2 = _interopRequireDefault(_actions);
 	
@@ -9334,9 +9334,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var Observable_1 = __webpack_require__(250);
-	var delay_1 = __webpack_require__(274);
-	Observable_1.Observable.prototype.delay = delay_1.delay;
-	//# sourceMappingURL=delay.js.map
+	var mergeMap_1 = __webpack_require__(274);
+	Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
+	Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
+	//# sourceMappingURL=mergeMap.js.map
 
 /***/ },
 /* 274 */
@@ -9348,618 +9349,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var async_1 = __webpack_require__(275);
-	var isDate_1 = __webpack_require__(280);
-	var Subscriber_1 = __webpack_require__(253);
-	var Notification_1 = __webpack_require__(281);
-	/**
-	 * Delays the emission of items from the source Observable by a given timeout or
-	 * until a given Date.
-	 *
-	 * <span class="informal">Time shifts each item by some specified amount of
-	 * milliseconds.</span>
-	 *
-	 * <img src="./img/delay.png" width="100%">
-	 *
-	 * If the delay argument is a Number, this operator time shifts the source
-	 * Observable by that amount of time expressed in milliseconds. The relative
-	 * time intervals between the values are preserved.
-	 *
-	 * If the delay argument is a Date, this operator time shifts the start of the
-	 * Observable execution until the given date occurs.
-	 *
-	 * @example <caption>Delay each click by one second</caption>
-	 * var clicks = Rx.Observable.fromEvent(document, 'click');
-	 * var delayedClicks = clicks.delay(1000); // each click emitted after 1 second
-	 * delayedClicks.subscribe(x => console.log(x));
-	 *
-	 * @example <caption>Delay all clicks until a future date happens</caption>
-	 * var clicks = Rx.Observable.fromEvent(document, 'click');
-	 * var date = new Date('March 15, 2050 12:00:00'); // in the future
-	 * var delayedClicks = clicks.delay(date); // click emitted only after that date
-	 * delayedClicks.subscribe(x => console.log(x));
-	 *
-	 * @see {@link debounceTime}
-	 * @see {@link delayWhen}
-	 *
-	 * @param {number|Date} delay The delay duration in milliseconds (a `number`) or
-	 * a `Date` until which the emission of the source items is delayed.
-	 * @param {Scheduler} [scheduler=async] The Scheduler to use for
-	 * managing the timers that handle the time-shift for each item.
-	 * @return {Observable} An Observable that delays the emissions of the source
-	 * Observable by the specified timeout or Date.
-	 * @method delay
-	 * @owner Observable
-	 */
-	function delay(delay, scheduler) {
-	    if (scheduler === void 0) { scheduler = async_1.async; }
-	    var absoluteDelay = isDate_1.isDate(delay);
-	    var delayFor = absoluteDelay ? (+delay - scheduler.now()) : Math.abs(delay);
-	    return this.lift(new DelayOperator(delayFor, scheduler));
-	}
-	exports.delay = delay;
-	var DelayOperator = (function () {
-	    function DelayOperator(delay, scheduler) {
-	        this.delay = delay;
-	        this.scheduler = scheduler;
-	    }
-	    DelayOperator.prototype.call = function (subscriber, source) {
-	        return source._subscribe(new DelaySubscriber(subscriber, this.delay, this.scheduler));
-	    };
-	    return DelayOperator;
-	}());
-	/**
-	 * We need this JSDoc comment for affecting ESDoc.
-	 * @ignore
-	 * @extends {Ignored}
-	 */
-	var DelaySubscriber = (function (_super) {
-	    __extends(DelaySubscriber, _super);
-	    function DelaySubscriber(destination, delay, scheduler) {
-	        _super.call(this, destination);
-	        this.delay = delay;
-	        this.scheduler = scheduler;
-	        this.queue = [];
-	        this.active = false;
-	        this.errored = false;
-	    }
-	    DelaySubscriber.dispatch = function (state) {
-	        var source = state.source;
-	        var queue = source.queue;
-	        var scheduler = state.scheduler;
-	        var destination = state.destination;
-	        while (queue.length > 0 && (queue[0].time - scheduler.now()) <= 0) {
-	            queue.shift().notification.observe(destination);
-	        }
-	        if (queue.length > 0) {
-	            var delay_1 = Math.max(0, queue[0].time - scheduler.now());
-	            this.schedule(state, delay_1);
-	        }
-	        else {
-	            source.active = false;
-	        }
-	    };
-	    DelaySubscriber.prototype._schedule = function (scheduler) {
-	        this.active = true;
-	        this.add(scheduler.schedule(DelaySubscriber.dispatch, this.delay, {
-	            source: this, destination: this.destination, scheduler: scheduler
-	        }));
-	    };
-	    DelaySubscriber.prototype.scheduleNotification = function (notification) {
-	        if (this.errored === true) {
-	            return;
-	        }
-	        var scheduler = this.scheduler;
-	        var message = new DelayMessage(scheduler.now() + this.delay, notification);
-	        this.queue.push(message);
-	        if (this.active === false) {
-	            this._schedule(scheduler);
-	        }
-	    };
-	    DelaySubscriber.prototype._next = function (value) {
-	        this.scheduleNotification(Notification_1.Notification.createNext(value));
-	    };
-	    DelaySubscriber.prototype._error = function (err) {
-	        this.errored = true;
-	        this.queue = [];
-	        this.destination.error(err);
-	    };
-	    DelaySubscriber.prototype._complete = function () {
-	        this.scheduleNotification(Notification_1.Notification.createComplete());
-	    };
-	    return DelaySubscriber;
-	}(Subscriber_1.Subscriber));
-	var DelayMessage = (function () {
-	    function DelayMessage(time, notification) {
-	        this.time = time;
-	        this.notification = notification;
-	    }
-	    return DelayMessage;
-	}());
-	//# sourceMappingURL=delay.js.map
-
-/***/ },
-/* 275 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var AsyncAction_1 = __webpack_require__(276);
-	var AsyncScheduler_1 = __webpack_require__(278);
-	exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
-	//# sourceMappingURL=async.js.map
-
-/***/ },
-/* 276 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var root_1 = __webpack_require__(251);
-	var Action_1 = __webpack_require__(277);
-	/**
-	 * We need this JSDoc comment for affecting ESDoc.
-	 * @ignore
-	 * @extends {Ignored}
-	 */
-	var AsyncAction = (function (_super) {
-	    __extends(AsyncAction, _super);
-	    function AsyncAction(scheduler, work) {
-	        _super.call(this, scheduler, work);
-	        this.scheduler = scheduler;
-	        this.work = work;
-	        this.pending = false;
-	    }
-	    AsyncAction.prototype.schedule = function (state, delay) {
-	        if (delay === void 0) { delay = 0; }
-	        if (this.closed) {
-	            return this;
-	        }
-	        // Always replace the current state with the new state.
-	        this.state = state;
-	        // Set the pending flag indicating that this action has been scheduled, or
-	        // has recursively rescheduled itself.
-	        this.pending = true;
-	        var id = this.id;
-	        var scheduler = this.scheduler;
-	        //
-	        // Important implementation note:
-	        //
-	        // Actions only execute once by default, unless rescheduled from within the
-	        // scheduled callback. This allows us to implement single and repeat
-	        // actions via the same code path, without adding API surface area, as well
-	        // as mimic traditional recursion but across asynchronous boundaries.
-	        //
-	        // However, JS runtimes and timers distinguish between intervals achieved by
-	        // serial `setTimeout` calls vs. a single `setInterval` call. An interval of
-	        // serial `setTimeout` calls can be individually delayed, which delays
-	        // scheduling the next `setTimeout`, and so on. `setInterval` attempts to
-	        // guarantee the interval callback will be invoked more precisely to the
-	        // interval period, regardless of load.
-	        //
-	        // Therefore, we use `setInterval` to schedule single and repeat actions.
-	        // If the action reschedules itself with the same delay, the interval is not
-	        // canceled. If the action doesn't reschedule, or reschedules with a
-	        // different delay, the interval will be canceled after scheduled callback
-	        // execution.
-	        //
-	        if (id != null) {
-	            this.id = this.recycleAsyncId(scheduler, id, delay);
-	        }
-	        this.delay = delay;
-	        // If this action has already an async Id, don't request a new one.
-	        this.id = this.id || this.requestAsyncId(scheduler, this.id, delay);
-	        return this;
-	    };
-	    AsyncAction.prototype.requestAsyncId = function (scheduler, id, delay) {
-	        if (delay === void 0) { delay = 0; }
-	        return root_1.root.setInterval(scheduler.flush.bind(scheduler, this), delay);
-	    };
-	    AsyncAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
-	        if (delay === void 0) { delay = 0; }
-	        // If this action is rescheduled with the same delay time, don't clear the interval id.
-	        if (delay !== null && this.delay === delay) {
-	            return id;
-	        }
-	        // Otherwise, if the action's delay time is different from the current delay,
-	        // clear the interval id
-	        return root_1.root.clearInterval(id) && undefined || undefined;
-	    };
-	    /**
-	     * Immediately executes this action and the `work` it contains.
-	     * @return {any}
-	     */
-	    AsyncAction.prototype.execute = function (state, delay) {
-	        if (this.closed) {
-	            return new Error('executing a cancelled action');
-	        }
-	        this.pending = false;
-	        var error = this._execute(state, delay);
-	        if (error) {
-	            return error;
-	        }
-	        else if (this.pending === false && this.id != null) {
-	            // Dequeue if the action didn't reschedule itself. Don't call
-	            // unsubscribe(), because the action could reschedule later.
-	            // For example:
-	            // ```
-	            // scheduler.schedule(function doWork(counter) {
-	            //   /* ... I'm a busy worker bee ... */
-	            //   var originalAction = this;
-	            //   /* wait 100ms before rescheduling the action */
-	            //   setTimeout(function () {
-	            //     originalAction.schedule(counter + 1);
-	            //   }, 100);
-	            // }, 1000);
-	            // ```
-	            this.id = this.recycleAsyncId(this.scheduler, this.id, null);
-	        }
-	    };
-	    AsyncAction.prototype._execute = function (state, delay) {
-	        var errored = false;
-	        var errorValue = undefined;
-	        try {
-	            this.work(state);
-	        }
-	        catch (e) {
-	            errored = true;
-	            errorValue = !!e && e || new Error(e);
-	        }
-	        if (errored) {
-	            this.unsubscribe();
-	            return errorValue;
-	        }
-	    };
-	    AsyncAction.prototype._unsubscribe = function () {
-	        var id = this.id;
-	        var scheduler = this.scheduler;
-	        var actions = scheduler.actions;
-	        var index = actions.indexOf(this);
-	        this.work = null;
-	        this.delay = null;
-	        this.state = null;
-	        this.pending = false;
-	        this.scheduler = null;
-	        if (index !== -1) {
-	            actions.splice(index, 1);
-	        }
-	        if (id != null) {
-	            this.id = this.recycleAsyncId(scheduler, id, null);
-	        }
-	    };
-	    return AsyncAction;
-	}(Action_1.Action));
-	exports.AsyncAction = AsyncAction;
-	//# sourceMappingURL=AsyncAction.js.map
-
-/***/ },
-/* 277 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var Subscription_1 = __webpack_require__(255);
-	/**
-	 * A unit of work to be executed in a {@link Scheduler}. An action is typically
-	 * created from within a Scheduler and an RxJS user does not need to concern
-	 * themselves about creating and manipulating an Action.
-	 *
-	 * ```ts
-	 * class Action<T> extends Subscription {
-	 *   new (scheduler: Scheduler, work: (state?: T) => void);
-	 *   schedule(state?: T, delay: number = 0): Subscription;
-	 * }
-	 * ```
-	 *
-	 * @class Action<T>
-	 */
-	var Action = (function (_super) {
-	    __extends(Action, _super);
-	    function Action(scheduler, work) {
-	        _super.call(this);
-	    }
-	    /**
-	     * Schedules this action on its parent Scheduler for execution. May be passed
-	     * some context object, `state`. May happen at some point in the future,
-	     * according to the `delay` parameter, if specified.
-	     * @param {T} [state] Some contextual data that the `work` function uses when
-	     * called by the Scheduler.
-	     * @param {number} [delay] Time to wait before executing the work, where the
-	     * time unit is implicit and defined by the Scheduler.
-	     * @return {void}
-	     */
-	    Action.prototype.schedule = function (state, delay) {
-	        if (delay === void 0) { delay = 0; }
-	        return this;
-	    };
-	    return Action;
-	}(Subscription_1.Subscription));
-	exports.Action = Action;
-	//# sourceMappingURL=Action.js.map
-
-/***/ },
-/* 278 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var Scheduler_1 = __webpack_require__(279);
-	var AsyncScheduler = (function (_super) {
-	    __extends(AsyncScheduler, _super);
-	    function AsyncScheduler() {
-	        _super.apply(this, arguments);
-	        this.actions = [];
-	        /**
-	         * A flag to indicate whether the Scheduler is currently executing a batch of
-	         * queued actions.
-	         * @type {boolean}
-	         */
-	        this.active = false;
-	        /**
-	         * An internal ID used to track the latest asynchronous task such as those
-	         * coming from `setTimeout`, `setInterval`, `requestAnimationFrame`, and
-	         * others.
-	         * @type {any}
-	         */
-	        this.scheduled = undefined;
-	    }
-	    AsyncScheduler.prototype.flush = function (action) {
-	        var actions = this.actions;
-	        if (this.active) {
-	            actions.push(action);
-	            return;
-	        }
-	        var error;
-	        this.active = true;
-	        do {
-	            if (error = action.execute(action.state, action.delay)) {
-	                break;
-	            }
-	        } while (action = actions.shift()); // exhaust the scheduler queue
-	        this.active = false;
-	        if (error) {
-	            while (action = actions.shift()) {
-	                action.unsubscribe();
-	            }
-	            throw error;
-	        }
-	    };
-	    return AsyncScheduler;
-	}(Scheduler_1.Scheduler));
-	exports.AsyncScheduler = AsyncScheduler;
-	//# sourceMappingURL=AsyncScheduler.js.map
-
-/***/ },
-/* 279 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/**
-	 * An execution context and a data structure to order tasks and schedule their
-	 * execution. Provides a notion of (potentially virtual) time, through the
-	 * `now()` getter method.
-	 *
-	 * Each unit of work in a Scheduler is called an {@link Action}.
-	 *
-	 * ```ts
-	 * class Scheduler {
-	 *   now(): number;
-	 *   schedule(work, delay?, state?): Subscription;
-	 * }
-	 * ```
-	 *
-	 * @class Scheduler
-	 */
-	var Scheduler = (function () {
-	    function Scheduler(SchedulerAction, now) {
-	        if (now === void 0) { now = Scheduler.now; }
-	        this.SchedulerAction = SchedulerAction;
-	        this.now = now;
-	    }
-	    /**
-	     * Schedules a function, `work`, for execution. May happen at some point in
-	     * the future, according to the `delay` parameter, if specified. May be passed
-	     * some context object, `state`, which will be passed to the `work` function.
-	     *
-	     * The given arguments will be processed an stored as an Action object in a
-	     * queue of actions.
-	     *
-	     * @param {function(state: ?T): ?Subscription} work A function representing a
-	     * task, or some unit of work to be executed by the Scheduler.
-	     * @param {number} [delay] Time to wait before executing the work, where the
-	     * time unit is implicit and defined by the Scheduler itself.
-	     * @param {T} [state] Some contextual data that the `work` function uses when
-	     * called by the Scheduler.
-	     * @return {Subscription} A subscription in order to be able to unsubscribe
-	     * the scheduled work.
-	     */
-	    Scheduler.prototype.schedule = function (work, delay, state) {
-	        if (delay === void 0) { delay = 0; }
-	        return new this.SchedulerAction(this, work).schedule(state, delay);
-	    };
-	    Scheduler.now = Date.now ? Date.now : function () { return +new Date(); };
-	    return Scheduler;
-	}());
-	exports.Scheduler = Scheduler;
-	//# sourceMappingURL=Scheduler.js.map
-
-/***/ },
-/* 280 */
-/***/ function(module, exports) {
-
-	"use strict";
-	function isDate(value) {
-	    return value instanceof Date && !isNaN(+value);
-	}
-	exports.isDate = isDate;
-	//# sourceMappingURL=isDate.js.map
-
-/***/ },
-/* 281 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Observable_1 = __webpack_require__(250);
-	/**
-	 * Represents a push-based event or value that an {@link Observable} can emit.
-	 * This class is particularly useful for operators that manage notifications,
-	 * like {@link materialize}, {@link dematerialize}, {@link observeOn}, and
-	 * others. Besides wrapping the actual delivered value, it also annotates it
-	 * with metadata of, for instance, what type of push message it is (`next`,
-	 * `error`, or `complete`).
-	 *
-	 * @see {@link materialize}
-	 * @see {@link dematerialize}
-	 * @see {@link observeOn}
-	 *
-	 * @class Notification<T>
-	 */
-	var Notification = (function () {
-	    function Notification(kind, value, error) {
-	        this.kind = kind;
-	        this.value = value;
-	        this.error = error;
-	        this.hasValue = kind === 'N';
-	    }
-	    /**
-	     * Delivers to the given `observer` the value wrapped by this Notification.
-	     * @param {Observer} observer
-	     * @return
-	     */
-	    Notification.prototype.observe = function (observer) {
-	        switch (this.kind) {
-	            case 'N':
-	                return observer.next && observer.next(this.value);
-	            case 'E':
-	                return observer.error && observer.error(this.error);
-	            case 'C':
-	                return observer.complete && observer.complete();
-	        }
-	    };
-	    /**
-	     * Given some {@link Observer} callbacks, deliver the value represented by the
-	     * current Notification to the correctly corresponding callback.
-	     * @param {function(value: T): void} next An Observer `next` callback.
-	     * @param {function(err: any): void} [error] An Observer `error` callback.
-	     * @param {function(): void} [complete] An Observer `complete` callback.
-	     * @return {any}
-	     */
-	    Notification.prototype.do = function (next, error, complete) {
-	        var kind = this.kind;
-	        switch (kind) {
-	            case 'N':
-	                return next && next(this.value);
-	            case 'E':
-	                return error && error(this.error);
-	            case 'C':
-	                return complete && complete();
-	        }
-	    };
-	    /**
-	     * Takes an Observer or its individual callback functions, and calls `observe`
-	     * or `do` methods accordingly.
-	     * @param {Observer|function(value: T): void} nextOrObserver An Observer or
-	     * the `next` callback.
-	     * @param {function(err: any): void} [error] An Observer `error` callback.
-	     * @param {function(): void} [complete] An Observer `complete` callback.
-	     * @return {any}
-	     */
-	    Notification.prototype.accept = function (nextOrObserver, error, complete) {
-	        if (nextOrObserver && typeof nextOrObserver.next === 'function') {
-	            return this.observe(nextOrObserver);
-	        }
-	        else {
-	            return this.do(nextOrObserver, error, complete);
-	        }
-	    };
-	    /**
-	     * Returns a simple Observable that just delivers the notification represented
-	     * by this Notification instance.
-	     * @return {any}
-	     */
-	    Notification.prototype.toObservable = function () {
-	        var kind = this.kind;
-	        switch (kind) {
-	            case 'N':
-	                return Observable_1.Observable.of(this.value);
-	            case 'E':
-	                return Observable_1.Observable.throw(this.error);
-	            case 'C':
-	                return Observable_1.Observable.empty();
-	        }
-	        throw new Error('unexpected notification kind value');
-	    };
-	    /**
-	     * A shortcut to create a Notification instance of the type `next` from a
-	     * given value.
-	     * @param {T} value The `next` value.
-	     * @return {Notification<T>} The "next" Notification representing the
-	     * argument.
-	     */
-	    Notification.createNext = function (value) {
-	        if (typeof value !== 'undefined') {
-	            return new Notification('N', value);
-	        }
-	        return this.undefinedValueNotification;
-	    };
-	    /**
-	     * A shortcut to create a Notification instance of the type `error` from a
-	     * given error.
-	     * @param {any} [err] The `error` error.
-	     * @return {Notification<T>} The "error" Notification representing the
-	     * argument.
-	     */
-	    Notification.createError = function (err) {
-	        return new Notification('E', undefined, err);
-	    };
-	    /**
-	     * A shortcut to create a Notification instance of the type `complete`.
-	     * @return {Notification<any>} The valueless "complete" Notification.
-	     */
-	    Notification.createComplete = function () {
-	        return this.completeNotification;
-	    };
-	    Notification.completeNotification = new Notification('C');
-	    Notification.undefinedValueNotification = new Notification('N', undefined);
-	    return Notification;
-	}());
-	exports.Notification = Notification;
-	//# sourceMappingURL=Notification.js.map
-
-/***/ },
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Observable_1 = __webpack_require__(250);
-	var mergeMap_1 = __webpack_require__(283);
-	Observable_1.Observable.prototype.mergeMap = mergeMap_1.mergeMap;
-	Observable_1.Observable.prototype.flatMap = mergeMap_1.mergeMap;
-	//# sourceMappingURL=mergeMap.js.map
-
-/***/ },
-/* 283 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var subscribeToResult_1 = __webpack_require__(284);
-	var OuterSubscriber_1 = __webpack_require__(288);
+	var subscribeToResult_1 = __webpack_require__(275);
+	var OuterSubscriber_1 = __webpack_require__(279);
 	/* tslint:disable:max-line-length */
 	/**
 	 * Projects each source value to an Observable which is merged in the output
@@ -10116,16 +9507,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=mergeMap.js.map
 
 /***/ },
-/* 284 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var root_1 = __webpack_require__(251);
 	var isArray_1 = __webpack_require__(256);
-	var isPromise_1 = __webpack_require__(285);
+	var isPromise_1 = __webpack_require__(276);
 	var Observable_1 = __webpack_require__(250);
-	var iterator_1 = __webpack_require__(286);
-	var InnerSubscriber_1 = __webpack_require__(287);
+	var iterator_1 = __webpack_require__(277);
+	var InnerSubscriber_1 = __webpack_require__(278);
 	var observable_1 = __webpack_require__(263);
 	function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
 	    var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
@@ -10195,7 +9586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=subscribeToResult.js.map
 
 /***/ },
-/* 285 */
+/* 276 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -10206,7 +9597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=isPromise.js.map
 
 /***/ },
-/* 286 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10245,7 +9636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=iterator.js.map
 
 /***/ },
-/* 287 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10286,7 +9677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=InnerSubscriber.js.map
 
 /***/ },
-/* 288 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10321,17 +9712,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=OuterSubscriber.js.map
 
 /***/ },
-/* 289 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(250);
-	var map_1 = __webpack_require__(290);
+	var map_1 = __webpack_require__(281);
 	Observable_1.Observable.prototype.map = map_1.map;
 	//# sourceMappingURL=map.js.map
 
 /***/ },
-/* 290 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10423,17 +9814,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=map.js.map
 
 /***/ },
-/* 291 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(250);
-	var retry_1 = __webpack_require__(292);
+	var retry_1 = __webpack_require__(283);
 	Observable_1.Observable.prototype.retry = retry_1.retry;
 	//# sourceMappingURL=retry.js.map
 
 /***/ },
-/* 292 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10507,15 +9898,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=retry.js.map
 
 /***/ },
-/* 293 */,
-/* 294 */
+/* 284 */,
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _helpers = __webpack_require__(295);
+	var _helpers = __webpack_require__(286);
 	
 	var _helpers2 = _interopRequireDefault(_helpers);
 	
@@ -10587,7 +9978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = new Actions();
 
 /***/ },
-/* 295 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10600,9 +9991,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _object2 = _interopRequireDefault(_object);
 	
-	var _envelope = __webpack_require__(296);
+	var _envelope = __webpack_require__(287);
 	
-	var _pollers = __webpack_require__(298);
+	var _pollers = __webpack_require__(289);
 	
 	var _template = __webpack_require__(299);
 	
@@ -10613,7 +10004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = helpers;
 
 /***/ },
-/* 296 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -10623,9 +10014,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.EnvelopeHelpers = undefined;
 	
-	var _requests = __webpack_require__(297);
+	var _requests = __webpack_require__(288);
 	
-	var _pollers = __webpack_require__(298);
+	var _pollers = __webpack_require__(289);
 	
 	var state = VeLib.core.state;
 	var configs = VeLib.core.configs;
@@ -10643,7 +10034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				};
 				state.merge(mergeObj);
 			}).then(function () {
-				return _pollers.PollerHelpers.pollFoStatus("token");
+				return _pollers.PollerHelpers.pollForStatus("token");
 			}).then(function (token) {
 				return state.merge({ internal: { accessToken: token } });
 			}).then(function () {
@@ -10732,7 +10123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 297 */
+/* 288 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -10782,7 +10173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 298 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10798,28 +10189,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	__webpack_require__(270);
 	
+	__webpack_require__(290);
+	
 	__webpack_require__(273);
 	
+	__webpack_require__(280);
+	
 	__webpack_require__(282);
-	
-	__webpack_require__(289);
-	
-	__webpack_require__(291);
 	
 	var state = VeLib.core.state;
 	var configs = VeLib.core.configs;
 	var callForData = VeLib.core.helpers._call;
 	
 	// -----------------------------------------------
+	var retryCount = 10;
 	
 	var PollerHelpers = exports.PollerHelpers = {
 		pollForCreation: function pollForCreation() {
 			return new Promise(function (resolve, reject) {
 				var getEnvelopeUrl = configs.get().envelopesUrl + '/' + state.get().params.envelope_id;
 	
-				_Observable.Observable.of("").delay(1000).flatMap(function () {
+				_Observable.Observable.interval(1000).flatMap(function () {
 					return _Observable.Observable.fromPromise(callForData('GET', '' + getEnvelopeUrl));
-				}).retry().subscribe(function (x) {
+				}).retry(retryCount).subscribe(function (x) {
 					return resolve(x);
 				});
 			});
@@ -10840,7 +10232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				var getFlowUrl = '' + configs.get().apiBaseAndDomain + flowUid + configs.get().jobsAppendix + '/' + state.get().params.envelope_id;
 	
-				_Observable.Observable.of("").delay(1000).flatMap(function () {
+				_Observable.Observable.interval(1000).flatMap(function () {
 					return _Observable.Observable.fromPromise(callForData("GET", getFlowUrl));
 				}).map(function (data) {
 					if (data[property]) return data;else return Rx.Observable.throw(new Error({
@@ -10852,6 +10244,615 @@ return /******/ (function(modules) { // webpackBootstrap
 			});
 		}
 	};
+
+/***/ },
+/* 290 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Observable_1 = __webpack_require__(250);
+	var delay_1 = __webpack_require__(291);
+	Observable_1.Observable.prototype.delay = delay_1.delay;
+	//# sourceMappingURL=delay.js.map
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var async_1 = __webpack_require__(292);
+	var isDate_1 = __webpack_require__(297);
+	var Subscriber_1 = __webpack_require__(253);
+	var Notification_1 = __webpack_require__(298);
+	/**
+	 * Delays the emission of items from the source Observable by a given timeout or
+	 * until a given Date.
+	 *
+	 * <span class="informal">Time shifts each item by some specified amount of
+	 * milliseconds.</span>
+	 *
+	 * <img src="./img/delay.png" width="100%">
+	 *
+	 * If the delay argument is a Number, this operator time shifts the source
+	 * Observable by that amount of time expressed in milliseconds. The relative
+	 * time intervals between the values are preserved.
+	 *
+	 * If the delay argument is a Date, this operator time shifts the start of the
+	 * Observable execution until the given date occurs.
+	 *
+	 * @example <caption>Delay each click by one second</caption>
+	 * var clicks = Rx.Observable.fromEvent(document, 'click');
+	 * var delayedClicks = clicks.delay(1000); // each click emitted after 1 second
+	 * delayedClicks.subscribe(x => console.log(x));
+	 *
+	 * @example <caption>Delay all clicks until a future date happens</caption>
+	 * var clicks = Rx.Observable.fromEvent(document, 'click');
+	 * var date = new Date('March 15, 2050 12:00:00'); // in the future
+	 * var delayedClicks = clicks.delay(date); // click emitted only after that date
+	 * delayedClicks.subscribe(x => console.log(x));
+	 *
+	 * @see {@link debounceTime}
+	 * @see {@link delayWhen}
+	 *
+	 * @param {number|Date} delay The delay duration in milliseconds (a `number`) or
+	 * a `Date` until which the emission of the source items is delayed.
+	 * @param {Scheduler} [scheduler=async] The Scheduler to use for
+	 * managing the timers that handle the time-shift for each item.
+	 * @return {Observable} An Observable that delays the emissions of the source
+	 * Observable by the specified timeout or Date.
+	 * @method delay
+	 * @owner Observable
+	 */
+	function delay(delay, scheduler) {
+	    if (scheduler === void 0) { scheduler = async_1.async; }
+	    var absoluteDelay = isDate_1.isDate(delay);
+	    var delayFor = absoluteDelay ? (+delay - scheduler.now()) : Math.abs(delay);
+	    return this.lift(new DelayOperator(delayFor, scheduler));
+	}
+	exports.delay = delay;
+	var DelayOperator = (function () {
+	    function DelayOperator(delay, scheduler) {
+	        this.delay = delay;
+	        this.scheduler = scheduler;
+	    }
+	    DelayOperator.prototype.call = function (subscriber, source) {
+	        return source._subscribe(new DelaySubscriber(subscriber, this.delay, this.scheduler));
+	    };
+	    return DelayOperator;
+	}());
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var DelaySubscriber = (function (_super) {
+	    __extends(DelaySubscriber, _super);
+	    function DelaySubscriber(destination, delay, scheduler) {
+	        _super.call(this, destination);
+	        this.delay = delay;
+	        this.scheduler = scheduler;
+	        this.queue = [];
+	        this.active = false;
+	        this.errored = false;
+	    }
+	    DelaySubscriber.dispatch = function (state) {
+	        var source = state.source;
+	        var queue = source.queue;
+	        var scheduler = state.scheduler;
+	        var destination = state.destination;
+	        while (queue.length > 0 && (queue[0].time - scheduler.now()) <= 0) {
+	            queue.shift().notification.observe(destination);
+	        }
+	        if (queue.length > 0) {
+	            var delay_1 = Math.max(0, queue[0].time - scheduler.now());
+	            this.schedule(state, delay_1);
+	        }
+	        else {
+	            source.active = false;
+	        }
+	    };
+	    DelaySubscriber.prototype._schedule = function (scheduler) {
+	        this.active = true;
+	        this.add(scheduler.schedule(DelaySubscriber.dispatch, this.delay, {
+	            source: this, destination: this.destination, scheduler: scheduler
+	        }));
+	    };
+	    DelaySubscriber.prototype.scheduleNotification = function (notification) {
+	        if (this.errored === true) {
+	            return;
+	        }
+	        var scheduler = this.scheduler;
+	        var message = new DelayMessage(scheduler.now() + this.delay, notification);
+	        this.queue.push(message);
+	        if (this.active === false) {
+	            this._schedule(scheduler);
+	        }
+	    };
+	    DelaySubscriber.prototype._next = function (value) {
+	        this.scheduleNotification(Notification_1.Notification.createNext(value));
+	    };
+	    DelaySubscriber.prototype._error = function (err) {
+	        this.errored = true;
+	        this.queue = [];
+	        this.destination.error(err);
+	    };
+	    DelaySubscriber.prototype._complete = function () {
+	        this.scheduleNotification(Notification_1.Notification.createComplete());
+	    };
+	    return DelaySubscriber;
+	}(Subscriber_1.Subscriber));
+	var DelayMessage = (function () {
+	    function DelayMessage(time, notification) {
+	        this.time = time;
+	        this.notification = notification;
+	    }
+	    return DelayMessage;
+	}());
+	//# sourceMappingURL=delay.js.map
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var AsyncAction_1 = __webpack_require__(293);
+	var AsyncScheduler_1 = __webpack_require__(295);
+	exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
+	//# sourceMappingURL=async.js.map
+
+/***/ },
+/* 293 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var root_1 = __webpack_require__(251);
+	var Action_1 = __webpack_require__(294);
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var AsyncAction = (function (_super) {
+	    __extends(AsyncAction, _super);
+	    function AsyncAction(scheduler, work) {
+	        _super.call(this, scheduler, work);
+	        this.scheduler = scheduler;
+	        this.work = work;
+	        this.pending = false;
+	    }
+	    AsyncAction.prototype.schedule = function (state, delay) {
+	        if (delay === void 0) { delay = 0; }
+	        if (this.closed) {
+	            return this;
+	        }
+	        // Always replace the current state with the new state.
+	        this.state = state;
+	        // Set the pending flag indicating that this action has been scheduled, or
+	        // has recursively rescheduled itself.
+	        this.pending = true;
+	        var id = this.id;
+	        var scheduler = this.scheduler;
+	        //
+	        // Important implementation note:
+	        //
+	        // Actions only execute once by default, unless rescheduled from within the
+	        // scheduled callback. This allows us to implement single and repeat
+	        // actions via the same code path, without adding API surface area, as well
+	        // as mimic traditional recursion but across asynchronous boundaries.
+	        //
+	        // However, JS runtimes and timers distinguish between intervals achieved by
+	        // serial `setTimeout` calls vs. a single `setInterval` call. An interval of
+	        // serial `setTimeout` calls can be individually delayed, which delays
+	        // scheduling the next `setTimeout`, and so on. `setInterval` attempts to
+	        // guarantee the interval callback will be invoked more precisely to the
+	        // interval period, regardless of load.
+	        //
+	        // Therefore, we use `setInterval` to schedule single and repeat actions.
+	        // If the action reschedules itself with the same delay, the interval is not
+	        // canceled. If the action doesn't reschedule, or reschedules with a
+	        // different delay, the interval will be canceled after scheduled callback
+	        // execution.
+	        //
+	        if (id != null) {
+	            this.id = this.recycleAsyncId(scheduler, id, delay);
+	        }
+	        this.delay = delay;
+	        // If this action has already an async Id, don't request a new one.
+	        this.id = this.id || this.requestAsyncId(scheduler, this.id, delay);
+	        return this;
+	    };
+	    AsyncAction.prototype.requestAsyncId = function (scheduler, id, delay) {
+	        if (delay === void 0) { delay = 0; }
+	        return root_1.root.setInterval(scheduler.flush.bind(scheduler, this), delay);
+	    };
+	    AsyncAction.prototype.recycleAsyncId = function (scheduler, id, delay) {
+	        if (delay === void 0) { delay = 0; }
+	        // If this action is rescheduled with the same delay time, don't clear the interval id.
+	        if (delay !== null && this.delay === delay) {
+	            return id;
+	        }
+	        // Otherwise, if the action's delay time is different from the current delay,
+	        // clear the interval id
+	        return root_1.root.clearInterval(id) && undefined || undefined;
+	    };
+	    /**
+	     * Immediately executes this action and the `work` it contains.
+	     * @return {any}
+	     */
+	    AsyncAction.prototype.execute = function (state, delay) {
+	        if (this.closed) {
+	            return new Error('executing a cancelled action');
+	        }
+	        this.pending = false;
+	        var error = this._execute(state, delay);
+	        if (error) {
+	            return error;
+	        }
+	        else if (this.pending === false && this.id != null) {
+	            // Dequeue if the action didn't reschedule itself. Don't call
+	            // unsubscribe(), because the action could reschedule later.
+	            // For example:
+	            // ```
+	            // scheduler.schedule(function doWork(counter) {
+	            //   /* ... I'm a busy worker bee ... */
+	            //   var originalAction = this;
+	            //   /* wait 100ms before rescheduling the action */
+	            //   setTimeout(function () {
+	            //     originalAction.schedule(counter + 1);
+	            //   }, 100);
+	            // }, 1000);
+	            // ```
+	            this.id = this.recycleAsyncId(this.scheduler, this.id, null);
+	        }
+	    };
+	    AsyncAction.prototype._execute = function (state, delay) {
+	        var errored = false;
+	        var errorValue = undefined;
+	        try {
+	            this.work(state);
+	        }
+	        catch (e) {
+	            errored = true;
+	            errorValue = !!e && e || new Error(e);
+	        }
+	        if (errored) {
+	            this.unsubscribe();
+	            return errorValue;
+	        }
+	    };
+	    AsyncAction.prototype._unsubscribe = function () {
+	        var id = this.id;
+	        var scheduler = this.scheduler;
+	        var actions = scheduler.actions;
+	        var index = actions.indexOf(this);
+	        this.work = null;
+	        this.delay = null;
+	        this.state = null;
+	        this.pending = false;
+	        this.scheduler = null;
+	        if (index !== -1) {
+	            actions.splice(index, 1);
+	        }
+	        if (id != null) {
+	            this.id = this.recycleAsyncId(scheduler, id, null);
+	        }
+	    };
+	    return AsyncAction;
+	}(Action_1.Action));
+	exports.AsyncAction = AsyncAction;
+	//# sourceMappingURL=AsyncAction.js.map
+
+/***/ },
+/* 294 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var Subscription_1 = __webpack_require__(255);
+	/**
+	 * A unit of work to be executed in a {@link Scheduler}. An action is typically
+	 * created from within a Scheduler and an RxJS user does not need to concern
+	 * themselves about creating and manipulating an Action.
+	 *
+	 * ```ts
+	 * class Action<T> extends Subscription {
+	 *   new (scheduler: Scheduler, work: (state?: T) => void);
+	 *   schedule(state?: T, delay: number = 0): Subscription;
+	 * }
+	 * ```
+	 *
+	 * @class Action<T>
+	 */
+	var Action = (function (_super) {
+	    __extends(Action, _super);
+	    function Action(scheduler, work) {
+	        _super.call(this);
+	    }
+	    /**
+	     * Schedules this action on its parent Scheduler for execution. May be passed
+	     * some context object, `state`. May happen at some point in the future,
+	     * according to the `delay` parameter, if specified.
+	     * @param {T} [state] Some contextual data that the `work` function uses when
+	     * called by the Scheduler.
+	     * @param {number} [delay] Time to wait before executing the work, where the
+	     * time unit is implicit and defined by the Scheduler.
+	     * @return {void}
+	     */
+	    Action.prototype.schedule = function (state, delay) {
+	        if (delay === void 0) { delay = 0; }
+	        return this;
+	    };
+	    return Action;
+	}(Subscription_1.Subscription));
+	exports.Action = Action;
+	//# sourceMappingURL=Action.js.map
+
+/***/ },
+/* 295 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var Scheduler_1 = __webpack_require__(296);
+	var AsyncScheduler = (function (_super) {
+	    __extends(AsyncScheduler, _super);
+	    function AsyncScheduler() {
+	        _super.apply(this, arguments);
+	        this.actions = [];
+	        /**
+	         * A flag to indicate whether the Scheduler is currently executing a batch of
+	         * queued actions.
+	         * @type {boolean}
+	         */
+	        this.active = false;
+	        /**
+	         * An internal ID used to track the latest asynchronous task such as those
+	         * coming from `setTimeout`, `setInterval`, `requestAnimationFrame`, and
+	         * others.
+	         * @type {any}
+	         */
+	        this.scheduled = undefined;
+	    }
+	    AsyncScheduler.prototype.flush = function (action) {
+	        var actions = this.actions;
+	        if (this.active) {
+	            actions.push(action);
+	            return;
+	        }
+	        var error;
+	        this.active = true;
+	        do {
+	            if (error = action.execute(action.state, action.delay)) {
+	                break;
+	            }
+	        } while (action = actions.shift()); // exhaust the scheduler queue
+	        this.active = false;
+	        if (error) {
+	            while (action = actions.shift()) {
+	                action.unsubscribe();
+	            }
+	            throw error;
+	        }
+	    };
+	    return AsyncScheduler;
+	}(Scheduler_1.Scheduler));
+	exports.AsyncScheduler = AsyncScheduler;
+	//# sourceMappingURL=AsyncScheduler.js.map
+
+/***/ },
+/* 296 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * An execution context and a data structure to order tasks and schedule their
+	 * execution. Provides a notion of (potentially virtual) time, through the
+	 * `now()` getter method.
+	 *
+	 * Each unit of work in a Scheduler is called an {@link Action}.
+	 *
+	 * ```ts
+	 * class Scheduler {
+	 *   now(): number;
+	 *   schedule(work, delay?, state?): Subscription;
+	 * }
+	 * ```
+	 *
+	 * @class Scheduler
+	 */
+	var Scheduler = (function () {
+	    function Scheduler(SchedulerAction, now) {
+	        if (now === void 0) { now = Scheduler.now; }
+	        this.SchedulerAction = SchedulerAction;
+	        this.now = now;
+	    }
+	    /**
+	     * Schedules a function, `work`, for execution. May happen at some point in
+	     * the future, according to the `delay` parameter, if specified. May be passed
+	     * some context object, `state`, which will be passed to the `work` function.
+	     *
+	     * The given arguments will be processed an stored as an Action object in a
+	     * queue of actions.
+	     *
+	     * @param {function(state: ?T): ?Subscription} work A function representing a
+	     * task, or some unit of work to be executed by the Scheduler.
+	     * @param {number} [delay] Time to wait before executing the work, where the
+	     * time unit is implicit and defined by the Scheduler itself.
+	     * @param {T} [state] Some contextual data that the `work` function uses when
+	     * called by the Scheduler.
+	     * @return {Subscription} A subscription in order to be able to unsubscribe
+	     * the scheduled work.
+	     */
+	    Scheduler.prototype.schedule = function (work, delay, state) {
+	        if (delay === void 0) { delay = 0; }
+	        return new this.SchedulerAction(this, work).schedule(state, delay);
+	    };
+	    Scheduler.now = Date.now ? Date.now : function () { return +new Date(); };
+	    return Scheduler;
+	}());
+	exports.Scheduler = Scheduler;
+	//# sourceMappingURL=Scheduler.js.map
+
+/***/ },
+/* 297 */
+/***/ function(module, exports) {
+
+	"use strict";
+	function isDate(value) {
+	    return value instanceof Date && !isNaN(+value);
+	}
+	exports.isDate = isDate;
+	//# sourceMappingURL=isDate.js.map
+
+/***/ },
+/* 298 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Observable_1 = __webpack_require__(250);
+	/**
+	 * Represents a push-based event or value that an {@link Observable} can emit.
+	 * This class is particularly useful for operators that manage notifications,
+	 * like {@link materialize}, {@link dematerialize}, {@link observeOn}, and
+	 * others. Besides wrapping the actual delivered value, it also annotates it
+	 * with metadata of, for instance, what type of push message it is (`next`,
+	 * `error`, or `complete`).
+	 *
+	 * @see {@link materialize}
+	 * @see {@link dematerialize}
+	 * @see {@link observeOn}
+	 *
+	 * @class Notification<T>
+	 */
+	var Notification = (function () {
+	    function Notification(kind, value, error) {
+	        this.kind = kind;
+	        this.value = value;
+	        this.error = error;
+	        this.hasValue = kind === 'N';
+	    }
+	    /**
+	     * Delivers to the given `observer` the value wrapped by this Notification.
+	     * @param {Observer} observer
+	     * @return
+	     */
+	    Notification.prototype.observe = function (observer) {
+	        switch (this.kind) {
+	            case 'N':
+	                return observer.next && observer.next(this.value);
+	            case 'E':
+	                return observer.error && observer.error(this.error);
+	            case 'C':
+	                return observer.complete && observer.complete();
+	        }
+	    };
+	    /**
+	     * Given some {@link Observer} callbacks, deliver the value represented by the
+	     * current Notification to the correctly corresponding callback.
+	     * @param {function(value: T): void} next An Observer `next` callback.
+	     * @param {function(err: any): void} [error] An Observer `error` callback.
+	     * @param {function(): void} [complete] An Observer `complete` callback.
+	     * @return {any}
+	     */
+	    Notification.prototype.do = function (next, error, complete) {
+	        var kind = this.kind;
+	        switch (kind) {
+	            case 'N':
+	                return next && next(this.value);
+	            case 'E':
+	                return error && error(this.error);
+	            case 'C':
+	                return complete && complete();
+	        }
+	    };
+	    /**
+	     * Takes an Observer or its individual callback functions, and calls `observe`
+	     * or `do` methods accordingly.
+	     * @param {Observer|function(value: T): void} nextOrObserver An Observer or
+	     * the `next` callback.
+	     * @param {function(err: any): void} [error] An Observer `error` callback.
+	     * @param {function(): void} [complete] An Observer `complete` callback.
+	     * @return {any}
+	     */
+	    Notification.prototype.accept = function (nextOrObserver, error, complete) {
+	        if (nextOrObserver && typeof nextOrObserver.next === 'function') {
+	            return this.observe(nextOrObserver);
+	        }
+	        else {
+	            return this.do(nextOrObserver, error, complete);
+	        }
+	    };
+	    /**
+	     * Returns a simple Observable that just delivers the notification represented
+	     * by this Notification instance.
+	     * @return {any}
+	     */
+	    Notification.prototype.toObservable = function () {
+	        var kind = this.kind;
+	        switch (kind) {
+	            case 'N':
+	                return Observable_1.Observable.of(this.value);
+	            case 'E':
+	                return Observable_1.Observable.throw(this.error);
+	            case 'C':
+	                return Observable_1.Observable.empty();
+	        }
+	        throw new Error('unexpected notification kind value');
+	    };
+	    /**
+	     * A shortcut to create a Notification instance of the type `next` from a
+	     * given value.
+	     * @param {T} value The `next` value.
+	     * @return {Notification<T>} The "next" Notification representing the
+	     * argument.
+	     */
+	    Notification.createNext = function (value) {
+	        if (typeof value !== 'undefined') {
+	            return new Notification('N', value);
+	        }
+	        return this.undefinedValueNotification;
+	    };
+	    /**
+	     * A shortcut to create a Notification instance of the type `error` from a
+	     * given error.
+	     * @param {any} [err] The `error` error.
+	     * @return {Notification<T>} The "error" Notification representing the
+	     * argument.
+	     */
+	    Notification.createError = function (err) {
+	        return new Notification('E', undefined, err);
+	    };
+	    /**
+	     * A shortcut to create a Notification instance of the type `complete`.
+	     * @return {Notification<any>} The valueless "complete" Notification.
+	     */
+	    Notification.createComplete = function () {
+	        return this.completeNotification;
+	    };
+	    Notification.completeNotification = new Notification('C');
+	    Notification.undefinedValueNotification = new Notification('N', undefined);
+	    return Notification;
+	}());
+	exports.Notification = Notification;
+	//# sourceMappingURL=Notification.js.map
 
 /***/ },
 /* 299 */
@@ -14117,7 +14118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/// per that specific template to the api. This is exposed to the user
 	
 	
-	var _helpers = __webpack_require__(295);
+	var _helpers = __webpack_require__(286);
 	
 	var _helpers2 = _interopRequireDefault(_helpers);
 	

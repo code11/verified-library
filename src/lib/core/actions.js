@@ -4,10 +4,7 @@ import helpers from './helpers';
 
 class Actions {
 	constructor(){}
-	// THIS INIT HANDLES INITIAL STATE LOAD, WITH ALL THE DATA FROM URL AND
-	// ALSO THINGS REGARDING domain
-	// ALL LIBRARIES WHICH USED INFO FROM THIS STATE SHOULD TAKE IT FROM HERE , from the global
-	// VeLib.core object
+
 	init(domain){
 		domain && domain.length && configs.setDomain(domain)
 		var qParams = helpers.getQueryParams();
@@ -35,17 +32,22 @@ class Actions {
 						let err = {
 							msg: `resource retrieval fail - ${ key }` ,
 							context: "Fetching params entities",
-							fatal: true
+							fatal: true,
+							code: 1000
 						}
-						key === 'user' && console.error("FATAL:" + err.msg + " at " +err.context)
-						console.error("FATAL: Invalid token")
+
+						if (key === 'user' ) { err.code = 1001 }
 						state.addError(err)
+						console.error("FATAL:" + err.msg + " at " +err.context)
+						state.addError(err);
+						reject(err)
 					})
 				})
 			})
 		})
 	}
 
+	//TODO These are for private only and they will need to be cleaned or put somewhere else i think
 	putTemplateData(data){
 		var params = state.get().params
 		return helpers._call("POST",

@@ -112,11 +112,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		function Actions() {
 			_classCallCheck(this, Actions);
 		}
-		// THIS INIT HANDLES INITIAL STATE LOAD, WITH ALL THE DATA FROM URL AND
-		// ALSO THINGS REGARDING domain
-		// ALL LIBRARIES WHICH USED INFO FROM THIS STATE SHOULD TAKE IT FROM HERE , from the global
-		// VeLib.core object
-	
 	
 		_createClass(Actions, [{
 			key: 'init',
@@ -145,16 +140,25 @@ return /******/ (function(modules) { // webpackBootstrap
 								var err = {
 									msg: 'resource retrieval fail - ' + key,
 									context: "Fetching params entities",
-									fatal: true
+									fatal: true,
+									code: 1000
 								};
-								key === 'user' && console.error("FATAL:" + err.msg + " at " + err.context);
-								console.error("FATAL: Invalid token");
+	
+								if (key === 'user') {
+									err.code = 1001;
+								}
 								_state.state.addError(err);
+								console.error("FATAL:" + err.msg + " at " + err.context);
+								_state.state.addError(err);
+								reject(err);
 							});
 						});
 					});
 				});
 			}
+	
+			//TODO These are for private only and they will need to be cleaned or put somewhere else i think
+	
 		}, {
 			key: 'putTemplateData',
 			value: function putTemplateData(data) {

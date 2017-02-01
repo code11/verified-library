@@ -13,16 +13,16 @@ var configs     = VeLib.core.configs
 var callForData = VeLib.core.helpers._call
 
 // -----------------------------------------------
+const retryCount = 10
 
 export let PollerHelpers = {
 	pollForCreation() {
 		return new Promise( ( resolve, reject ) => {
 			let getEnvelopeUrl = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id}`
 
-			Observable.of( "" )
-				.delay( 1000 )
+			Observable.interval(1000)
 				.flatMap( () => Observable.fromPromise( callForData( 'GET', `${ getEnvelopeUrl }` ) ) )
-				.retry()
+				.retry(retryCount)
 				.subscribe( x => resolve( x ) )
 		} )
 	},
@@ -44,8 +44,7 @@ export let PollerHelpers = {
 			let getFlowUrl =
 				`${ configs.get().apiBaseAndDomain }${ flowUid }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
 
-			Observable.of( "" )
-				.delay( 1000 )
+			Observable.interval(1000)
 				.flatMap( () => Observable.fromPromise( callForData( "GET", getFlowUrl ) ) )
 				.map( data => {
 					if ( data[property] ) return data
