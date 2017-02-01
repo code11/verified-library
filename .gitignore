@@ -8,7 +8,7 @@ target
 /www
 /www/**/*
 /www/*
-
+/dist
 ./build
 .bin/*
 .bin/**
