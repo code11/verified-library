@@ -6,7 +6,7 @@ gulp.task('default', function(){
 		.pipe(webserver({
 			host: "0.0.0.0",
 			port: 3003,
-			livereload: true,
+			livereload: false,
 			// open: 'http://localhost:3001',
 			browser: 'chrome',
 			proxies: [

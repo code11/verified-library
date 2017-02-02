@@ -8,6 +8,7 @@ target
 /www
 /www/**/*
 /www/*
+@test_templates
 /dist
 ./build
 .bin/*

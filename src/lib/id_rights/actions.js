@@ -9,7 +9,7 @@ import {
 
 import 'rxjs/add/observable/of'
 import 'rxjs/add/observable/fromPromise'
-import 'rxjs/add/observable/interval'
+import 'rxjs/add/operator/delay'
 import 'rxjs/add/operator/mergeMap'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/retry'
@@ -20,12 +20,14 @@ import {
 } from "./configs"
 
 const pollIterationCount = 9
+const pollIntervalMs = 1000
 
 class Actions {
 	constructor() {}
 	getCompanyAuthorities(regNumber) {
 		return new Promise(function(resolve, reject) {
-			Observable.interval(1000)
+			Observable.of("")
+			.delay(pollIntervalMs)
 			.flatMap(() => Observable.fromPromise(callForData("GET",
 				`${ configs.get().idrightsUrl }${ regNumber }`
 			)))

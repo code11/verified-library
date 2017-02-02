@@ -1,9 +1,13 @@
+
+### 0.2.0
+- Changed the way errors are caught and settle different error messages
+
 ### 0.1.0
 - Changed the way polling works in the process
 
 
 
-<!-- DEPRECATED !!!!! VERSIONING WAS TARDED -->
+<!-- DEPRECATED !!!!! VERSIONING WAS TARDED and not meaningful sem-ver wise-->
 
 ### 1.0.4
 - Added long polling for idReg
