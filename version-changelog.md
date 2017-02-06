@@ -1,4 +1,7 @@
 
+### 0.2.1
+- Change the FOR OF loop for IE11 inter-compatibility
+
 ### 0.2.0
 - Changed the way errors are caught and settle different error messages
 

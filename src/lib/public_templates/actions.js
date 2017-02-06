@@ -23,7 +23,7 @@ class Actions {
 			if (envelopeExists) { action =  helpers.submitRawUserdata }
 			else action = helpers.createEnvelopeContext
 
-			resolve(action(remoteTemplates))
+			return resolve(action(remoteTemplates))
 
 		})
 	}

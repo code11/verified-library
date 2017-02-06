@@ -10541,10 +10541,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			key: "submitFormData",
 			value: function submitFormData() {
 				return new Promise(function (resolve, reject) {
+					console.info(" 1 in submit form data");
 	
 					var remoteTemplates = _helpers2.default.templateInterfaceToRemote();
 					var envelopeExists = !_helpers2.default.shouldCreateContext();
 	
+					console.info(" 2 in submit form data");
 					var action = null;
 	
 					// This should be linked to the core putTemplateData actions
@@ -10552,7 +10554,9 @@ return /******/ (function(modules) { // webpackBootstrap
 						action = _helpers2.default.submitRawUserdata;
 					} else action = _helpers2.default.createEnvelopeContext;
 	
-					resolve(action(remoteTemplates));
+					console.info("3 in submit form data, action is", action);
+	
+					return resolve(action(remoteTemplates));
 				});
 			}
 		}, {
@@ -10822,7 +10826,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				_Observable.Observable.of("").delay(delayMs).flatMap(function () {
 					return _Observable.Observable.fromPromise(callForData('GET', '' + getEnvelopeUrl));
 				}).retry(retryCount).subscribe(function (envelope) {
-					return resolve(x);
+					return resolve(envelope);
 				}, function (err) {
 					var _err = {
 						msg: 'server errors - max iterations reached - ' + err.msg,
@@ -10945,36 +10949,21 @@ return /******/ (function(modules) { // webpackBootstrap
 			});
 		},
 		templateInterfaceToRemote: function templateInterfaceToRemote() {
+			console.info("Template interface to remote 1");
 			var remoteObject = {};
 			var arrayOfInterfaces = state.get().templates;
+			var templateInterface = null;
+			console.info("Template interface to remote 2 with array of interfaces", arrayOfInterfaces);
 	
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-	
-			try {
-				for (var _iterator = arrayOfInterfaces[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var templateInterface = _step.value;
-	
-					remoteObject[templateInterface.getInfo().hash] = remoteObject[templateInterface.getInfo().hash] || [];
-					remoteObject[templateInterface.getInfo().hash].push({
-						data: templateInterface.getData()
-					});
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
+			for (var i = 0; i < arrayOfInterfaces.length; i++) {
+				templateInterface = arrayOfInterfaces[i];
+				remoteObject[templateInterface.getInfo().hash] = remoteObject[templateInterface.getInfo().hash] || [];
+				remoteObject[templateInterface.getInfo().hash].push({
+					data: templateInterface.getData()
+				});
 			}
+	
+			console.info("Template interface to remote 3");
 	
 			return {
 				"documents": remoteObject

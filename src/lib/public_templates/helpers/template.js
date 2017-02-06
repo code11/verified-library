@@ -56,16 +56,22 @@ export let TemplateHelpers = {
 	},
 
 	templateInterfaceToRemote() {
+		console.info("Template interface to remote 1");
 		let remoteObject = {}
 		let arrayOfInterfaces = state.get().templates
+		var templateInterface = null
+		console.info("Template interface to remote 2 with array of interfaces", arrayOfInterfaces)
 
-		for ( let templateInterface of arrayOfInterfaces ) {
+		for ( var i = 0; i < arrayOfInterfaces.length; i++) {
+			templateInterface = arrayOfInterfaces[i];
 			remoteObject[ templateInterface.getInfo().hash ] = remoteObject[ templateInterface.getInfo().hash ] ||
 				[]
 			remoteObject[ templateInterface.getInfo().hash ].push( {
 				data: templateInterface.getData()
 			} )
 		}
+
+		console.info("Template interface to remote 3")
 
 		return {
 			"documents": remoteObject
