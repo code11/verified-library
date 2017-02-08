@@ -3,6 +3,7 @@ import {
 } from 'rxjs/Observable'
 
 import 'rxjs/add/observable/of'
+import 'rxjs/add/observable/throw'
 import 'rxjs/add/observable/fromPromise'
 import 'rxjs/add/operator/delay'
 import 'rxjs/add/operator/mergeMap'
@@ -67,11 +68,15 @@ export let PollerHelpers = {
 			Observable.of("")
 				.delay(delayMs)
 				.flatMap( () => Observable.fromPromise( callForData( "GET", getFlowUrl ) ) )
-				.map( data => {
-					if ( data[ property ] ) return data
-					else return Rx.Observable.throw( new Error( {
-						msg: "server errors - max iterations reached"
-					} ) )
+				.flatMap( data => {
+					if ( data[ property ] ) return Observable.of(data)
+					else {
+						console.log("property is", property)
+
+						return Observable.throw( new Error( {
+							msg: "server errors - max iterations reached"
+						} ) )
+					}
 				} )
 				.retry( retryCount )
 				.subscribe(
