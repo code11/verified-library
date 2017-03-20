@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p --optimize-min-chunks 10 --output-path './dist/production' --output-filename 've.[name].min.js' ",
     "watch": "concurrently \"webpack --watch\" \"gulp\"",
-    "start": "concurrently \"webpack --watch\" \"gulp\""
+    "start": "concurrently \"webpack --watch\" \"gulp\"",
+	"deploy": "webpack"
   },
   "author": "marius@code11.com",
   "license": "ISC",

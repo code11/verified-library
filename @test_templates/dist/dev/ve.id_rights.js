@@ -96,11 +96,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	__webpack_require__(283);
 	
-	__webpack_require__(290);
+	__webpack_require__(291);
 	
-	__webpack_require__(292);
+	__webpack_require__(293);
 	
-	var _configs = __webpack_require__(294);
+	var _configs = __webpack_require__(295);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -200,7 +200,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            operator.call(sink, this.source);
 	        }
 	        else {
-	            sink.add(this._subscribe(sink));
+	            sink.add(this._trySubscribe(sink));
 	        }
 	        if (sink.syncErrorThrowable) {
 	            sink.syncErrorThrowable = false;
@@ -209,6 +209,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	        return sink;
+	    };
+	    Observable.prototype._trySubscribe = function (sink) {
+	        try {
+	            return this._subscribe(sink);
+	        }
+	        catch (err) {
+	            sink.syncErrorThrown = true;
+	            sink.syncErrorValue = err;
+	            sink.error(err);
+	        }
 	    };
 	    /**
 	     * @method forEach
@@ -471,6 +481,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.destination.complete();
 	        this.unsubscribe();
 	    };
+	    Subscriber.prototype._unsubscribeAndRecycle = function () {
+	        var _a = this, _parent = _a._parent, _parents = _a._parents;
+	        this._parent = null;
+	        this._parents = null;
+	        this.unsubscribe();
+	        this.closed = false;
+	        this.isStopped = false;
+	        this._parent = _parent;
+	        this._parents = _parents;
+	        return this;
+	    };
 	    return Subscriber;
 	}(Subscription_1.Subscription));
 	exports.Subscriber = Subscriber;
@@ -481,9 +502,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var SafeSubscriber = (function (_super) {
 	    __extends(SafeSubscriber, _super);
-	    function SafeSubscriber(_parent, observerOrNext, error, complete) {
+	    function SafeSubscriber(_parentSubscriber, observerOrNext, error, complete) {
 	        _super.call(this);
-	        this._parent = _parent;
+	        this._parentSubscriber = _parentSubscriber;
 	        var next;
 	        var context = this;
 	        if (isFunction_1.isFunction(observerOrNext)) {
@@ -506,49 +527,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    SafeSubscriber.prototype.next = function (value) {
 	        if (!this.isStopped && this._next) {
-	            var _parent = this._parent;
-	            if (!_parent.syncErrorThrowable) {
+	            var _parentSubscriber = this._parentSubscriber;
+	            if (!_parentSubscriber.syncErrorThrowable) {
 	                this.__tryOrUnsub(this._next, value);
 	            }
-	            else if (this.__tryOrSetError(_parent, this._next, value)) {
+	            else if (this.__tryOrSetError(_parentSubscriber, this._next, value)) {
 	                this.unsubscribe();
 	            }
 	        }
 	    };
 	    SafeSubscriber.prototype.error = function (err) {
 	        if (!this.isStopped) {
-	            var _parent = this._parent;
+	            var _parentSubscriber = this._parentSubscriber;
 	            if (this._error) {
-	                if (!_parent.syncErrorThrowable) {
+	                if (!_parentSubscriber.syncErrorThrowable) {
 	                    this.__tryOrUnsub(this._error, err);
 	                    this.unsubscribe();
 	                }
 	                else {
-	                    this.__tryOrSetError(_parent, this._error, err);
+	                    this.__tryOrSetError(_parentSubscriber, this._error, err);
 	                    this.unsubscribe();
 	                }
 	            }
-	            else if (!_parent.syncErrorThrowable) {
+	            else if (!_parentSubscriber.syncErrorThrowable) {
 	                this.unsubscribe();
 	                throw err;
 	            }
 	            else {
-	                _parent.syncErrorValue = err;
-	                _parent.syncErrorThrown = true;
+	                _parentSubscriber.syncErrorValue = err;
+	                _parentSubscriber.syncErrorThrown = true;
 	                this.unsubscribe();
 	            }
 	        }
 	    };
 	    SafeSubscriber.prototype.complete = function () {
 	        if (!this.isStopped) {
-	            var _parent = this._parent;
+	            var _parentSubscriber = this._parentSubscriber;
 	            if (this._complete) {
-	                if (!_parent.syncErrorThrowable) {
+	                if (!_parentSubscriber.syncErrorThrowable) {
 	                    this.__tryOrUnsub(this._complete);
 	                    this.unsubscribe();
 	                }
 	                else {
-	                    this.__tryOrSetError(_parent, this._complete);
+	                    this.__tryOrSetError(_parentSubscriber, this._complete);
 	                    this.unsubscribe();
 	                }
 	            }
@@ -578,10 +599,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return false;
 	    };
 	    SafeSubscriber.prototype._unsubscribe = function () {
-	        var _parent = this._parent;
+	        var _parentSubscriber = this._parentSubscriber;
 	        this._context = null;
-	        this._parent = null;
-	        _parent.unsubscribe();
+	        this._parentSubscriber = null;
+	        _parentSubscriber.unsubscribe();
 	    };
 	    return SafeSubscriber;
 	}(Subscriber));
@@ -605,11 +626,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
 	var isArray_1 = __webpack_require__(257);
 	var isObject_1 = __webpack_require__(258);
 	var isFunction_1 = __webpack_require__(255);
@@ -639,6 +655,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @type {boolean}
 	         */
 	        this.closed = false;
+	        this._parent = null;
+	        this._parents = null;
+	        this._subscriptions = null;
 	        if (unsubscribe) {
 	            this._unsubscribe = unsubscribe;
 	        }
@@ -655,9 +674,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (this.closed) {
 	            return;
 	        }
+	        var _a = this, _parent = _a._parent, _parents = _a._parents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
 	        this.closed = true;
-	        var _a = this, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
+	        this._parent = null;
+	        this._parents = null;
+	        // null out _subscriptions first so any child subscriptions that attempt
+	        // to remove themselves from this subscription will noop
 	        this._subscriptions = null;
+	        var index = -1;
+	        var len = _parents ? _parents.length : 0;
+	        // if this._parent is null, then so is this._parents, and we
+	        // don't have to remove ourselves from any parent subscriptions.
+	        while (_parent) {
+	            _parent.remove(this);
+	            // if this._parents is null or index >= len,
+	            // then _parent is set to null, and the loop exits
+	            _parent = ++index < len && _parents[index] || null;
+	        }
 	        if (isFunction_1.isFunction(_unsubscribe)) {
 	            var trial = tryCatch_1.tryCatch(_unsubscribe).call(this);
 	            if (trial === errorObject_1.errorObject) {
@@ -667,8 +700,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	        if (isArray_1.isArray(_subscriptions)) {
-	            var index = -1;
-	            var len = _subscriptions.length;
+	            index = -1;
+	            len = _subscriptions.length;
 	            while (++index < len) {
 	                var sub = _subscriptions[index];
 	                if (isObject_1.isObject(sub)) {
@@ -716,26 +749,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (teardown === this) {
 	            return this;
 	        }
-	        var sub = teardown;
+	        var subscription = teardown;
 	        switch (typeof teardown) {
 	            case 'function':
-	                sub = new Subscription(teardown);
+	                subscription = new Subscription(teardown);
 	            case 'object':
-	                if (sub.closed || typeof sub.unsubscribe !== 'function') {
-	                    return sub;
+	                if (subscription.closed || typeof subscription.unsubscribe !== 'function') {
+	                    return subscription;
 	                }
 	                else if (this.closed) {
-	                    sub.unsubscribe();
-	                    return sub;
+	                    subscription.unsubscribe();
+	                    return subscription;
+	                }
+	                else if (typeof subscription._addParent !== 'function' /* quack quack */) {
+	                    var tmp = subscription;
+	                    subscription = new Subscription();
+	                    subscription._subscriptions = [tmp];
 	                }
 	                break;
 	            default:
 	                throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
 	        }
-	        var childSub = new ChildSubscription(sub, this);
-	        this._subscriptions = this._subscriptions || [];
-	        this._subscriptions.push(childSub);
-	        return childSub;
+	        var subscriptions = this._subscriptions || (this._subscriptions = []);
+	        subscriptions.push(subscription);
+	        subscription._addParent(this);
+	        return subscription;
 	    };
 	    /**
 	     * Removes a Subscription from the internal list of subscriptions that will
@@ -744,16 +782,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {void}
 	     */
 	    Subscription.prototype.remove = function (subscription) {
-	        // HACK: This might be redundant because of the logic in `add()`
-	        if (subscription == null || (subscription === this) || (subscription === Subscription.EMPTY)) {
-	            return;
-	        }
 	        var subscriptions = this._subscriptions;
 	        if (subscriptions) {
 	            var subscriptionIndex = subscriptions.indexOf(subscription);
 	            if (subscriptionIndex !== -1) {
 	                subscriptions.splice(subscriptionIndex, 1);
 	            }
+	        }
+	    };
+	    Subscription.prototype._addParent = function (parent) {
+	        var _a = this, _parent = _a._parent, _parents = _a._parents;
+	        if (!_parent || _parent === parent) {
+	            // If we don't have a parent, or the new parent is the same as the
+	            // current parent, then set this._parent to the new parent.
+	            this._parent = parent;
+	        }
+	        else if (!_parents) {
+	            // If there's already one parent, but not multiple, allocate an Array to
+	            // store the rest of the parent Subscriptions.
+	            this._parents = [parent];
+	        }
+	        else if (_parents.indexOf(parent) === -1) {
+	            // Only add the new parent to the _parents list if it's not already there.
+	            _parents.push(parent);
 	        }
 	    };
 	    Subscription.EMPTY = (function (empty) {
@@ -763,21 +814,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Subscription;
 	}());
 	exports.Subscription = Subscription;
-	var ChildSubscription = (function (_super) {
-	    __extends(ChildSubscription, _super);
-	    function ChildSubscription(_innerSub, _parent) {
-	        _super.call(this);
-	        this._innerSub = _innerSub;
-	        this._parent = _parent;
-	    }
-	    ChildSubscription.prototype._unsubscribe = function () {
-	        var _a = this, _innerSub = _a._innerSub, _parent = _a._parent;
-	        _parent.remove(this);
-	        _innerSub.unsubscribe();
-	    };
-	    return ChildSubscription;
-	}(Subscription));
-	exports.ChildSubscription = ChildSubscription;
 	function flattenUnsubscriptionErrors(errors) {
 	    return errors.reduce(function (errs, err) { return errs.concat((err instanceof UnsubscriptionError_1.UnsubscriptionError) ? err.errors : err); }, []);
 	}
@@ -1544,6 +1580,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 	var AsyncAction_1 = __webpack_require__(277);
 	var AsyncScheduler_1 = __webpack_require__(279);
+	/**
+	 *
+	 * Async Scheduler
+	 *
+	 * <span class="informal">Schedule task as if you used setTimeout(task, duration)</span>
+	 *
+	 * `async` scheduler schedules tasks asynchronously, by putting them on the JavaScript
+	 * event loop queue. It is best used to delay tasks in time or to schedule tasks repeating
+	 * in intervals.
+	 *
+	 * If you just want to "defer" task, that is to perform it right after currently
+	 * executing synchronous code ends (commonly achieved by `setTimeout(deferredTask, 0)`),
+	 * better choice will be the {@link asap} scheduler.
+	 *
+	 * @example <caption>Use async scheduler to delay task</caption>
+	 * const task = () => console.log('it works!');
+	 *
+	 * Rx.Scheduler.async.schedule(task, 2000);
+	 *
+	 * // After 2 seconds logs:
+	 * // "it works!"
+	 *
+	 *
+	 * @example <caption>Use async scheduler to repeat task in intervals</caption>
+	 * function task(state) {
+	 *   console.log(state);
+	 *   this.schedule(state + 1, 1000); // `this` references currently executing Action,
+	 *                                   // which we reschedule with new state and delay
+	 * }
+	 *
+	 * Rx.Scheduler.async.schedule(task, 3000, 0);
+	 *
+	 * // Logs:
+	 * // 0 after 3s
+	 * // 1 after 4s
+	 * // 2 after 5s
+	 * // 3 after 6s
+	 *
+	 * @static true
+	 * @name async
+	 * @owner Scheduler
+	 */
 	exports.async = new AsyncScheduler_1.AsyncScheduler(AsyncAction_1.AsyncAction);
 	//# sourceMappingURL=async.js.map
 
@@ -2026,8 +2104,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var subscribeToResult_1 = __webpack_require__(285);
-	var OuterSubscriber_1 = __webpack_require__(289);
-	/* tslint:disable:max-line-length */
+	var OuterSubscriber_1 = __webpack_require__(290);
+	/* tslint:enable:max-line-length */
 	/**
 	 * Projects each source value to an Observable which is merged in the output
 	 * Observable.
@@ -2066,7 +2144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @see {@link mergeScan}
 	 * @see {@link switchMap}
 	 *
-	 * @param {function(value: T, ?index: number): Observable} project A function
+	 * @param {function(value: T, ?index: number): ObservableInput} project A function
 	 * that, when applied to an item emitted by the source Observable, returns an
 	 * Observable.
 	 * @param {function(outerValue: T, innerValue: I, outerIndex: number, innerIndex: number): any} [resultSelector]
@@ -2198,12 +2276,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 	var root_1 = __webpack_require__(252);
-	var isArray_1 = __webpack_require__(257);
-	var isPromise_1 = __webpack_require__(286);
+	var isArrayLike_1 = __webpack_require__(286);
+	var isPromise_1 = __webpack_require__(287);
 	var isObject_1 = __webpack_require__(258);
 	var Observable_1 = __webpack_require__(251);
-	var iterator_1 = __webpack_require__(287);
-	var InnerSubscriber_1 = __webpack_require__(288);
+	var iterator_1 = __webpack_require__(288);
+	var InnerSubscriber_1 = __webpack_require__(289);
 	var observable_1 = __webpack_require__(264);
 	function subscribeToResult(outerSubscriber, result, outerValue, outerIndex) {
 	    var destination = new InnerSubscriber_1.InnerSubscriber(outerSubscriber, outerValue, outerIndex);
@@ -2220,7 +2298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return result.subscribe(destination);
 	        }
 	    }
-	    else if (isArray_1.isArray(result)) {
+	    else if (isArrayLike_1.isArrayLike(result)) {
 	        for (var i = 0, len = result.length; i < len && !destination.closed; i++) {
 	            destination.next(result[i]);
 	        }
@@ -2281,6 +2359,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	"use strict";
+	exports.isArrayLike = (function (x) { return x && typeof x.length === 'number'; });
+	//# sourceMappingURL=isArrayLike.js.map
+
+/***/ },
+
+/***/ 287:
+/***/ function(module, exports) {
+
+	"use strict";
 	function isPromise(value) {
 	    return value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
 	}
@@ -2289,7 +2376,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 287:
+/***/ 288:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2329,7 +2416,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 288:
+/***/ 289:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2371,7 +2458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 289:
+/***/ 290:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2407,18 +2494,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 290:
+/***/ 291:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(251);
-	var map_1 = __webpack_require__(291);
+	var map_1 = __webpack_require__(292);
 	Observable_1.Observable.prototype.map = map_1.map;
 	//# sourceMappingURL=map.js.map
 
 /***/ },
 
-/***/ 291:
+/***/ 292:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2511,18 +2598,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 292:
+/***/ 293:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(251);
-	var retry_1 = __webpack_require__(293);
+	var retry_1 = __webpack_require__(294);
 	Observable_1.Observable.prototype.retry = retry_1.retry;
 	//# sourceMappingURL=retry.js.map
 
 /***/ },
 
-/***/ 293:
+/***/ 294:
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2533,10 +2620,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	var Subscriber_1 = __webpack_require__(254);
 	/**
-	 * Returns an Observable that mirrors the source Observable, resubscribing to it if it calls `error` and the
-	 * predicate returns true for that specific exception and retry count.
-	 * If the source Observable calls `error`, this method will resubscribe to the source Observable for a maximum of
-	 * count resubscriptions (given as a number parameter) rather than propagating the `error` call.
+	 * Returns an Observable that mirrors the source Observable with the exception of an `error`. If the source Observable
+	 * calls `error`, this method will resubscribe to the source Observable for a maximum of `count` resubscriptions (given
+	 * as a number parameter) rather than propagating the `error` call.
 	 *
 	 * <img src="./img/retry.png" width="100%">
 	 *
@@ -2544,8 +2630,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * during failed subscriptions. For example, if an Observable fails at first but emits [1, 2] then succeeds the second
 	 * time and emits: [1, 2, 3, 4, 5] then the complete stream of emissions and notifications
 	 * would be: [1, 2, 1, 2, 3, 4, 5, `complete`].
-	 * @param {number} number of retry attempts before failing.
-	 * @return {Observable} the source Observable modified with the retry logic.
+	 * @param {number} count - Number of retry attempts before failing.
+	 * @return {Observable} The source Observable modified with the retry logic.
 	 * @method retry
 	 * @owner Observable
 	 */
@@ -2585,10 +2671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            else if (count > -1) {
 	                this.count = count - 1;
 	            }
-	            this.unsubscribe();
-	            this.isStopped = false;
-	            this.closed = false;
-	            source.subscribe(this);
+	            source.subscribe(this._unsubscribeAndRecycle());
 	        }
 	    };
 	    return RetrySubscriber;
@@ -2597,7 +2680,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 294:
+/***/ 295:
 /***/ function(module, exports) {
 
 	"use strict";

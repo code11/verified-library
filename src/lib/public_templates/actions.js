@@ -32,7 +32,9 @@ class Actions {
 		.then(() => helpers.pollForStatus("signToken") )
 		.then((signToken) => helpers.buildSignUrl(signToken) )
 	}
-
+	getMyRole(){
+		// #TODO To be continued here
+	}
 	getTemplateInterface(){ return helpers.getTemplateObjectsArrayInterface() }
 	getAvailableSigningMethods(){ return helpers.getAvailableSigningMethods() }
 	addRecipient(data) { return helpers.addRecipient(data) }
