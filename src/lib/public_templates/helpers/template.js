@@ -77,5 +77,4 @@ export let TemplateHelpers = {
 			"documents": remoteObject
 		}
 	}
-
 }

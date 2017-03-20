@@ -69,6 +69,20 @@ export let EnvelopeHelpers = {
 		})
 	},
 
+	getMyRole() {
+		if (state.get().remoteEntities.user && state.get().remoteEntities.user.role)
+ 		return state.get().remoteEntities.user.role
+		else {
+			console.warn("No role found in token, assumed i'm the editor")
+			return {
+				"name":   "Generic editor",
+				"action": "edit",
+				"label":  "Generic editor"
+			}
+		}
+
+	},
+
 	findMostSuitableRole() {
 		return new Promise( ( resolve, reject ) => {
 			let roles = state.get().remoteEntities.descriptor.roles

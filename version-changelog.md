@@ -1,3 +1,8 @@
+### 0.2.2
+
+NEED to update docs !! :
+
+Added getMyRole() in public templates API
 
 ### 0.2.1
 - Change the FOR OF loop for IE11 inter-compatibility

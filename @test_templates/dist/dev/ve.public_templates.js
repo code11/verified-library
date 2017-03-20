@@ -10723,6 +10723,11 @@ return /******/ (function(modules) { // webpackBootstrap
 				});
 			}
 		}, {
+			key: "getMyRole",
+			value: function getMyRole() {
+				return _helpers2.default.getMyRole();
+			}
+		}, {
 			key: "getTemplateInterface",
 			value: function getTemplateInterface() {
 				return _helpers2.default.getTemplateObjectsArrayInterface();
@@ -10760,9 +10765,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _envelope = __webpack_require__(298);
 	
-	var _pollers = __webpack_require__(300);
+	var _pollers = __webpack_require__(299);
 	
-	var _template = __webpack_require__(304);
+	var _template = __webpack_require__(303);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -10781,9 +10786,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.EnvelopeHelpers = undefined;
 	
-	var _requests = __webpack_require__(299);
+	var _requests = __webpack_require__(381);
 	
-	var _pollers = __webpack_require__(300);
+	var _pollers = __webpack_require__(299);
 	
 	var state = VeLib.core.state;
 	var configs = VeLib.core.configs;
@@ -10844,6 +10849,16 @@ return /******/ (function(modules) { // webpackBootstrap
 				return role.action.methods;
 			});
 		},
+		getMyRole: function getMyRole() {
+			if (state.get().remoteEntities.user && state.get().remoteEntities.user.role) return state.get().remoteEntities.user.role;else {
+				console.warn("No role found in token, assumed i'm the editor");
+				return {
+					"name": "Generic editor",
+					"action": "edit",
+					"label": "Generic editor"
+				};
+			}
+		},
 		findMostSuitableRole: function findMostSuitableRole() {
 			return new Promise(function (resolve, reject) {
 				var roles = state.get().remoteEntities.descriptor.roles;
@@ -10891,56 +10906,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 299 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var state = VeLib.core.state;
-	
-	// -----------------------------------------------
-	
-	var RequestHelpers = exports.RequestHelpers = {
-		callAndReturnLocation: function callAndReturnLocation(method, url, _body, _params, overwriteToken) {
-			if (!_body) {
-				_body = null;
-			} else {
-				_body = JSON.stringify(_body);
-			}
-	
-			var tkn = overwriteToken;
-			if (overwriteToken) {
-				tkn = "JWT " + overwriteToken;
-			}
-	
-			var params = "?";
-			if (_params) {
-				params += qs.stringify(params);
-			} else params = "";
-	
-			return fetch(url + params, {
-				method: method,
-				headers: new Headers({
-					"Authorization": tkn || "JWT " + state.get().internal.accessToken,
-					"Content-Type": "application/json"
-				}),
-				body: _body
-			}).then(function (response) {
-				if (Number(response.status) > 399 && response.headers && response.headers.location) {
-					throw new Error({
-						msg: "Error",
-						status: status,
-						response: response
-					});
-				} else return response.headers.get('location');
-			});
-		}
-	};
-
-/***/ },
-/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10954,7 +10919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	__webpack_require__(265);
 	
-	__webpack_require__(301);
+	__webpack_require__(300);
 	
 	__webpack_require__(271);
 	
@@ -11039,26 +11004,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 301 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Observable_1 = __webpack_require__(251);
-	var throw_1 = __webpack_require__(302);
+	var throw_1 = __webpack_require__(301);
 	Observable_1.Observable.throw = throw_1._throw;
 	//# sourceMappingURL=throw.js.map
 
 /***/ },
-/* 302 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ErrorObservable_1 = __webpack_require__(303);
+	var ErrorObservable_1 = __webpack_require__(302);
 	exports._throw = ErrorObservable_1.ErrorObservable.create;
 	//# sourceMappingURL=throw.js.map
 
 /***/ },
-/* 303 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11145,7 +11110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=ErrorObservable.js.map
 
 /***/ },
-/* 304 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -11155,11 +11120,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.TemplateHelpers = undefined;
 	
-	var _util = __webpack_require__(305);
+	var _util = __webpack_require__(304);
 	
 	var _util2 = _interopRequireDefault(_util);
 	
-	var _Template = __webpack_require__(381);
+	var _Template = __webpack_require__(380);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -11238,52 +11203,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 305 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  'attempt': __webpack_require__(306),
-	  'bindAll': __webpack_require__(308),
-	  'cond': __webpack_require__(349),
-	  'conforms': __webpack_require__(350),
+	  'attempt': __webpack_require__(305),
+	  'bindAll': __webpack_require__(307),
+	  'cond': __webpack_require__(348),
+	  'conforms': __webpack_require__(349),
 	  'constant': __webpack_require__(34),
-	  'defaultTo': __webpack_require__(353),
-	  'flow': __webpack_require__(354),
-	  'flowRight': __webpack_require__(356),
+	  'defaultTo': __webpack_require__(352),
+	  'flow': __webpack_require__(353),
+	  'flowRight': __webpack_require__(355),
 	  'identity': __webpack_require__(29),
-	  'iteratee': __webpack_require__(357),
-	  'matches': __webpack_require__(358),
-	  'matchesProperty': __webpack_require__(359),
-	  'method': __webpack_require__(360),
-	  'methodOf': __webpack_require__(361),
-	  'mixin': __webpack_require__(362),
-	  'noop': __webpack_require__(325),
-	  'nthArg': __webpack_require__(363),
-	  'over': __webpack_require__(365),
-	  'overEvery': __webpack_require__(367),
-	  'overSome': __webpack_require__(369),
+	  'iteratee': __webpack_require__(356),
+	  'matches': __webpack_require__(357),
+	  'matchesProperty': __webpack_require__(358),
+	  'method': __webpack_require__(359),
+	  'methodOf': __webpack_require__(360),
+	  'mixin': __webpack_require__(361),
+	  'noop': __webpack_require__(324),
+	  'nthArg': __webpack_require__(362),
+	  'over': __webpack_require__(364),
+	  'overEvery': __webpack_require__(366),
+	  'overSome': __webpack_require__(368),
 	  'property': __webpack_require__(179),
-	  'propertyOf': __webpack_require__(370),
-	  'range': __webpack_require__(371),
-	  'rangeRight': __webpack_require__(374),
+	  'propertyOf': __webpack_require__(369),
+	  'range': __webpack_require__(370),
+	  'rangeRight': __webpack_require__(373),
 	  'stubArray': __webpack_require__(171),
 	  'stubFalse': __webpack_require__(50),
-	  'stubObject': __webpack_require__(375),
-	  'stubString': __webpack_require__(376),
-	  'stubTrue': __webpack_require__(377),
-	  'times': __webpack_require__(378),
-	  'toPath': __webpack_require__(379),
-	  'uniqueId': __webpack_require__(380)
+	  'stubObject': __webpack_require__(374),
+	  'stubString': __webpack_require__(375),
+	  'stubTrue': __webpack_require__(376),
+	  'times': __webpack_require__(377),
+	  'toPath': __webpack_require__(378),
+	  'uniqueId': __webpack_require__(379)
 	};
 
 
 /***/ },
-/* 306 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(31),
 	    baseRest = __webpack_require__(28),
-	    isError = __webpack_require__(307);
+	    isError = __webpack_require__(306);
 	
 	/**
 	 * Attempts to invoke `func`, returning either the result or the caught error
@@ -11319,7 +11284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 307 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(14),
@@ -11361,12 +11326,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 308 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayEach = __webpack_require__(209),
 	    baseAssignValue = __webpack_require__(9),
-	    bind = __webpack_require__(309),
+	    bind = __webpack_require__(308),
 	    flatRest = __webpack_require__(101),
 	    toKey = __webpack_require__(100);
 	
@@ -11408,13 +11373,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 309 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseRest = __webpack_require__(28),
-	    createWrap = __webpack_require__(310),
-	    getHolder = __webpack_require__(341),
-	    replaceHolders = __webpack_require__(343);
+	    createWrap = __webpack_require__(309),
+	    getHolder = __webpack_require__(340),
+	    replaceHolders = __webpack_require__(342);
 	
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_BIND_FLAG = 1,
@@ -11471,19 +11436,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 310 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetData = __webpack_require__(311),
-	    createBind = __webpack_require__(313),
-	    createCurry = __webpack_require__(315),
-	    createHybrid = __webpack_require__(316),
-	    createPartial = __webpack_require__(344),
-	    getData = __webpack_require__(324),
-	    mergeData = __webpack_require__(345),
-	    setData = __webpack_require__(331),
-	    setWrapToString = __webpack_require__(332),
-	    toInteger = __webpack_require__(346);
+	var baseSetData = __webpack_require__(310),
+	    createBind = __webpack_require__(312),
+	    createCurry = __webpack_require__(314),
+	    createHybrid = __webpack_require__(315),
+	    createPartial = __webpack_require__(343),
+	    getData = __webpack_require__(323),
+	    mergeData = __webpack_require__(344),
+	    setData = __webpack_require__(330),
+	    setWrapToString = __webpack_require__(331),
+	    toInteger = __webpack_require__(345);
 	
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -11583,11 +11548,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 311 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var identity = __webpack_require__(29),
-	    metaMap = __webpack_require__(312);
+	    metaMap = __webpack_require__(311);
 	
 	/**
 	 * The base implementation of `setData` without support for hot loop shorting.
@@ -11606,7 +11571,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 312 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var WeakMap = __webpack_require__(143);
@@ -11618,10 +11583,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 313 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createCtor = __webpack_require__(314),
+	var createCtor = __webpack_require__(313),
 	    root = __webpack_require__(16);
 	
 	/** Used to compose bitmasks for function metadata. */
@@ -11652,7 +11617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 314 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCreate = __webpack_require__(108),
@@ -11695,15 +11660,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 315 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(31),
-	    createCtor = __webpack_require__(314),
-	    createHybrid = __webpack_require__(316),
-	    createRecurry = __webpack_require__(320),
-	    getHolder = __webpack_require__(341),
-	    replaceHolders = __webpack_require__(343),
+	    createCtor = __webpack_require__(313),
+	    createHybrid = __webpack_require__(315),
+	    createRecurry = __webpack_require__(319),
+	    getHolder = __webpack_require__(340),
+	    replaceHolders = __webpack_require__(342),
 	    root = __webpack_require__(16);
 	
 	/**
@@ -11747,17 +11712,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 316 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var composeArgs = __webpack_require__(317),
-	    composeArgsRight = __webpack_require__(318),
-	    countHolders = __webpack_require__(319),
-	    createCtor = __webpack_require__(314),
-	    createRecurry = __webpack_require__(320),
-	    getHolder = __webpack_require__(341),
-	    reorder = __webpack_require__(342),
-	    replaceHolders = __webpack_require__(343),
+	var composeArgs = __webpack_require__(316),
+	    composeArgsRight = __webpack_require__(317),
+	    countHolders = __webpack_require__(318),
+	    createCtor = __webpack_require__(313),
+	    createRecurry = __webpack_require__(319),
+	    getHolder = __webpack_require__(340),
+	    reorder = __webpack_require__(341),
+	    replaceHolders = __webpack_require__(342),
 	    root = __webpack_require__(16);
 	
 	/** Used to compose bitmasks for function metadata. */
@@ -11845,7 +11810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 317 */
+/* 316 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -11890,7 +11855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 318 */
+/* 317 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -11937,7 +11902,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 319 */
+/* 318 */
 /***/ function(module, exports) {
 
 	/**
@@ -11964,12 +11929,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 320 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLaziable = __webpack_require__(321),
-	    setData = __webpack_require__(331),
-	    setWrapToString = __webpack_require__(332);
+	var isLaziable = __webpack_require__(320),
+	    setData = __webpack_require__(330),
+	    setWrapToString = __webpack_require__(331);
 	
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_BIND_FLAG = 1,
@@ -12026,13 +11991,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 321 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LazyWrapper = __webpack_require__(322),
-	    getData = __webpack_require__(324),
-	    getFuncName = __webpack_require__(326),
-	    lodash = __webpack_require__(328);
+	var LazyWrapper = __webpack_require__(321),
+	    getData = __webpack_require__(323),
+	    getFuncName = __webpack_require__(325),
+	    lodash = __webpack_require__(327);
 	
 	/**
 	 * Checks if `func` has a lazy counterpart.
@@ -12060,11 +12025,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 322 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCreate = __webpack_require__(108),
-	    baseLodash = __webpack_require__(323);
+	    baseLodash = __webpack_require__(322);
 	
 	/** Used as references for the maximum length and index of an array. */
 	var MAX_ARRAY_LENGTH = 4294967295;
@@ -12094,7 +12059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 323 */
+/* 322 */
 /***/ function(module, exports) {
 
 	/**
@@ -12110,11 +12075,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 324 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var metaMap = __webpack_require__(312),
-	    noop = __webpack_require__(325);
+	var metaMap = __webpack_require__(311),
+	    noop = __webpack_require__(324);
 	
 	/**
 	 * Gets metadata for `func`.
@@ -12131,7 +12096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 325 */
+/* 324 */
 /***/ function(module, exports) {
 
 	/**
@@ -12154,10 +12119,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 326 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var realNames = __webpack_require__(327);
+	var realNames = __webpack_require__(326);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -12191,7 +12156,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 327 */
+/* 326 */
 /***/ function(module, exports) {
 
 	/** Used to lookup unminified function names. */
@@ -12201,15 +12166,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 328 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LazyWrapper = __webpack_require__(322),
-	    LodashWrapper = __webpack_require__(329),
-	    baseLodash = __webpack_require__(323),
+	var LazyWrapper = __webpack_require__(321),
+	    LodashWrapper = __webpack_require__(328),
+	    baseLodash = __webpack_require__(322),
 	    isArray = __webpack_require__(47),
 	    isObjectLike = __webpack_require__(46),
-	    wrapperClone = __webpack_require__(330);
+	    wrapperClone = __webpack_require__(329);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -12354,11 +12319,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 329 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCreate = __webpack_require__(108),
-	    baseLodash = __webpack_require__(323);
+	    baseLodash = __webpack_require__(322);
 	
 	/**
 	 * The base constructor for creating `lodash` wrapper objects.
@@ -12382,11 +12347,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 330 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LazyWrapper = __webpack_require__(322),
-	    LodashWrapper = __webpack_require__(329),
+	var LazyWrapper = __webpack_require__(321),
+	    LodashWrapper = __webpack_require__(328),
 	    copyArray = __webpack_require__(128);
 	
 	/**
@@ -12411,10 +12376,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 331 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetData = __webpack_require__(311),
+	var baseSetData = __webpack_require__(310),
 	    shortOut = __webpack_require__(35);
 	
 	/**
@@ -12437,13 +12402,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 332 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getWrapDetails = __webpack_require__(333),
-	    insertWrapDetails = __webpack_require__(334),
+	var getWrapDetails = __webpack_require__(332),
+	    insertWrapDetails = __webpack_require__(333),
 	    setToString = __webpack_require__(32),
-	    updateWrapDetails = __webpack_require__(335);
+	    updateWrapDetails = __webpack_require__(334);
 	
 	/**
 	 * Sets the `toString` method of `wrapper` to mimic the source of `reference`
@@ -12464,7 +12429,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 333 */
+/* 332 */
 /***/ function(module, exports) {
 
 	/** Used to match wrap detail comments. */
@@ -12487,7 +12452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 334 */
+/* 333 */
 /***/ function(module, exports) {
 
 	/** Used to match wrap detail comments. */
@@ -12516,11 +12481,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 335 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayEach = __webpack_require__(209),
-	    arrayIncludes = __webpack_require__(336);
+	    arrayIncludes = __webpack_require__(335);
 	
 	/** Used to compose bitmasks for function metadata. */
 	var WRAP_BIND_FLAG = 1,
@@ -12568,10 +12533,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 336 */
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIndexOf = __webpack_require__(337);
+	var baseIndexOf = __webpack_require__(336);
 	
 	/**
 	 * A specialized version of `_.includes` for arrays without support for
@@ -12591,12 +12556,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 337 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFindIndex = __webpack_require__(338),
-	    baseIsNaN = __webpack_require__(339),
-	    strictIndexOf = __webpack_require__(340);
+	var baseFindIndex = __webpack_require__(337),
+	    baseIsNaN = __webpack_require__(338),
+	    strictIndexOf = __webpack_require__(339);
 	
 	/**
 	 * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
@@ -12617,7 +12582,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 338 */
+/* 337 */
 /***/ function(module, exports) {
 
 	/**
@@ -12647,7 +12612,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 339 */
+/* 338 */
 /***/ function(module, exports) {
 
 	/**
@@ -12665,7 +12630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 340 */
+/* 339 */
 /***/ function(module, exports) {
 
 	/**
@@ -12694,7 +12659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 341 */
+/* 340 */
 /***/ function(module, exports) {
 
 	/**
@@ -12713,7 +12678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 342 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var copyArray = __webpack_require__(128),
@@ -12748,7 +12713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 343 */
+/* 342 */
 /***/ function(module, exports) {
 
 	/** Used as the internal argument placeholder. */
@@ -12783,11 +12748,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 344 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(31),
-	    createCtor = __webpack_require__(314),
+	    createCtor = __webpack_require__(313),
 	    root = __webpack_require__(16);
 	
 	/** Used to compose bitmasks for function metadata. */
@@ -12832,12 +12797,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 345 */
+/* 344 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var composeArgs = __webpack_require__(317),
-	    composeArgsRight = __webpack_require__(318),
-	    replaceHolders = __webpack_require__(343);
+	var composeArgs = __webpack_require__(316),
+	    composeArgsRight = __webpack_require__(317),
+	    replaceHolders = __webpack_require__(342);
 	
 	/** Used as the internal argument placeholder. */
 	var PLACEHOLDER = '__lodash_placeholder__';
@@ -12928,10 +12893,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 346 */
+/* 345 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toFinite = __webpack_require__(347);
+	var toFinite = __webpack_require__(346);
 	
 	/**
 	 * Converts `value` to an integer.
@@ -12970,10 +12935,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 347 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toNumber = __webpack_require__(348);
+	var toNumber = __webpack_require__(347);
 	
 	/** Used as references for various `Number` constants. */
 	var INFINITY = 1 / 0,
@@ -13018,7 +12983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 348 */
+/* 347 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(20),
@@ -13090,7 +13055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 349 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(31),
@@ -13156,11 +13121,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 350 */
+/* 349 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(208),
-	    baseConforms = __webpack_require__(351);
+	    baseConforms = __webpack_require__(350);
 	
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG = 1;
@@ -13197,10 +13162,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 351 */
+/* 350 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseConformsTo = __webpack_require__(352),
+	var baseConformsTo = __webpack_require__(351),
 	    keys = __webpack_require__(41);
 	
 	/**
@@ -13221,7 +13186,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 352 */
+/* 351 */
 /***/ function(module, exports) {
 
 	/**
@@ -13254,7 +13219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 353 */
+/* 352 */
 /***/ function(module, exports) {
 
 	/**
@@ -13285,10 +13250,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 354 */
+/* 353 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createFlow = __webpack_require__(355);
+	var createFlow = __webpack_require__(354);
 	
 	/**
 	 * Creates a function that returns the result of invoking the given functions
@@ -13318,15 +13283,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 355 */
+/* 354 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var LodashWrapper = __webpack_require__(329),
+	var LodashWrapper = __webpack_require__(328),
 	    flatRest = __webpack_require__(101),
-	    getData = __webpack_require__(324),
-	    getFuncName = __webpack_require__(326),
+	    getData = __webpack_require__(323),
+	    getFuncName = __webpack_require__(325),
 	    isArray = __webpack_require__(47),
-	    isLaziable = __webpack_require__(321);
+	    isLaziable = __webpack_require__(320);
 	
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -13402,10 +13367,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 356 */
+/* 355 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createFlow = __webpack_require__(355);
+	var createFlow = __webpack_require__(354);
 	
 	/**
 	 * This method is like `_.flow` except that it creates a function that
@@ -13434,7 +13399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 357 */
+/* 356 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(208),
@@ -13493,7 +13458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 358 */
+/* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(208),
@@ -13538,7 +13503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 359 */
+/* 358 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseClone = __webpack_require__(208),
@@ -13581,7 +13546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 360 */
+/* 359 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseInvoke = __webpack_require__(200),
@@ -13621,7 +13586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 361 */
+/* 360 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseInvoke = __webpack_require__(200),
@@ -13660,7 +13625,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 362 */
+/* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayEach = __webpack_require__(209),
@@ -13740,12 +13705,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 363 */
+/* 362 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseNth = __webpack_require__(364),
+	var baseNth = __webpack_require__(363),
 	    baseRest = __webpack_require__(28),
-	    toInteger = __webpack_require__(346);
+	    toInteger = __webpack_require__(345);
 	
 	/**
 	 * Creates a function that gets the argument at index `n`. If `n` is negative,
@@ -13778,7 +13743,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 364 */
+/* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isIndex = __webpack_require__(39);
@@ -13804,11 +13769,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 365 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(99),
-	    createOver = __webpack_require__(366);
+	    createOver = __webpack_require__(365);
 	
 	/**
 	 * Creates a function that invokes `iteratees` with the arguments it receives
@@ -13834,7 +13799,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 366 */
+/* 365 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var apply = __webpack_require__(31),
@@ -13867,11 +13832,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 367 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayEvery = __webpack_require__(368),
-	    createOver = __webpack_require__(366);
+	var arrayEvery = __webpack_require__(367),
+	    createOver = __webpack_require__(365);
 	
 	/**
 	 * Creates a function that checks if **all** of the `predicates` return
@@ -13903,7 +13868,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 368 */
+/* 367 */
 /***/ function(module, exports) {
 
 	/**
@@ -13932,11 +13897,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 369 */
+/* 368 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arraySome = __webpack_require__(162),
-	    createOver = __webpack_require__(366);
+	    createOver = __webpack_require__(365);
 	
 	/**
 	 * Creates a function that checks if **any** of the `predicates` return
@@ -13968,7 +13933,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 370 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGet = __webpack_require__(67);
@@ -14004,10 +13969,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 371 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createRange = __webpack_require__(372);
+	var createRange = __webpack_require__(371);
 	
 	/**
 	 * Creates an array of numbers (positive and/or negative) progressing from
@@ -14056,12 +14021,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 372 */
+/* 371 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRange = __webpack_require__(373),
+	var baseRange = __webpack_require__(372),
 	    isIterateeCall = __webpack_require__(36),
-	    toFinite = __webpack_require__(347);
+	    toFinite = __webpack_require__(346);
 	
 	/**
 	 * Creates a `_.range` or `_.rangeRight` function.
@@ -14092,7 +14057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 373 */
+/* 372 */
 /***/ function(module, exports) {
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
@@ -14126,10 +14091,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 374 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createRange = __webpack_require__(372);
+	var createRange = __webpack_require__(371);
 	
 	/**
 	 * This method is like `_.range` except that it populates values in
@@ -14173,7 +14138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 375 */
+/* 374 */
 /***/ function(module, exports) {
 
 	/**
@@ -14202,7 +14167,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 376 */
+/* 375 */
 /***/ function(module, exports) {
 
 	/**
@@ -14226,7 +14191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 377 */
+/* 376 */
 /***/ function(module, exports) {
 
 	/**
@@ -14250,12 +14215,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 378 */
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseTimes = __webpack_require__(43),
 	    castFunction = __webpack_require__(186),
-	    toInteger = __webpack_require__(346);
+	    toInteger = __webpack_require__(345);
 	
 	/** Used as references for various `Number` constants. */
 	var MAX_SAFE_INTEGER = 9007199254740991;
@@ -14307,7 +14272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 379 */
+/* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(99),
@@ -14346,7 +14311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 380 */
+/* 379 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var toString = __webpack_require__(97);
@@ -14380,7 +14345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 381 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -14436,6 +14401,56 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	module.exports = {
 		Template: Template
+	};
+
+/***/ },
+/* 381 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var state = VeLib.core.state;
+	
+	// -----------------------------------------------
+	
+	var RequestHelpers = exports.RequestHelpers = {
+		callAndReturnLocation: function callAndReturnLocation(method, url, _body, _params, overwriteToken) {
+			if (!_body) {
+				_body = null;
+			} else {
+				_body = JSON.stringify(_body);
+			}
+	
+			var tkn = overwriteToken;
+			if (overwriteToken) {
+				tkn = "JWT " + overwriteToken;
+			}
+	
+			var params = "?";
+			if (_params) {
+				params += qs.stringify(params);
+			} else params = "";
+	
+			return fetch(url + params, {
+				method: method,
+				headers: new Headers({
+					"Authorization": tkn || "JWT " + state.get().internal.accessToken,
+					"Content-Type": "application/json"
+				}),
+				body: _body
+			}).then(function (response) {
+				if (Number(response.status) > 399 && response.headers && response.headers.location) {
+					throw new Error({
+						msg: "Error",
+						status: status,
+						response: response
+					});
+				} else return response.headers.get('location');
+			});
+		}
 	};
 
 /***/ }
