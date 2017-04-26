@@ -12,12 +12,15 @@ import 'rxjs/add/observable/fromPromise'
 import 'rxjs/add/operator/delay'
 import 'rxjs/add/operator/mergeMap'
 import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/retry'
+import 'rxjs/add/operator/retryWhen'
+import 'rxjs/add/operator/scan'
 
 
 import {
 	configs
 } from "./configs"
+
+import errorList from "./errors.js"
 
 const pollIterationCount = 9
 const pollIntervalMs = 1000
@@ -28,33 +31,33 @@ class Actions {
 		return new Promise(function(resolve, reject) {
 			Observable.of("")
 			.delay(pollIntervalMs)
-			.flatMap(() => Observable.fromPromise(callForData("GET",
-				`${ configs.get().idrightsUrl }${ regNumber }`
-			)))
-			.retry(pollIterationCount)
+			.flatMap(() => Observable.fromPromise(callForData("GET", `${ configs.get().idrightsUrl }${ regNumber }`)))
+			// Retry only if it doesn't throw a straight 404
+			.retryWhen((errors) => {
+				return errors.scan(function(errorCount, err) {
+					if (err.response.status == 404 || err.response.status == 500){
+						throw errorList.notFound(err.msg);
+					}
+					else if(errorCount >= pollIterationCount) {
+						throw errorList.maxIterations(err.msg);
+					}
+					return errorCount + 1;
+				}, 0);
+			})
 			.subscribe(
+				// If contains data data key we resolve
 				function (data){
 					if (!Object.keys(data).length){
-						let _err = {
-							msg: `data errors  - not found` ,
-							context: "Fetching id-rights entities",
-							fatal: false,
-							code: 3000
-						}
-						reject(_err)
-						state.addError(_err)
+						reject(errorList.emptyData())
+						state.addError(errorList.emptyData())
 					}
 					else resolve(data)
 				},
-				function (err){
-					let _err = {
-						msg: `server errors  - max iterations reached - ${ err.msg }` ,
-						context: "Fetching id-rights entities",
-						fatal: true,
-						code: 3001
-					}
-					reject(_err)
-					state.addError(_err)
+				// We catch previously baked error in retryWhen and reject promise, and we add to state
+
+				function (bakedError){
+					reject(bakedError)
+					state.addError(bakedError)
 				}
 			)
 		})

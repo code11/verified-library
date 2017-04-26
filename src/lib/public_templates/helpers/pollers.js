@@ -71,11 +71,7 @@ export let PollerHelpers = {
 				.flatMap( data => {
 					if ( data[ property ] ) return Observable.of(data)
 					else {
-						console.log("property is", property)
-
-						return Observable.throw( new Error( {
-							msg: "server errors - max iterations reached"
-						} ) )
+						throw({"msg":"server errors - max iterations reached"})
 					}
 				} )
 				.retry( retryCount )

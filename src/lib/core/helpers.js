@@ -3,6 +3,7 @@ import { entityMap } from "./namings"
 
 import { configs } from "./configs";
 import { state } from "./state";
+import axios from "axios";
 
 class Helpers {
 	constructor(){}
@@ -13,27 +14,25 @@ class Helpers {
 		var params = "?"
 		if (_params) { params += qs.stringify(params)} else params = ""
 
-		return fetch(url + params , {
+		return axios({
+			url: url + params,
 			method: method,
-			headers: new Headers({
+			headers: {
 				"Authorization": "JWT " + state.get().internal.accessToken,
-				"Content-Type" : "application/json"
-			}),
-			body: _body
-		}).then(function(response) {
-			if (Number(response.status) > 399 ){
-				throw new Error({msg: "Error", status: status, response: response})
-			}
-			else return response.json()
-			.then((json) => json)
-			.catch(() => response.text)
-		})
+				"Content-Type" : "application/json",
+				"x-namespace": state.get().internal.companyUid,
+			},
+			data: _body
+		}).then((response) => response.data)
 	}
 
 	setToken(qParams){
 		return new Promise((resolve, reject) => {
 			if (qParams.access_token){
-				state.merge({ internal: {accessToken: qParams.access_token }})
+				var data = { accessToken: qParams.access_token };
+				if (qParams.c) data.companyUid="/companies/"+qParams.c;
+				state.merge({ internal: data });
+
 				resolve(qParams.access_token);
 			} else {
 				let err = {

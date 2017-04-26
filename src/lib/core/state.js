@@ -5,7 +5,9 @@ export class State {
 		// Only here for documentation purposes to see the keys, same for above
 		this.state    = initialState || {}
 		this.internal = {
-			accessToken: null
+			accessToken: null,
+			domain: null,
+			companyUid: null
 		}
 
 		this.params   = {}

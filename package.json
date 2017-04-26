@@ -1,14 +1,12 @@
 {
   "name": "verified-library",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "",
   "main": "ve.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -p --optimize-min-chunks 10 --output-path './dist/production' --output-filename 've.[name].min.js' ",
-    "watch": "concurrently \"webpack --watch\" \"gulp\"",
-    "start": "concurrently \"webpack --watch\" \"gulp\"",
-	"deploy": "webpack"
+    "watch": "webpack --watch",
+    "start": "webpack"
   },
   "author": "marius@code11.com",
   "license": "ISC",
@@ -31,6 +29,7 @@
   },
   "dependencies": {
     "ansi-regex": "^2.0.0",
+    "axios": "^0.16.1",
     "clone-stats": "^1.0.0",
     "rxjs": "^5.0.0-rc.4"
   }
