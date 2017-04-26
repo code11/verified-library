@@ -8,8 +8,10 @@ target
 /www
 /www/**/*
 /www/*
-@test_templates
-/dist
+/@test_templates
+/dist/*
+dist/*
+dist
 ./build
 .bin/*
 .bin/**
