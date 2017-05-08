@@ -54,8 +54,9 @@ export let EnvelopeHelpers = {
 
 	buildSignUrl: ( signToken ) => {
 		return new Promise( ( resolve, reject ) => {
+			let signDomain = configs.get().domain || ""
 			let url =
-				`/#${ configs.get().domain }/sign/envelopes/${ state.get().remoteEntities.envelope.id }?access_token=${ signToken }`
+				`${ signDomain }/#/sign/envelopes/${ state.get().remoteEntities.envelope.id }?access_token=${ signToken }`
 			resolve( url )
 		} )
 	},
