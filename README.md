@@ -4,6 +4,11 @@ Master will not point to anything, checkout individual branches.
 
 I will list versions bump notices here and the changes if they are important to the library user on each version bump:
 
+0.3.1
+______________________________________
+- Fixed critical bug with custom domain and signing url
+
+
 0.3.0
 ______________________________________
 - Added request authorization for companyUid param
