@@ -18,10 +18,11 @@ ______________________________________
 
 ### Commonly used properties
 
-Try to keep sent data in ' lower camel case'
+*Try to keep sent data in ' lower camel case'*
 
-Special significance: orgNo
-Optional others:
+Special significance: **orgNo**
+
+Other examples:
 
 - firstName, lastName, personNumber, email, phone, mobile, customerName, country
 - postalCode, postalTown, postalAddress
