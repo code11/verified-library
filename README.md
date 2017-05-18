@@ -14,3 +14,14 @@ ______________________________________
 - Added request authorization for companyUid param
 - Stopped polling in id_rights when response is 404
 - Replaced fetch with Axios for requests
+
+
+### Commonly used properties
+
+Try to keep sent data in ' lower camel case'
+
+Special significance: orgNo
+Optional others:
+
+- firstName, lastName, personNumber, email, phone, mobile, customerName, country
+- postalCode, postalTown, postalAddress
