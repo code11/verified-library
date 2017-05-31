@@ -26,6 +26,7 @@ export let RequestHelpers = {
 		return fetch( url + params, {
 			method: method,
 			headers: new Headers(headers),
+			credentials: 'same-origin',
 			body: _body
 		} ).then( response => {
 			if ( Number( response.status ) > 399 && response.headers && response.headers.location ) {
