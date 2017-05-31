@@ -1,4 +1,4 @@
-var state = VeLib.core.state
+const state = VeLib.core.state
 
 // -----------------------------------------------
 
@@ -10,20 +10,22 @@ export let RequestHelpers = {
 			_body = JSON.stringify( _body )
 		}
 
-		var tkn = overwriteToken
-		if (overwriteToken) { tkn = "JWT " + overwriteToken }
+		const tkn = overwriteToken || state.get().internal.accessToken;
 
-		var params = "?"
+		const headers = {
+			"Content-Type": "application/json"
+		}
+
+		if(tkn) headers.authorization = "JWT "+tkn;
+
+		var params = "?";
 		if ( _params ) {
 			params += qs.stringify( params )
 		} else params = ""
 
 		return fetch( url + params, {
 			method: method,
-			headers: new Headers( {
-				"Authorization": tkn || ("JWT " + state.get().internal.accessToken),
-				"Content-Type": "application/json"
-			} ),
+			headers: new Headers(headers),
 			body: _body
 		} ).then( response => {
 			if ( Number( response.status ) > 399 && response.headers && response.headers.location ) {

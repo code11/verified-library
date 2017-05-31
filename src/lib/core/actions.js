@@ -8,8 +8,8 @@ class Actions {
 	init(domain, descriptor_id){
 		domain && domain.length && configs.setDomain(domain)
 		var qParams = helpers.getQueryParams();
-		if(descriptor_id)
-			state.merge({ params: {descriptor_id: descriptor_id} });
+		if(descriptor_id && !qParams.descriptor_id)
+			qParams.descriptor_id = descriptor_id;
 
 		state.merge({ params: qParams });
 

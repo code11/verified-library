@@ -48,7 +48,7 @@ class Helpers {
 	}
 
 	getRemoteEntitiesPromise() {
-		var entityPromises = {}
+		var entityPromises = {};
 		var params = state.get().params;
 
 		if (params['descriptor_id']) {
@@ -84,11 +84,11 @@ class Helpers {
 				${ params.template_id }`
 			)
 		}
-		if (params['access_token']) {
-			entityPromises[entityMap.access_token] = this._call.bind(null, "GET",
-				`${ configs.get().userinfoUrl }`
-			)
-		}
+		//if (params['access_token']) {
+		entityPromises[entityMap.access_token] = this._call.bind(null, "GET",
+			`${ configs.get().userinfoUrl }`
+		)
+		//}
 		return entityPromises
 	}
 }
