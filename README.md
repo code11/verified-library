@@ -41,10 +41,11 @@ Notes:
 ###### CORE
 ```javascript
 	VeLib.core = {
-    	init( [ String domain ] ){ return Promise() }
+    	init( [ String domain, String descriptor_id ] ){ return Promise() }
         // Sets up the library data and authentication using the url params and must be called immediately
     	// Optional domain if the library with the template is hosted at your specific url
-        // Usage: VeLib.core.init("mydomain").then(() => { *your code here* })
+        // Optional descriptor_id can be specified so that it can be missing in the URL.
+        // Usage: VeLib.core.init("mydomain", "Hstzse-").then(() => { *your code here* })
 
         getTemplateData(){ return Promise(Object data) }
         // Useful if some data has already been submitted, you could load this data
