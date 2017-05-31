@@ -18,7 +18,6 @@ ______________________________________
 
     <!-- Add-on API's . Only load if you require them-->
 	<script src="../dist/dev/ve.public_templates.js"></script>
-    <script src="../dist/dev/ve.bisnode.js"></script>
     <script src="../dist/dev/ve.id_rights.js"></script>
     <script src="../dist/dev/ve.bisnode.js"></script>
 ```
@@ -29,6 +28,7 @@ The library exposes the following objects into the global context:
 Object {} VeLib.core
 Object {} VeLib.public_templates // if appropriate script is imported only
 Object {} VeLib.id_rights // if appropriate script is imported only
+Object {} VeLib.bisnode
 ```
 ___
 
@@ -94,6 +94,16 @@ VeLib.public_templates methods:
 // }
 
 ```
+
+##### Bisnode
+
+VeLib.bisnode methods:
+
+```javascript
+	getCompanyInfo(String orgNumber){ return Promise(data) }
+	getPersonInfo(String personSSN){ return Promise(data) }
+```
+
 
 ##### The templateObject methods
 

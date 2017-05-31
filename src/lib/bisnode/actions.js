@@ -12,6 +12,13 @@ class Actions {
 		${ configs.get().companySuffix }?regNumber=${ regNumber }`
 		)
 	}
+
+	getPersonInfo( ssn ) {
+		return callForData( "GET",
+			`${ configs.get().bisnodeUrl }
+		${ configs.get().personSuffix }?personNumber=${ ssn }`
+		)
+	}
 }
 
 module.exports = new Actions()
