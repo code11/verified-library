@@ -16,6 +16,12 @@ ______________________________________
 - Replaced fetch with Axios for requests
 
 
+0.3.3
+______________________________________
+- Will only issue an warning in case access token is missing from the URL.
+- VeLib.core.init now accepts second argument the descriptor_id so it can be removed from the url 
+
+
 ### Commonly used properties
 
 *Try to keep sent data in ' lower camel case'*
