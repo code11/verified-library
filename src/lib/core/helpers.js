@@ -11,40 +11,39 @@ class Helpers {
 
 	_call(method, url, _body, _params){
 		if (!_body) { _body = null } else { _body = JSON.stringify(_body) }
-		var params = "?"
+		var token, params = "?"
 		if (_params) { params += qs.stringify(params)} else params = ""
+
+		var headers = {
+			"Content-Type" : "application/json",
+			"x-namespace": state.get().internal.companyUid,
+		};
+
+		if((token=state.get().internal.accessToken)) {
+			headers.authorization = "JWT " + token;
+		}
 
 		return axios({
 			url: url + params,
 			method: method,
-			headers: {
-				"Authorization": "JWT " + state.get().internal.accessToken,
-				"Content-Type" : "application/json",
-				"x-namespace": state.get().internal.companyUid,
-			},
+			headers: headers,
 			data: _body
 		}).then((response) => response.data)
 	}
 
 	setToken(qParams){
 		return new Promise((resolve, reject) => {
-			if (qParams.access_token){
-				var data = { accessToken: qParams.access_token };
-				if (qParams.c) data.companyUid="/companies/"+qParams.c;
-				state.merge({ internal: data });
-
-				resolve(qParams.access_token);
-			} else {
-				let err = {
-						msg    : "missing resource - token",
-						context: "Token initialization",
-						fatal  : true
-					}
-
-				state.addError(err)
-				console.error("FATAL: " + err.msg + " at " + err.context)
-				reject("no token found in query params")
+			var data = {
+				accessToken: qParams.access_token
 			};
+			if (qParams.c) {
+				data.companyUid="/companies/"+qParams.c;
+			}
+			if (!qParams.access_token){
+				console.warn("Missing access_token parameter, will try to use the locally stored one, if any.");
+			}
+			state.merge({ internal: data });
+			resolve(qParams.access_token);
 		})
 	}
 
