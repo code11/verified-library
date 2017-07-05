@@ -11,12 +11,14 @@ export let RequestHelpers = {
 		}
 
 		const tkn = overwriteToken || state.get().internal.accessToken;
+		const cUid = state.get().internal.companyUid
 
 		const headers = {
 			"Content-Type": "application/json"
 		}
 
-		if(tkn) headers.authorization = "JWT "+tkn;
+		if (cUid) headers['x-namespace'] = cUid
+		if (tkn) headers.authorization = "JWT "+tkn;
 
 		var params = "?";
 		if ( _params ) {
