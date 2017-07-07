@@ -10,7 +10,8 @@ class Helpers {
 	getQueryParams() { return qs.parse(location.search)}
 
 	_call(method, url, _body, _params, headers={}){
-		headers["x-namespace"] = state.get().internal.companyUid;
+		if (state.get().internal.companyUid)
+			headers["x-namespace"] = state.get().internal.companyUid;
 
 		if (!_body) {
 			_body = null
