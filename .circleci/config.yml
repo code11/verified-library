@@ -20,5 +20,6 @@ jobs:
             python3.4 get-pip.py --user
             export PATH=~/.local/bin:$PATH
             pip install awscli --upgrade --user
-            aws s3 sync ./dist s3://s3.eu-central-1.amazonaws.com/verified-cdn/
+            aws s3 cp ./dist/ s3://verified-cdn --recursive --acl public-read
+
 
