@@ -1,0 +1,8 @@
+version: 2
+machine:
+  node:
+    version: 7.0.0
+dependencies:
+  override:
+    - npm install
+    - npm run build
