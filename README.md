@@ -1,7 +1,7 @@
 ### Dev:
 - "npm run watch" for local watch and dev bundle generation
 
-- "npm run build" for final output
+- "npm run start" for final output
 
 ______________________________________
 
