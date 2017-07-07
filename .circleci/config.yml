@@ -1,8 +1,10 @@
 version: 2
-machine:
-  node:
-    version: 7.0.0
-dependencies:
-  override:
-    - npm install
-    - npm run build
+jobs:
+  build:
+    working_directory: ~/
+    docker:
+      - image: circleci/node:7
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run build
