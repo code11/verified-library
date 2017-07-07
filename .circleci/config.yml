@@ -10,3 +10,9 @@ jobs:
       - run: npm run build
       - store_artifacts:
           path: ./dist
+
+  deployment:
+    cdn:
+      commands:
+        - aws s3 sync s3://s3.eu-central-1.amazonaws.com/verified-cdn/ --delete
+        ##- aws s3 sync ./dist s3://circle-production-static-site/docs/ --delete

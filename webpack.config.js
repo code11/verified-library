@@ -10,7 +10,7 @@ module.exports = {
 		id_rights: "./src/lib/id_rights/@main.js"
 	},
 	output: {
-		path: './dist/',
+		path: './dist/' + version + "/",
 		filename: "ve.[name].js" 	,
 		libraryTarget: 'umd',
 		library: [ "VeLib", "[name]" ]
