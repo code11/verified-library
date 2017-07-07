@@ -1,4 +1,5 @@
 import actions from "./actions"
+import helpers from "./helpers"
 
 
 class PublicTemplate {
