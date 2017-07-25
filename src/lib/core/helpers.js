@@ -84,7 +84,7 @@ class Helpers {
 					}
 				})
 		} else if (params['descriptor_id']) {
-			this._call("GET", `/envelope-descriptors/${ params.descriptor_id }`)
+			return this._call("GET", `/envelope-descriptors/${ params.descriptor_id }`)
 				.then((descriptor) => {
 					return {
 						descriptor: descriptor
