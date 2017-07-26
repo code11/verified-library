@@ -37,6 +37,19 @@ class Actions {
 		var t = state.get().remoteEntities.template
 		return Promise.resolve(t && t.userData || {})
 	}
+
+	getMyRoles() {
+		if (state.get().remoteEntities.user && state.get().remoteEntities.user.roles)
+		return state.get().remoteEntities.user.roles
+			else {
+			console.warn("No role found in token, assumed i'm the owner")
+			return [ {
+				label: 'roles',
+				name: 'owner'
+			} ]
+		}
+
+	}
 }
 
 let actions = new Actions()

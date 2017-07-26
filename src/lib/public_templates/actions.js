@@ -33,9 +33,6 @@ class Actions {
 	publish( ) {
 		return helpers.publishEnvelope( ).then(( ) => helpers.pollForStatus( "signToken" )).then(( signToken ) => helpers.buildSignUrl( signToken ))
 	}
-	getMyRoles( ) {
-		return helpers.getMyRoles( )
-	}
 	getTemplateInterface( ) {
 		return helpers.getTemplateObjectsArrayInterface( )
 	}
