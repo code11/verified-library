@@ -122,9 +122,9 @@ class Helpers {
 		// }
 		//if (params['access_token']) {
 
-		entityPromises[entityMap.access_token] = this._call.bind(null, "GET",
-			`${ configs.get().userinfoUrl }`
-		)
+		// entityPromises[entityMap.access_token] = this._call.bind(null, "GET",
+		// 	`${ configs.get().userinfoUrl }`
+		// )
 
 		//}
 		return entityPromises
