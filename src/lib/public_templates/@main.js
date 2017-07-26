@@ -1,21 +1,20 @@
 import actions from "./actions"
 import helpers from "./helpers"
-
+var state = VeLib.core.state
 
 class PublicTemplate {
-	constructor(){
+	constructor( ) {
 		this.actions = actions
 	}
-	init(){
-		return {
-			needsContextCreation: helpers.shouldCreateContext()
-		}
+
+	init( options ) {
+		state.merge({ publicTemplateOptions: options })
+		return {needsContextCreation: helpers.shouldCreateContext( )}
 	}
 }
 
+var publicTemplate = new PublicTemplate( )
 
-var publicTemplate = new PublicTemplate()
-
-Object.setPrototypeOf(publicTemplate, actions)
+Object.setPrototypeOf( publicTemplate, actions )
 
 module.exports = publicTemplate
