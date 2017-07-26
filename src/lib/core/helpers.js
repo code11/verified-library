@@ -69,7 +69,7 @@ class Helpers {
 
 		var documentUid = params.document_uid;
 
-		this._call("GET",
+		return this._call("GET",
 			`${ configs.get().userinfoUrl }`
 		).then((user) => {
 			if (documentUid) {
