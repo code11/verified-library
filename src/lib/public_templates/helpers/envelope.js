@@ -70,16 +70,15 @@ export let EnvelopeHelpers = {
 		})
 	},
 
-	getMyRole() {
-		if (state.get().remoteEntities.user && state.get().remoteEntities.user.role)
- 		return state.get().remoteEntities.user.role
+	getMyRoles() {
+		if (state.get().remoteEntities.user && state.get().remoteEntities.user.roles)
+ 		return state.get().remoteEntities.user.roles
 		else {
-			console.warn("No role found in token, assumed i'm the editor")
-			return {
-				"name":   "Generic editor",
-				"action": "edit",
-				"label":  "Generic editor"
-			}
+			console.warn("No role found in token, assumed i'm the owner")
+			return [ {
+				label: 'roles',
+				name: 'owner'
+			} ]
 		}
 
 	},

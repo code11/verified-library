@@ -25,37 +25,6 @@ class Actions {
 					throw error
 				});
 
-			// // This should solve only the remote entites calls
-			// return new Promise((resolve, reject) => {
-			// 	var entityPromises = helpers.getRemoteEntitiesPromise()
-			// 	var remoteEntities = {}
-			// 	var totalCallsToBeDone = Object.keys(entityPromises).length
-			//
-			// 	Object.keys(entityPromises).forEach((key) => {
-			// 		entityPromises[key]().then((data) => {
-			// 			remoteEntities[key] = data
-			//
-			// 			totalCallsToBeDone--;
-			// 			if (totalCallsToBeDone === 0){
-			// 				state.merge({ remoteEntities: remoteEntities });
-			// 				resolve(state.get());
-			// 			}
-			// 		})
-			// 		.catch((error) => {
-			// 			let err = {
-			// 				msg: `resource retrieval fail - ${ key }` ,
-			// 				context: "Fetching params entities",
-			// 				fatal: true,
-			// 				code: 1000
-			// 			}
-			//
-			// 			if (key === 'user' ) { err.code = 1001 }
-			// 			state.addError(err)
-			// 			console.error("FATAL:" + err.msg + " at " +err.context)
-			// 			reject(err)
-			// 		})
-			// 	})
-			// })
 		})
 	}
 
