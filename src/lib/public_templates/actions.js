@@ -4,8 +4,7 @@ var state = VeLib.core.state
 class Actions {
 	constructor( ) {}
 
-	init( options ) {
-		state.merge({ publicTemplateOptions: options })
+	init() {
 
 		return new Promise(( resolve, reject ) => {
 			resolve({needsContextCreation: helpers.shouldCreateContext( )})

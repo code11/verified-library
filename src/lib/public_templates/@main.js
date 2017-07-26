@@ -7,8 +7,7 @@ class PublicTemplate {
 		this.actions = actions
 	}
 
-	init( options ) {
-		state.merge({ publicTemplateOptions: options })
+	init( ) {
 		return {needsContextCreation: helpers.shouldCreateContext( )}
 	}
 }
