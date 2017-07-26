@@ -5,7 +5,7 @@ export class Configs {
 		return {
 			// TODO need to update this after i know the url
 			// companySuffix: '/company',
-			idrightsUrl : `${ coreConfigs.domain }${ coreConfigs.apiBase }/id-rights/public/signing-procuration/`,
+			idrightsUrl : `${ coreConfigs.domain }/id-rights/public/signing-procuration/`,
 		}
 	}
 }
