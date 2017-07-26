@@ -68,53 +68,64 @@ class Helpers {
 		var params = state.get().params;
 
 		var documentUid = params.document_uid;
-		if (documentUid) {
-			var envelopeUid = documentUid.match(/^(\/envelopes\/[^/]+)\//)[1];
 
-			return this._call("GET",  envelopeUid )
-				.then((envelope) => {
-					var document = envelope.documents.find(doc => doc.uid === documentUid);
-					if(!document)
-						throw {code: 404, message: "Document not found"};
-					return {
-						envelope: envelope,
-						descriptor: envelope.descriptor,
-						document: document,
-						template: document.template
-					}
-				})
-		} else if (params['descriptor_id']) {
-			return this._call("GET", `/envelope-descriptors/${ params.descriptor_id }`)
-				.then((descriptor) => {
-					return {
-						descriptor: descriptor
-					}
-				})
-		}
+		this._call("GET",
+			`${ configs.get().userinfoUrl }`
+		).then((user) => {
+			if (documentUid) {
+				var envelopeUid = documentUid.match(/^(\/envelopes\/[^/]+)\//)[1];
 
-		if (params['document_id']) {
-			entityPromises[entityMap.document_id] = this._call.bind(null, "GET",
-				`${ configs.get().envelopesUrl }/
-				${ params.envelope_id }
-				${ configs.get().documentsAppendix }/
-				${ params.document_id }`
-			)
-		}
+				return this._call("GET",  envelopeUid )
+					.then((envelope) => {
+						var document = envelope.documents.find(doc => doc.uid === documentUid);
+						if(!document)
+							throw {code: 404, message: "Document not found"};
+						return {
+							envelope: envelope,
+							descriptor: envelope.descriptor,
+							document: document,
+							template: document.template,
+							user: user
+						}
+					})
+			} else if (params['descriptor_id']) {
+				return this._call("GET", `/envelope-descriptors/${ params.descriptor_id }`)
+					.then((descriptor) => {
+						return {
+							descriptor: descriptor,
+							user: user
+						}
+					})
+			}
 
-		if (params['template_id']) {
-			entityPromises[entityMap.template_id] = this._call.bind(null, "GET",
-				`${ configs.get().envelopesUrl }/
-				${ params.envelope_id }
-				${ configs.get().documentsAppendix }/
-				${ params.document_id }
-				${ configs.get().templatesAppendix }/
-				${ params.template_id }`
-			)
-		}
+		})
+
+
+		// if (params['document_id']) {
+		// 	entityPromises[entityMap.document_id] = this._call.bind(null, "GET",
+		// 		`${ configs.get().envelopesUrl }/
+		// 		${ params.envelope_id }
+		// 		${ configs.get().documentsAppendix }/
+		// 		${ params.document_id }`
+		// 	)
+		// }
+		//
+		// if (params['template_id']) {
+		// 	entityPromises[entityMap.template_id] = this._call.bind(null, "GET",
+		// 		`${ configs.get().envelopesUrl }/
+		// 		${ params.envelope_id }
+		// 		${ configs.get().documentsAppendix }/
+		// 		${ params.document_id }
+		// 		${ configs.get().templatesAppendix }/
+		// 		${ params.template_id }`
+		// 	)
+		// }
 		//if (params['access_token']) {
+
 		entityPromises[entityMap.access_token] = this._call.bind(null, "GET",
 			`${ configs.get().userinfoUrl }`
 		)
+
 		//}
 		return entityPromises
 	}
