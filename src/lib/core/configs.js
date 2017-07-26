@@ -26,7 +26,7 @@ export class Configs {
 		return {
 			descriptorUrl        : `${ this.domain }${ this.apiBase }/envelope-descriptors`,
 			envelopesUrl         : `${ this.domain }${ this.apiBase }/envelopes`,
-			userinfoUrl          : `${ this.domain }${ this.apiBaseAuth }/auth/userinfo`,
+			userinfoUrl          : `${ this.domain }/auth/userinfo`,
 			createEnvelopePrefix : `${ this.domain }${ this.apiBase }/envelope-descriptors`,
 			flowInfoUrl          : `${ this.apiBaseAuth }/flows`,
 			apiBaseAndDomain     : `${ this.domain }${ this.apiBase }`,
