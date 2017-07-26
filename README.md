@@ -4,6 +4,13 @@ Master will not point to anything, checkout individual branches.
 
 I will list versions bump notices here and the changes if they are important to the library user on each version bump:
 
+0.6.0
+______________________________________
+- Provided getMyRoles method in VeLib.core
+- Fixed params document uid and descriptor selectors based on private /public template
+
+
+
 0.3.1
 ______________________________________
 - Fixed critical bug with custom domain and signing url
