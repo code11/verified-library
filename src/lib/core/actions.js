@@ -6,7 +6,7 @@ import identity from "./identity"
 
 const defaultOwnerRole = {
 	label: 'roles',
-	name: 'owner'
+	name: '/roles/owner'
 }
 
 class Actions {
@@ -36,7 +36,9 @@ class Actions {
 
 	getMyRoles( ) {
 		if ( state.get( ).remoteEntities.user && state.get( ).remoteEntities.user.roles )
-			return state.get( ).remoteEntities.user.roles
+			let roles = state.get( ).remoteEntities.user.roles
+			return roles = roles.filter((role) => (role.label === 'roles' || role.label === 'descriptors' ))
+
 		else {
 			console.warn( "No role found in token, assumed i'm the owner" )
 			return [ defaultOwnerRole ]
