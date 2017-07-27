@@ -18,27 +18,25 @@ class Actions {
 	submitFormData() {
 
 		const envelopeExists = !helpers.shouldCreateContext
+
 		let action = null
+		let actionObject = null
 
 		if ( envelopeExists ) {
 			action = privateTemplate.putTemplateData
+			actionObject =
+				state.get()
+				.templates[ 0 ].data || {}
+
+		} else {
+			action = helpers.createEnvelopeContext
+			actionObject = helpers.templateInterfaceToRemote()
 		}
 
-		return new Promise( ( resolve, reject ) => {
+		return action( actionObject )
 
-			let remoteTemplates = helpers.templateInterfaceToRemote()
-
-
-			// This should be linked to the core putTemplateData actions
-			if ( envelopeExists ) {
-				action = privateTemplate.putTemplateData
-			} else
-				action = helpers.createEnvelopeContext
-
-			return resolve( action( remoteTemplates ) )
-
-		} )
 	}
+
 	publish() {
 		return helpers.publishEnvelope()
 			.then( () => helpers.pollForStatus( "signToken" ) )

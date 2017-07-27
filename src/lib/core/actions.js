@@ -36,8 +36,12 @@ class Actions {
 
 	getMyRoles( ) {
 		if ( state.get( ).remoteEntities.user && state.get( ).remoteEntities.user.roles )
+		{
 			let roles = state.get( ).remoteEntities.user.roles
-			return roles = roles.filter((role) => (role.label === 'roles' || role.label === 'descriptors' ))
+			roles = roles.filter((role) => (role.label === 'roles' || role.label === 'descriptors' ))
+			return roles
+
+		}
 
 		else {
 			console.warn( "No role found in token, assumed i'm the owner" )
