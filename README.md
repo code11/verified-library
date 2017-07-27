@@ -47,6 +47,9 @@ Notes:
         // Optional descriptor_id can be specified so that it can be missing in the URL.
         // Usage: VeLib.core.init("mydomain", "Hstzse-").then(() => { *your code here* })
 
+		getMyRoles() { retrurn Array[role, role ... ]}
+		// Returns a list of roles based on the token information
+
         getTemplateData(){ return Promise(Object data) }
         // Useful if some data has already been submitted, you could load this data
         // in your variables for initialization purposes
