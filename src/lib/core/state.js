@@ -34,4 +34,5 @@ export class State {
 	}
 }
 
-export let state = new State()
+let state = new State()
+export default state

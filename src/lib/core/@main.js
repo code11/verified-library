@@ -1,16 +1,11 @@
 import actions  from './actions'
 import helpers  from './helpers'
+import state from './state'
+import configs  from './configs'
+import remote from "./remote"
 
-// imports with {} means singleton instances/they have state
-
-import { configs }  from './configs'
-import { state } from './state'
-const VeLib = {
-	actions: actions,
-	configs: configs,
-	helpers: helpers,
-	state  : state
-}
+const VeLib = { actions, configs, helpers, state , remote }
 
 Object.setPrototypeOf(VeLib, actions)
+
 module.exports = VeLib

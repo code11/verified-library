@@ -5,6 +5,7 @@ var version = require("./package.json").version
 module.exports = {
 	entry: {
 		core: "./src/lib/core/@main.js",
+		private_templates: './src/lib/private_templates/@main.js',
 		public_templates: "./src/lib/public_templates/@main.js",
 		bisnode: "./src/lib/bisnode/@main.js",
 		id_rights: "./src/lib/id_rights/@main.js"

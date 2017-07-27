@@ -1,4 +1,4 @@
-var callForData = VeLib.core.helpers._call
+var callForData = VeLib.core.remote.callForData
 
 import {
 	configs
@@ -6,18 +6,19 @@ import {
 
 class Actions {
 	constructor() {}
+
 	getCompanyInfo( regNumber ) {
-		return callForData( "GET",
-			`${ configs.get().bisnodeUrl }
-		${ configs.get().companySuffix }?regNumber=${ regNumber }`
-		)
+		return callForData( {
+			method: "GET",
+			url: `${ configs.get().bisnodeUrl }${ configs.get().companySuffix }?regNumber=${ regNumber }`
+		} )
 	}
 
 	getPersonInfo( ssn ) {
-		return callForData( "GET",
-			`${ configs.get().bisnodeUrl }
-		${ configs.get().personSuffix }?personNumber=${ ssn }`
-		)
+		return callForData( {
+			method: "GET",
+			url: `${ configs.get().bisnodeUrl }${ configs.get().personSuffix }?personNumber=${ ssn }`
+		} )
 	}
 }
 

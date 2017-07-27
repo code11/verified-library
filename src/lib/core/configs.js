@@ -1,10 +1,11 @@
 export class Configs {
 
 	constructor(domain){
+
+		// Not used for now in 1.0.0.. could come in the future
 		this.domain            =  this.domain || this.getDomain()
 		// -----------------------------------------------
 		this.apiBase           = "/api"
-		this.apiBaseAuth       = "/api"
 		// -----------------------------------------------
 
 		this.documentsAppendix   = '/documents'
@@ -19,20 +20,19 @@ export class Configs {
 
 	}
 
+	// Not used for now in 1.0.0.. could come in the future
 	setDomain(domain){ this.domain = domain }
 	getDomain() { return this.domain || "" }
 
 	get(){
 		return {
-			descriptorUrl        : `${ this.domain }${ this.apiBase }/envelope-descriptors`,
-			envelopesUrl         : `${ this.domain }${ this.apiBase }/envelopes`,
+			descriptorUrl        : `${ this.domain }/envelope-descriptors`,
+			envelopesUrl         : `${ this.domain }/envelopes`,
 			userinfoUrl          : `${ this.domain }/auth/userinfo`,
-			createEnvelopePrefix : `${ this.domain }${ this.apiBase }/envelope-descriptors`,
-			flowInfoUrl          : `${ this.apiBaseAuth }/flows`,
-			apiBaseAndDomain     : `${ this.domain }${ this.apiBase }`,
+			createEnvelopePrefix : `${ this.domain }/envelope-descriptors`,
+			flowInfoUrl          : `${ this.domain }/flows`,
 			domain               : this.domain,
 			apiBase              : this.apiBase,
-			apiBaseAuth          : this.apiBaseAuth,
 			documentsAppendix    : this.documentsAppendix,
 			templatesAppendix    : this.templatesAppendix,
 			userDataAppendix     : this.userDataAppendix,
@@ -44,4 +44,5 @@ export class Configs {
 	}
 }
 
-export let configs = new Configs()
+let configs = new Configs()
+export default configs

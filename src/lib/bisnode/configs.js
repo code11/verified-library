@@ -5,7 +5,7 @@ export class Configs {
 		return {
 			companySuffix: '/company',
 			personSuffix: '/person',
-			bisnodeUrl : `${ coreConfigs.domain }${ coreConfigs.apiBase }/bisnode`
+			bisnodeUrl : '/bisnode'
 		}
 	}
 }

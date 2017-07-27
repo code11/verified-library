@@ -1,56 +1,47 @@
-import { configs } from './configs';
-import { state } from './state';
-import helpers from './helpers';
+import configs from './configs'
+import state from './state'
+import helpers from './helpers'
+import parsers from "./parsers"
+import identity from "./identity"
+
+const defaultOwnerRole = {
+	label: 'roles',
+	name: 'owner'
+}
 
 class Actions {
-	constructor(){}
+	constructor( ) {}
+	init({ descriptor_id, initialState }) {
 
-	init(domain, descriptor_id){
-		domain && domain.length && configs.setDomain(domain)
-		var qParams = helpers.getQueryParams();
-		if(descriptor_id && !qParams.descriptor_id)
-			qParams.descriptor_id = descriptor_id;
+		if ( initialState )
+			state.merge( {}, initialState )
+
+		const qParams = parsers.getQueryParams({ descriptor_id });
 
 		state.merge({ params: qParams });
 
-		return helpers.setToken(qParams)
-		.then(() => {
-			return helpers.getRemoteEntitiesPromise()
-				.then((remoteEntities)=>{
-					state.merge({ remoteEntities: remoteEntities });
-					return state.get();
-				})
-				.catch((error) => {
-					console.error(error);
-					throw error
-				});
-
-		})
+		return identity
+			.set( qParams )
+			.then(( ) => helpers.getRemoteEntitiesPromise( ).then(( remoteEntities ) => {
+				state.merge({ remoteEntities });
+				return state.get( )
+			}).catch(( error ) => {
+				console.error( error )
+				throw error
+			}))
 	}
 
-	//TODO These are for private only and they will need to be cleaned or put somewhere else i think
-	putTemplateData(data){
-		return helpers.putTemplateData(data)
-	}
+	// TODO refactor this so it filters out roles i'm not interested in...only
+	// looking for descriptor template roles
 
-	getTemplateData(){
-		var t = state.get().remoteEntities.template
-		return Promise.resolve(t && t.userData || {})
-	}
-
-	getMyRoles() {
-		if (state.get().remoteEntities.user && state.get().remoteEntities.user.roles)
-		return state.get().remoteEntities.user.roles
-			else {
-			console.warn("No role found in token, assumed i'm the owner")
-			return [ {
-				label: 'roles',
-				name: 'owner'
-			} ]
+	getMyRoles( ) {
+		if ( state.get( ).remoteEntities.user && state.get( ).remoteEntities.user.roles )
+			return state.get( ).remoteEntities.user.roles
+		else {
+			console.warn( "No role found in token, assumed i'm the owner" )
+			return [ defaultOwnerRole ]
 		}
-
 	}
 }
-
-let actions = new Actions()
+let actions = new Actions( )
 export default actions
