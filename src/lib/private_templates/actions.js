@@ -1,5 +1,6 @@
 const call = VeLib.core.remote.callForData
 let configs = VeLib.core.configs.get( )
+const state = VeLib.core.state
 
 class Actions {
 	constructor( ) {}
