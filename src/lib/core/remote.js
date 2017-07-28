@@ -25,8 +25,7 @@ class Remote {
 		if (!headers["accept"])
 			headers["accept"] = "application/json";
 
-		var token,
-			params = "?";
+		var token = null;
 
 		if (( token = state.get( ).internal.accessToken )) {
 			headers.authorization = "JWT " + token;

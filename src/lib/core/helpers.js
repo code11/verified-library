@@ -8,7 +8,7 @@ class Helpers {
 
 	getRemoteEntitiesPromise() {
 
-		let { documentUid, descriptor_id }  = state.get().params;
+		let { document_uid, descriptor_id }  = state.get().params;
 
 		return remote
 			.callForData( {
@@ -16,15 +16,15 @@ class Helpers {
 				url: `${ configs.get( ).userinfoUrl }`
 			} )
 			.then( ( user ) => {
-				if ( documentUid ) {
-					var envelopeUid = documentUid.match( /^(\/envelopes\/[^/]+)\// )[ 1 ];
+				if ( document_uid ) {
+					var envelopeUid = document_uid.match( /^(\/envelopes\/[^/]+)\// )[ 1 ];
 
 					return remote
 						.callForData( { method: "GET", url: envelopeUid } )
 						.then( ( envelope ) => {
 							var document = envelope
 								.documents
-								.find( doc => doc.uid === documentUid );
+								.find( doc => doc.uid === document_uid );
 							if ( !document )
 								throw { code: 404, message: "Document not found" };
 							return {
