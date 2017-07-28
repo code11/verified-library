@@ -25,6 +25,9 @@ class Helpers {
 					return remote.callForData({ method: "GET", url: `${ template.uid }${ configs.get( ).userDataAppendix }` }).then(( userData ) => {
 						template.userData = userData
 						return { envelope, descriptor, document, template, user }
+					}).catch((err) => {
+						console.warn("Template data get failed")
+						return { envelope, descriptor, document, template, user}
 					})
 				})
 			} else if ( descriptor_id ) {
