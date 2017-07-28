@@ -1,10 +1,8 @@
-var state = VeLib.core.state
-var configs = VeLib.core.configs
-var callForData = VeLib.core.helpers._call
+const state = VeLib.core.state
+const configs = VeLib.core.configs
+const callForData = VeLib.core.remote.callForData
+const callAndReturnLocation = VeLib.core.remote.callAndReturnLocation
 
-import {
-	RequestHelpers
-} from "./requests"
 import {
 	PollerHelpers
 } from "./pollers"
@@ -12,7 +10,11 @@ import {
 export let EnvelopeHelpers = {
 	createEnvelopeContext: remoteReadyDocuments => {
 		var endpoint = `${ configs.get().createEnvelopePrefix }/${ state.get().params.descriptor_id }/envelopes`
-		return RequestHelpers.callAndReturnLocation( "POST", `${ endpoint }`, remoteReadyDocuments )
+		return callAndReturnLocation({
+			method: "POST",
+			url: `${ endpoint }`,
+			body: remoteReadyDocuments
+		})
 			.then( location => {
 				let envelopeId = location.split( `${ configs.envelopesAppendix }/` )[ 1 ]
 				var mergeObj = {
@@ -41,9 +43,14 @@ export let EnvelopeHelpers = {
 
 	publishEnvelope: (token) => {
 		let url = `${ configs.get().envelopesUrl }/${ state.get().params.envelope_id }${ configs.get().publishAppendix}`
-		return RequestHelpers.callAndReturnLocation( "PUT", `${ url }`, {
-			published: true
-		} , null , token)
+		return callAndReturnLocation({
+			method: "PUT",
+			url: `${ url }`,
+			body: {
+				published: true
+			},
+			overwriteToken: token
+		})
 	},
 
 	shouldCreateContext: () => {
@@ -112,9 +119,11 @@ export let EnvelopeHelpers = {
 			return recipient
 		})
 		.then( recipient => {
-			return callForData( "POST",
-				`${ configs.get().envelopesUrl }/${ state.get().remoteEntities.envelope.id}${ configs.get().recipientsAppendix }`,
-				recipient )
+			return callForData({
+				method: "POST",
+				url:`${ configs.get().envelopesUrl }/${ state.get().remoteEntities.envelope.id}${ configs.get().recipientsAppendix }`,
+				body: recipient
+			})
 		})
 	}
 

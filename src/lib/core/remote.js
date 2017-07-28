@@ -12,7 +12,9 @@ class Remote {
 		url,
 		body,
 		params = {},
-		headers = {}
+		headers = {},
+		overwriteToken,
+		credentials
 	}) {
 		if ( state.get( ).internal.companyUid )
 			headers["x-namespace"] = state.get( ).internal.companyUid;
@@ -30,13 +32,31 @@ class Remote {
 			headers.authorization = "JWT " + token;
 		}
 
+		if ( overwriteToken ) {
+			headers.authorization = "JWT " + token;
+		}
+
 		return axios({
 			url: `${ configs.apiBase }${ url }`,
 			method: method,
 			headers: headers,
-			data: _body,
+			data: body,
+			withCredentials: !!credentials,
 			params: params
 		})
+	}
+
+	callAndReturnLocation({ method, url, body, params, overwriteToken }) {
+
+		return _this.call({
+			method: method,
+			url: url,
+			body: body,
+			params: params,
+			credentials: true
+		})
+		.then(response => response.headers.get( 'location' ))
+
 	}
 
 	callForData( opts ) {
