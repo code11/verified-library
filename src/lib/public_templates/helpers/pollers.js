@@ -66,13 +66,13 @@ export let PollerHelpers = {
 			}
 
 			let getFlowUrl =
-				`${ configs.get().apiBaseAndDomain }${ flowUid }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
+				`${ flowUid }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
 
 			Observable.of("")
 				.delay(delayMs)
 				.flatMap( () => Observable.fromPromise( callForData({
 					method: "GET",
-					url: getFlowUrl 
+					url: getFlowUrl
 				}) ) )
 				.flatMap( data => {
 					if ( data[ property ] ) return Observable.of(data)
