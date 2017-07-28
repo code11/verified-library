@@ -13,7 +13,7 @@ import 'rxjs/add/operator/retry'
 
 var state = VeLib.core.state
 var configs = VeLib.core.configs
-var callForData = VeLib.core.helpers._call
+var callForData = VeLib.core.remote.callForData
 
 // -----------------------------------------------
 const retryCount = 10
@@ -26,7 +26,10 @@ export let PollerHelpers = {
 
 			Observable.of("")
 				.delay(delayMs)
-				.flatMap( () => Observable.fromPromise( callForData( 'GET', `${ getEnvelopeUrl }` ) ) )
+				.flatMap( () => Observable.fromPromise( callForData({
+					method: 'GET',
+					url: `${ getEnvelopeUrl }`
+				}) ) )
 				.retry( retryCount )
 				.subscribe(
 					( envelope ) => resolve( envelope ),
@@ -67,7 +70,10 @@ export let PollerHelpers = {
 
 			Observable.of("")
 				.delay(delayMs)
-				.flatMap( () => Observable.fromPromise( callForData( "GET", getFlowUrl ) ) )
+				.flatMap( () => Observable.fromPromise( callForData({
+					method: "GET",
+					url: getFlowUrl 
+				}) ) )
 				.flatMap( data => {
 					if ( data[ property ] ) return Observable.of(data)
 					else {
