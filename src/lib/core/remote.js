@@ -52,7 +52,7 @@ let remote = new Remote( )
 let expose = {
 	callAndReturnLocation: ({ method, url, body, params, overwriteToken }) => {
 
-		return remote.call({
+		return remote._call({
 			method: method,
 			url: url,
 			body: body,
