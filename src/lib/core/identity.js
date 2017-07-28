@@ -1,4 +1,5 @@
 const _ = require( "lodash/object" )
+import state from './state'
 
 class Identity {
 	constructor( ) {}
