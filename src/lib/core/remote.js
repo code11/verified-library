@@ -14,7 +14,7 @@ class Remote {
 		params = {},
 		headers = {},
 		overwriteToken,
-		credentials = true
+		credentials = 'same-origin'
 	}) {
 		if ( state.get( ).internal.companyUid )
 			headers["x-namespace"] = state.get( ).internal.companyUid;
