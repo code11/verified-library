@@ -40,11 +40,11 @@ class Remote {
 	}
 
 	callForData( opts ) {
-		return _call( opts ).then( ( response ) => response.data )
+		return this._call( opts ).then( ( response ) => response.data )
 	}
 
 	call( opts ) {
-		return _call( opts )
+		return this._call( opts )
 	}
 
 }
