@@ -48,7 +48,7 @@ class Remote {
 
 	callAndReturnLocation({ method, url, body, params, overwriteToken }) {
 
-		return _this.call({
+		return this.call({
 			method: method,
 			url: url,
 			body: body,
