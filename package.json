@@ -1,6 +1,6 @@
 {
   "name": "verified-library",
-  "version": "0.6.0",
+  "version": "1.0.0-prealpha",
   "description": "",
   "main": "ve.min.js",
   "scripts": {
