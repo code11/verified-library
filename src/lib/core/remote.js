@@ -45,8 +45,10 @@ class Remote {
 			params: params
 		})
 	}
+}
 
-	callAndReturnLocation({ method, url, body, params, overwriteToken }) {
+let expose = {
+	callAndReturnLocation: ({ method, url, body, params, overwriteToken }) => {
 
 		return this.call({
 			method: method,
@@ -57,17 +59,16 @@ class Remote {
 		})
 		.then(response => response.headers.get( 'location' ))
 
-	}
-
-	callForData( opts ) {
+	},
+	callForData: ( opts ) => {
 		return this._call( opts ).then( ( response ) => response.data )
-	}
-
-	call( opts ) {
+	},
+	call: ( opts ) => {
 		return this._call( opts )
 	}
-
 }
 
 let remote = new Remote( )
-export default remote
+Object.setPrototypeOf(expose, remote)
+
+export default expose
