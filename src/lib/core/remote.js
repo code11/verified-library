@@ -39,7 +39,7 @@ class Remote {
 
 		return axios({
 			url: `${ configs.apiBase }${ url }`,
-			method: method,
+			method: method || "GET",
 			headers: headers,
 			data: body,
 			withCredentials: credentials,

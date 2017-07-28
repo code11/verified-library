@@ -37,7 +37,7 @@ class Helpers {
 						} )
 				} else if ( descriptor_id ) {
 					return remote
-						.callForData( { metod: "GET", url: `/envelope-descriptors/${ descriptor_id }` } )
+						.callForData( { method: "GET", url: `/envelope-descriptors/${ descriptor_id }` } )
 						.then( ( descriptor ) => {
 							return { descriptor: descriptor, user: user }
 						} )
