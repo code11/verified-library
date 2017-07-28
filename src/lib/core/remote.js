@@ -59,7 +59,7 @@ let expose = {
 			params: params,
 			credentials: false
 		})
-		.then(response => response.headers['location']
+		.then(response => response.headers['location'])
 
 	},
 	callForData: ( opts ) => {
