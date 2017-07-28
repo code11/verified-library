@@ -35,18 +35,21 @@ class Actions {
 	// looking for descriptor template roles
 
 	getMyRoles( ) {
+
+		let roles = [ defaultOwnerRole ]
+		let tokenRoles = null
+
 		if ( state.get( ).remoteEntities.user && state.get( ).remoteEntities.user.roles )
 		{
-			let roles = state.get( ).remoteEntities.user.roles
-			roles = roles.filter((role) => (role.label === 'roles' || role.label === 'descriptors' ))
-			return roles
-
+			tokenRoles = state.get( ).remoteEntities.user.roles
+			tokenRoles = tokenRoles.filter((role) => (role.label === 'roles' || role.label === 'descriptors' ))
 		}
 
-		else {
-			console.warn( "No role found in token, assumed i'm the owner" )
-			return [ defaultOwnerRole ]
+		if (tokenRoles && tokenRoles.length){
+			roles = tokenRoles
 		}
+
+		return roles
 	}
 }
 let actions = new Actions( )
