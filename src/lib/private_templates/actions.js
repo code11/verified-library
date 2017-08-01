@@ -8,7 +8,11 @@ class Actions {
 	putTemplateData( data ) {
 		var templateUid = state.get( ).remoteEntities.template.uid;
 		//TODO: SET contentType to reflect user's permissions
-		return call({ method: "POST", url: `${ templateUid }${ configs.userDataAppendix }` })
+		return call({
+			method: "POST",
+			url: `${ templateUid }${ configs.userDataAppendix }`,
+			body: data
+		})
 	}
 
 	getTemplateData( ) {
