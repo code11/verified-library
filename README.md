@@ -18,7 +18,8 @@ ______________________________________
 
     <!-- Add-on API's . Only load if you require them-->
 	<script src="../dist/dev/ve.public_templates.js"></script>
-    <script src="../dist/dev/ve.id_rights.js"></script>
+	<script src="../dist/dev/ve.private_templates.js"></script>
+	<script src="../dist/dev/ve.id_rights.js"></script>
     <script src="../dist/dev/ve.bisnode.js"></script>
 ```
 
@@ -26,7 +27,8 @@ The library exposes the following objects into the global context:
 
 ```javascript
 Object {} VeLib.core
-Object {} VeLib.public_templates // if appropriate script is imported only
+Object {} VeLib.public_templates
+Object {} VeLib.private_templates  // if appropriate script is imported only
 Object {} VeLib.id_rights // if appropriate script is imported only
 Object {} VeLib.bisnode
 ```
@@ -41,7 +43,7 @@ Notes:
 ###### CORE
 ```javascript
 	VeLib.core = {
-    	init( [ String domain, String descriptor_id ] ){ return Promise() }
+    	init({ descriptor_id: [ String descriptor_id ] , initialState: [Object ]}){ return Promise() }
         // Sets up the library data and authentication using the url params and must be called immediately
     	// Optional domain if the library with the template is hosted at your specific url
         // Optional descriptor_id can be specified so that it can be missing in the URL.
@@ -139,7 +141,7 @@ ___
 // Call this chunk on initial page load
 
 var onYourPageLoadCallback = () => {
-  VeLib.core.init().then() => {
+  VeLib.core.init({}).then() => {
       return VeLib.public_templates.init()
   })
   .then((statusInfo) => {
