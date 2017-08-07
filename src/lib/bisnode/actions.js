@@ -20,6 +20,13 @@ class Actions {
 			url: `${ configs.get().bisnodeUrl }${ configs.get().personSuffix }?personNumber=${ ssn }`
 		} )
 	}
+
+	getNorwayCompany( regNumber ) {
+		return callForData( {
+			method: "GET",
+			url: `${ configs.get().bisnodeUrl }${ configs.get().norwayCompanySuffix }?regNumber=${ regNumber }`
+		} )
+	}
 }
 
 module.exports = new Actions()

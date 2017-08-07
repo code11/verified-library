@@ -5,6 +5,7 @@ export class Configs {
 		return {
 			companySuffix: '/company',
 			personSuffix: '/person',
+			norwayCompanySuffix: '/norway-company',
 			bisnodeUrl : '/bisnode'
 		}
 	}
