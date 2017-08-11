@@ -65,7 +65,7 @@ let expose = {
 	callForData: ( opts ) => {
 		return remote._call( opts ).then( ( response ) => response.data )
 	},
-	call: ( opts ) => {
+	callRaw: ( opts ) => {
 		return remote._call( opts )
 	}
 }

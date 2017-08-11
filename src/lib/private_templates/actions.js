@@ -2,8 +2,15 @@ const call = VeLib.core.remote.callForData
 let configs = VeLib.core.configs.get( )
 const state = VeLib.core.state
 
+import recipientActions from "./recipients.js"
+
 class Actions {
-	constructor( ) {}
+	constructor( ) {
+		this.saveRecipients = recipientActions.saveRecipients
+		this.saveRecipient = recipientActions.saveRecipient
+		this.removeRecipient = recipientActions.removeRecipient
+
+	}
 
 	putTemplateData( data ) {
 		var templateUid = state.get( ).remoteEntities.template.uid;
@@ -23,6 +30,7 @@ class Actions {
 		else
 			return Promise.resolve({ })
 	}
+
 }
 let actions = new Actions( )
 export default actions
