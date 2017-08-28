@@ -4,6 +4,21 @@ Master will not point to anything, checkout individual branches.
 
 I will list versions bump notices here and the changes if they are important to the library user on each version bump:
 
+### Commonly used properties
+
+*Try to keep sent data in ' lower camel case'*
+
+Special significance: **orgNo**
+
+Other examples:
+
+- firstName, lastName, personNumber, email, phone, mobile, customerName, country
+- postalCode, postalTown, postalAddress
+
+
+1.1.0-prealpha
+______________________________________
+- Added ability to trigger flow action and receive result
 
 0.6.0
 ______________________________________
@@ -32,15 +47,3 @@ ______________________________________
 ______________________________________
 - Will only issue an warning in case access token is missing from the URL.
 - VeLib.core.init now accepts second argument the descriptor_id so it can be removed from the url
-
-
-### Commonly used properties
-
-*Try to keep sent data in ' lower camel case'*
-
-Special significance: **orgNo**
-
-Other examples:
-
-- firstName, lastName, personNumber, email, phone, mobile, customerName, country
-- postalCode, postalTown, postalAddress
