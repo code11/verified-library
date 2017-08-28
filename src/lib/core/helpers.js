@@ -1,6 +1,5 @@
 import configs from "./configs";
 import state from "./state";
-import axios from "axios";
 import remote from "./remote"
 
 class Helpers {

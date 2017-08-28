@@ -59,6 +59,11 @@ Notes:
         putTemplateData(Object userData){ return Promise() }
         // input is an object with all the required userData property-value fields present
 
+		runFlowTask(String flowFunction) { return Promise() }
+		// input is a flow action statement eg: send.notification, will call envelopes/1oc5owc/jobs/send.notification
+		// return flow data depending on flow state and particularities / integrations
+		// When used with public templates, it must be made sure that it is ran only
+		// after 'public_templates.init()' is successful. This call requires the envelope to be created already.
 
     }
 
