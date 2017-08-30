@@ -59,15 +59,16 @@ class Actions {
 		return roles
 	}
 
-	runFlowTask( fname ) {
-		if ( fname ) fname = '/' + fname
+	runFlowTask( { taskName , body } ) {
+		if ( taskName ) taskName = '/' + taskName
 
 		let { envelope_id } = state.get().remoteEntities.envelope.id
 
 		return
 			remote.callForData( {
 				method: "POST",
-				url: `${ configs.get( ).envelopesAppendix }/${ envelope_id }${ fname }`
+				url: `${ configs.get( ).envelopesAppendix }/${ envelope_id }${ taskName }`,
+				body: body
 			})
 	}
 
