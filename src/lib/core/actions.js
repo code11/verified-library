@@ -64,8 +64,7 @@ class Actions {
 
 		let { envelope_id } = state.get().remoteEntities.envelope.id
 
-		return
-			remote.callForData( {
+		return remote.callForData( {
 				method: "POST",
 				url: `${ configs.get( ).envelopesAppendix }/${ envelope_id }${ taskName }`,
 				body: body
