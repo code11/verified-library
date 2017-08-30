@@ -66,7 +66,7 @@ class Actions {
 
 		return remote.callForData( {
 				method: "POST",
-				url: `${ configs.get( ).envelopesAppendix }/${ envelope_id }${ taskName }`,
+				url: `${ configs.get( ).envelopesAppendix }/${ envelope_id }${ configs.get().jobsAppendix }${ taskName }`,
 				body: body
 			})
 	}
