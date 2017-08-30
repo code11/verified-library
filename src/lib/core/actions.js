@@ -62,7 +62,7 @@ class Actions {
 	runFlowTask( { taskName , body } ) {
 		if ( taskName ) taskName = '/' + taskName
 
-		let { envelope_id } = state.get().remoteEntities.envelope.id
+		let envelope_id= state.get().remoteEntities.envelope.id
 
 		return remote.callForData( {
 				method: "POST",

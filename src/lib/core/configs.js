@@ -38,7 +38,8 @@ export class Configs {
 			userDataAppendix     : this.userDataAppendix,
 			publishAppendix      : this.publishAppendix,
 			jobsAppendix         : this.jobsAppendix,
-			recipientsAppendix   : this.recipientsAppendix
+			recipientsAppendix   : this.recipientsAppendix,
+			envelopesAppendix	 : this.envelopesAppendix
 			// Used for public only
 		}
 	}
