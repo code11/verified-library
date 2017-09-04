@@ -1,0 +1,36 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Innmeldingsblankett</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="shortcut icon" href="/assets/favicon.png">
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono|Open+Sans' rel='stylesheet' type='text/css'>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+	<script src="//s3.eu-central-1.amazonaws.com/verified-cdn/1.1.0-prealpha/ve.core.js"></script>
+	<script src="//s3.eu-central-1.amazonaws.com/verified-cdn/1.1.0-prealpha/ve.public_templates.js"></script>
+	<script src="scripts/main.js"></script>
+
+</head>
+<body ng-app="mainApp">
+	<div ng-controller="mainController" style="padding: 20px">
+		<p>
+			The url needs to have the following parameters: access_token, and descriptor_id. DescriptorId can be specified in the VeLib init aswell
+			<br><br>
+			<p> example: localhost:8080/?descriptor_id=some_descr_id&access_token=ey423... </p>
+
+
+			<p>
+				For testing, you can get the access token of a regular account when it sends requests to Verified, while you are using the app.
+				Check the network XHR tab while using the page to see the Authorization header, or get it from local storage. It shouldn't include
+				the JWT part. Just "ey..." .
+				<br>
+				The descriptor id will be provided as per your business requirements for the specific template.
+			</p>
+
+		</p>
+	</div> <!-- Angular end -->
+</body>
+</html>
