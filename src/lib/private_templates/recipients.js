@@ -26,13 +26,13 @@ export default {
 	},
 
 	saveRecipient: ( recipient ) => {
-		if ( recipient.id ) return putRecipient( recipient )
-		else return addRecipient( recipient )
+		if ( recipient.id ) return this.putRecipient( recipient )
+		else return this.addRecipient( recipient )
 	},
 
 	saveRecipients: ( recArray ) => {
 		let promArray = []
-		recArray.forEach( rec => promArray.push( saveRecipient( rec ) ) )
+		recArray.forEach( rec => promArray.push( this.saveRecipient( rec ) ) )
 		return Promise.all( promArray )
 	},
 
