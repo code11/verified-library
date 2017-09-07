@@ -4,7 +4,7 @@ const state = VeLib.core.state
 
 const expose = {
 	addRecipient: ( recipient ) => {
-		url = `${ configs.envelopesAppendix }/${ state.get().remoteEntities.envelope.id }${configs.recipientsAppendix}`
+		let url = `${ configs.envelopesAppendix }/${ state.get().remoteEntities.envelope.id }${configs.recipientsAppendix}`
 
 		return callRaw( {
 				method: "POST",
@@ -14,7 +14,7 @@ const expose = {
 			.then( response => response.headers.location )
 	},
 	putRecipient: ( recipient ) => {
-		url =
+		let url =
 			`${ configs.envelopesAppendix }/${ state.get().remoteEntities.envelope.id }${configs.recipientsAppendix}/${ recipient.id }`
 
 		return callRaw( {
@@ -36,7 +36,7 @@ const expose = {
 	},
 
 	removeRecipient: ( recipient ) => {
-		url =
+		let url =
 			`${ configs.envelopesAppendix }/${ state.get().remoteEntities.envelope.id }${configs.recipientsAppendix}/${ recipient.id}`
 
 		return callRaw( {
