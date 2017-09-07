@@ -1,7 +1,7 @@
 const callRaw = VeLib.core.remote.callRaw
 const configs = VeLib.core.configs
 
-const interface = {
+const expose = {
 	addRecipient: ( recipient ) => {
 		url = `${ configs.envelopesAppendix }/${ state.get().remoteEntities.envelope.id }${configs.recipientsAppendix}`
 
@@ -24,13 +24,13 @@ const interface = {
 	},
 
 	saveRecipient: ( recipient ) => {
-		if ( recipient.id ) return interface.putRecipient( recipient )
-		else return interface.addRecipient( recipient )
+		if ( recipient.id ) return expose.putRecipient( recipient )
+		else return expose.addRecipient( recipient )
 	},
 
 	saveRecipients: ( recArray ) => {
 		let promArray = []
-		recArray.forEach( rec => promArray.push( interface.saveRecipient( rec ) ) )
+		recArray.forEach( rec => promArray.push( expose.saveRecipient( rec ) ) )
 		return Promise.all( promArray )
 	},
 
@@ -45,4 +45,4 @@ const interface = {
 	}
 }
 
-export default interface
+export default expose
