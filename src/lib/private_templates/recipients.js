@@ -1,5 +1,6 @@
 const callRaw = VeLib.core.remote.callRaw
 const configs = VeLib.core.configs
+const state = VeLib.core.state
 
 const expose = {
 	addRecipient: ( recipient ) => {
