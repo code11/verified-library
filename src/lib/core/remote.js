@@ -14,6 +14,7 @@ class Remote {
 		params = {},
 		headers = {},
 		overwriteToken,
+		disableToken,
 		credentials = 'same-origin'
 	}) {
 		if ( state.get( ).internal.companyUid )
@@ -27,7 +28,7 @@ class Remote {
 
 		var token = null;
 
-		if (( token = state.get( ).internal.accessToken )) {
+		if (( token = state.get( ).internal.accessToken ) && !disableToken) {
 			headers.authorization = "JWT " + token;
 		}
 

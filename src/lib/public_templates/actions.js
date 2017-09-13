@@ -10,9 +10,19 @@ class Actions {
 			needsContextCreation: helpers.shouldCreateContext()
 		} )
 	}
-
+	// FILES
 	getTemplateInterface() {
 		return helpers.getTemplateObjectsArrayInterface()
+	}
+	uploadFile({name, file}) {
+		return helpers.uploadFile({ name, file })
+	}
+
+	removeFile(uid){
+		return helpers.removeFile(uid)
+	}
+	getAllFiles(){
+		return helpers.getAllFiles()
 	}
 
 	submitFormData() {
