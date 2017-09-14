@@ -19,7 +19,7 @@ const buildFilesUrl = () => {
 	let url = `${ configs.get().envelopesUrl }`
 	url += `/${ state.get().remoteEntities.envelope.id}`
 	url += `${ configs.get().documentsAppendix }`
-	url += `/${ configs.get().remoteEntities.envelope.documents[0].id }`
+	url += `/${ state.get().remoteEntities.envelope.documents[0].id }`
 	url += '/files'
 	console.log("Built url is", url)
 	return url
