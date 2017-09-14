@@ -14,10 +14,14 @@ class Actions {
 	getTemplateInterface() {
 		return helpers.getTemplateObjectsArrayInterface()
 	}
+	// NOT USED I THINK
 	uploadFile({name, file}) {
 		return helpers.uploadFile({ name, file })
 	}
 
+	getUploadUrl({name}){
+		return getUploadUrl({name})
+	}
 	removeFile(uid){
 		return helpers.removeFile(uid)
 	}
