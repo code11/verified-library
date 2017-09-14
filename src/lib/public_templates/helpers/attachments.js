@@ -64,6 +64,7 @@ export let AttachmentsHelpers = {
 
 				files = files.map((file, index) => {
 					file.downloadUrl = fileUrls[index].url
+					return file
 				})
 
 				return files
