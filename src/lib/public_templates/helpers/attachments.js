@@ -23,7 +23,7 @@ const buildFilesUrl = () => {
 	url += '/files'
 	console.log("Built url is", url)
 	return url
-},
+}
 
 export let AttachmentsHelpers = {
 	getUploadUrl: getUploadUrl,
