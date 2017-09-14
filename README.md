@@ -7,7 +7,6 @@ ______________________________________
 
 ### Lib user
 
-
 ##### *Scripts loading inside your template html*
 ```html
 	<!-- Your own javascript for UI handling / framework , your scripts, etc. -->
