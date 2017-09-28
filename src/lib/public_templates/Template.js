@@ -28,7 +28,8 @@ class Template {
 	submitRawUserdata(noCommit) {
 
 		let thisHash = this.getInfo().hash
-		console.log("this hash is", thisHash)
+		let thisData = this.getData()
+		console.log("this hash is", thisHash, "data is", thisData)
 
 		let documents = state.get().remoteEntities.envelope.documents.filter((doc) => {
 			return doc.descriptor.hash === thisHash
@@ -40,7 +41,7 @@ class Template {
 		let callDetails = {
 			method: "POST",
 			url: `${ templateUid }${ configs.userDataAppendix }`,
-			body: data
+			body: thisData
 		}
 		if (noCommit) {
 			callDetails.params = {
