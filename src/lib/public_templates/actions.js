@@ -1,6 +1,5 @@
 import helpers from "./helpers";
 const state = VeLib.core.state
-const privateTemplate = VeLib.private_templates
 
 class Actions {
 	constructor() {}
@@ -33,24 +32,14 @@ class Actions {
 
 		let shouldCreateContext = helpers.shouldCreateContext()
 		console.log("should create context is", shouldCreateContext)
-		let action = null
-		let actionObject = null
-
-		// If there is already an envelope id, we
-		// push the setData from the template object into
-		// POST on templates/userData with or without the final flag?
 
 		if ( shouldCreateContext ) {
-			action = helpers.createEnvelopeContext
-			actionObject = helpers.templateInterfaceToRemote()
+			return helpers.createEnvelopeContext(helpers.templateInterfaceToRemote(), noCommit)
 		} else {
-			action = privateTemplate.putTemplateData
-			actionObject =
-				state.get()
-				.templates[ 0 ].data || {}
+			return state.get()
+			.templates[ 0 ]
+			.submitRawUserdata(noCommit)
 		}
-
-		return action( actionObject, noCommit )
 
 	}
 
