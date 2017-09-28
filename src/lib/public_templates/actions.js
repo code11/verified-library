@@ -32,7 +32,7 @@ class Actions {
 	submitFormData(noCommit) {
 
 		let shouldCreateContext = helpers.shouldCreateContext()
-		console.log("should create context is", shouldCreateContext())
+		console.log("should create context is", shouldCreateContext)
 		let action = null
 		let actionObject = null
 
