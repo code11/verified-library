@@ -32,7 +32,7 @@ class Actions {
 	submitFormData(noCommit) {
 
 		const envelopeExists = !helpers.shouldCreateContext
-
+		console.log("envelope exists is", envelopeExists)
 		let action = null
 		let actionObject = null
 
