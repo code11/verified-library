@@ -31,8 +31,8 @@ class Actions {
 
 	submitFormData(noCommit) {
 
-		const envelopeExists = !helpers.shouldCreateContext
-		console.log("envelope exists is", envelopeExists)
+		let shouldCreateContext = helpers.shouldCreateContext
+		console.log("should create context is", shouldCreateContext)
 		let action = null
 		let actionObject = null
 
@@ -40,15 +40,14 @@ class Actions {
 		// push the setData from the template object into
 		// POST on templates/userData with or without the final flag?
 
-		if ( envelopeExists ) {
+		if ( shouldCreateContext ) {
+			action = helpers.createEnvelopeContext
+			actionObject = helpers.templateInterfaceToRemote()
+		} else {
 			action = privateTemplate.putTemplateData
 			actionObject =
 				state.get()
 				.templates[ 0 ].data || {}
-
-		} else {
-			action = helpers.createEnvelopeContext
-			actionObject = helpers.templateInterfaceToRemote()
 		}
 
 		return action( actionObject, noCommit )

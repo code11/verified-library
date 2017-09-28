@@ -54,9 +54,15 @@ export let EnvelopeHelpers = {
 	},
 
 	shouldCreateContext: () => {
-		if ( state.get().params.envelope_id || ( state.get().remoteEntities.envelope && state.get().remoteEntities.envelope.id ) ) 
-		return false
-		else return true
+		if ( state.get().params.envelope_id || state.get().remoteEntities.envelope ) {
+			console.log("Envelope id found in should create context")
+			return false
+		}
+		else {
+			console.log("envelope id is not found in shuld create context")
+			return true
+		}
+
 	},
 
 
