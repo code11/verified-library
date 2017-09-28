@@ -34,8 +34,9 @@ class Template {
 			return doc.descriptor.hash === thisHash
 		})
 
-		console.log("identified uid", documents[0].template.uid)
+		// TODO: throw error on no match
 
+		let templateUid = documents[0].template.uid
 		let callDetails = {
 			method: "POST",
 			url: `${ templateUid }${ configs.userDataAppendix }`,
