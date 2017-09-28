@@ -29,12 +29,16 @@ class Actions {
 		return helpers.getAllFiles()
 	}
 
-	submitFormData() {
+	submitFormData(noCommit) {
 
 		const envelopeExists = !helpers.shouldCreateContext
 
 		let action = null
 		let actionObject = null
+
+		// If there is already an envelope id, we
+		// push the setData from the template object into
+		// POST on templates/userData with or without the final flag?
 
 		if ( envelopeExists ) {
 			action = privateTemplate.putTemplateData
@@ -47,7 +51,7 @@ class Actions {
 			actionObject = helpers.templateInterfaceToRemote()
 		}
 
-		return action( actionObject )
+		return action( actionObject, noCommit )
 
 	}
 

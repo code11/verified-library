@@ -12,14 +12,21 @@ class Actions {
 
 	}
 
-	putTemplateData( data ) {
+	putTemplateData( data, noCommit ) {
 		var templateUid = state.get( ).remoteEntities.template.uid;
 		//TODO: SET contentType to reflect user's permissions
-		return call({
+		let callDetails = {
 			method: "POST",
 			url: `${ templateUid }${ configs.userDataAppendix }`,
 			body: data
-		})
+		}
+		if (noCommit) {
+			callDetails.params = {
+				noCommit: true
+			}
+		}
+
+		return call(callDetails)
 	}
 
 	getTemplateData( ) {

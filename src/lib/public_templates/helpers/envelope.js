@@ -54,7 +54,8 @@ export let EnvelopeHelpers = {
 	},
 
 	shouldCreateContext: () => {
-		if ( state.get().params.envelope_id ) return false
+		if ( state.get().params.envelope_id || ( state.get().remoteEntities.envelope && state.get().remoteEntities.envelope.id ) ) 
+		return false
 		else return true
 	},
 
