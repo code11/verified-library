@@ -34,7 +34,7 @@ class Template {
 			return doc.descriptor.hash === thisHash
 		})
 
-		console.log("identified uid", document[0].template.uid)
+		console.log("identified uid", documents[0].template.uid)
 
 		let callDetails = {
 			method: "POST",
