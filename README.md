@@ -52,13 +52,6 @@ Notes:
 		getMyRoles() { retrurn Array[role, role ... ]}
 		// Returns a list of roles based on the token information
 
-        getTemplateData(){ return Promise(Object data) }
-        // Useful if some data has already been submitted, you could load this data
-        // in your variables for initialization purposes
-
-        putTemplateData(Object userData){ return Promise() }
-        // input is an object with all the required userData property-value fields present
-
 		runFlowTask({ taskName: String , [ body: Object ]) { return Promise() }
 		// input is a flow action statement eg: send.notification, will call envelopes/1oc5owc/jobs/send.notification
 		// return flow data depending on flow state and particularities / integrations
@@ -68,7 +61,37 @@ Notes:
     }
 
 ```
+##### Private template
 
+<i> Note: </i> Functions to be used while inside the Verified platform filling step, which can be determined by checking the existence role:
+
+```javascript
+const defaultOwnerRole = {
+	label: 'roles',
+	name: '/roles/owner'
+}
+```
+If this is the only role returned by the <b>core.getMyRoles</b> function, it means it is running inside the Verified platform filling step.
+
+<b>VeLib.private_templates</b> methods:
+
+```javascript
+        getTemplateData(){ return Promise(Object data) }
+        // Useful if some data has already been submitted, you could load this data
+        // in your variables for initialization purposes
+
+        putTemplateData(Object userData){ return Promise() }
+        // input is an object with all the required userData property-value fields present
+
+        // Only to be used in special cases where the adding recipients step needs to take place inside the Verified platform envelope creation stage. (Fills in the second step automatically)
+
+		saveRecipients(Array [recipientObject]){ return Promise }
+        // Array of recipients, if the objects already include an "id" property, they will be saved ( PUT action). Otherwise, they will be inserted.
+
+        removeRecipient(Object recipientObject){ return Promise }
+        // A recipient object where the only mandatory property is the 'id' property . Useful for cases where the template editing mode is re-opened, in conjuction with the saveRecipients method.
+
+```
 ##### Public template
 
 VeLib.public_templates methods:
@@ -83,8 +106,9 @@ VeLib.public_templates methods:
 	// a templateObject array is returned, methods on these objects are explained a further bit down.
    	 // commonly you would use var template = returnedTemplateObjects[0]
 
-	submitFormData(){ return Promise() }
-	// This should be done as late as possible, to avoid unnecessary creation of envelopes and other objects. This submits the data put into all templateObject interfaces. No remote action is done on them until this 'global' function is called
+	submitFormData(boolean [value]){ return Promise() }
+	// This should be done as late as possible, to avoid unnecessary creation of envelopes and other objects. This submits the data put into all templateObject interfaces. No remote action is done on them until this 'global' function is called.
+    // In the case of submitting user data more than once for intermediary steps, it should be run in the form of submitUserData(true), to avoid the creation of a second envelope.
 
 	getAvailableSigningMethods(){ return Promise( Array [String signingMethod] ) }
 	// an example would be ["bankid-se", "email"]
