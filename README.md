@@ -17,10 +17,9 @@ Other examples:
 
 1.2.1-prealpha
 ______________________________________
-- Added the ability to upload files after an envelope has been created.
-- Added possibility to modify recipients ( Add, remove , update )
-- Added posibility to submit user data however times needed
-( see docs for more info )
+- Added possibility to modify recipients ( Add, update, remove )
+- Added posibility to submit user data however times needed. (see submitUserData flag)
+- Added the ability to upload files after an envelope has been created. ( API not documented yet)
 
 1.1.0-prealpha
 ______________________________________
