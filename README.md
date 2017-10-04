@@ -15,6 +15,12 @@ Other examples:
 - firstName, lastName, personNumber, email, phone, mobile, customerName, country
 - postalCode, postalTown, postalAddress
 
+1.2.1-prealpha
+______________________________________
+- Added the ability to upload files after an envelope has been created.
+- Added possibility to modify recipients ( Add, remove , update )
+- Added posibility to submit user data however times needed
+( see docs for more info )
 
 1.1.0-prealpha
 ______________________________________
