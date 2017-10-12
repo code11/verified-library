@@ -65,8 +65,13 @@ export let PollerHelpers = {
 				reject( error )
 			}
 
+			let envelopeId = null
+
+			if ( state.get().params.envelope_id) { envelopeId = state.get().params.envelope_id }
+			else { envelopeId = state.get().remoteEntities.envelope.id }
+
 			let getFlowUrl =
-				`${ flowUid }${ configs.get().jobsAppendix}/${ state.get().params.envelope_id }`
+				`${ flowUid }${ configs.get().jobsAppendix}/${ envelopeId }`
 
 			Observable.of("")
 				.delay(delayMs)
