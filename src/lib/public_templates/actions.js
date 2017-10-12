@@ -4,6 +4,7 @@ const state = VeLib.core.state
 class Actions {
 	constructor() {
 		this.pollForProperty = helpers.pollForStatus
+		this.buildSignUrl = helpers.buildSignUrl
 	}
 
 	init() {
