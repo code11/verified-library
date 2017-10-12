@@ -2,7 +2,9 @@ import helpers from "./helpers";
 const state = VeLib.core.state
 
 class Actions {
-	constructor() {}
+	constructor() {
+		this.pollForProperty = helpers.pollForStatus
+	}
 
 	init() {
 		return Promise.resolve( {
