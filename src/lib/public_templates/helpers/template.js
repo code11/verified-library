@@ -79,6 +79,8 @@ export let TemplateHelpers = {
 					templateInterface.getCustom()
 				)
 			)
+
+			console.info("Get custom returned", templateInterface.getCustom())
 		}
 
 		console.info("Template interface to remote 3", templateInterfaces, documents)

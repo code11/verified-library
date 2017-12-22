@@ -26,7 +26,7 @@ class Template {
 
 	// Mainly sed for setting a document's name and tags
 	setCustom( customFields  ){
-		this.customPublicInfo = Object.assign(this.info, customFields )
+		this.customPublicInfo = customFields
 	}
 
 	getCustom() { return this.customPublicInfo }
