@@ -151,6 +151,12 @@ VeLib.bisnode methods:
 
 	getInfo() { return Object descriptorInformation }
 	// If you want to get more details about the template, from the envelope definition. No need to call this unless you are explicitly looking for something
+
+    setCustom(customProperties Object){ return void }
+    // This can be uesd to add a name to a document and tags. Example:
+    // template.setCustom({ name: "delivery-form", tags: ["delivery", "mytag"] })
+
+
 ```
 
 ##### ID rights API
