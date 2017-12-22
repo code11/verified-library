@@ -37,7 +37,7 @@ class Actions {
 		console.log("should create context is", shouldCreateContext)
 
 		if ( shouldCreateContext ) {
-			return helpers.createEnvelopeContext(helpers.templateInterfaceToRemote(), noCommit)
+			return helpers.createEnvelopeContext(helpers.buildDocumentsDescription(), noCommit)
 		} else {
 			return state.get()
 			.templates[ 0 ]

@@ -48,33 +48,41 @@ export let TemplateHelpers = {
 			state.merge( {
 					templates: arrayOfInterfaces
 				} )
+
 				// Caution dragons AHEAD!!! Interface of templates should provide state mutating changes without
-				// calling state.merge or state set....:), on behalf of the user
+				// Calling state.merge or state set....:), on behalf of the user
+
 			resolve( state.get().templates )
 			console.info("Managed to provide template interface")
 		} )
 	},
 
-	templateInterfaceToRemote() {
+	buildDocumentsDescription() {
 		console.info("Template interface to remote 1");
-		let remoteObject = {}
-		let arrayOfInterfaces = state.get().templates
+		let documents = []
+		let templateInterfaces = state.get().templates
 		var templateInterface = null
-		console.info("Template interface to remote 2 with array of interfaces", arrayOfInterfaces)
+		
+		console.info("Template interface to remote 2 with array of interfaces", templateInterfaces)
 
-		for ( var i = 0; i < arrayOfInterfaces.length; i++) {
-			templateInterface = arrayOfInterfaces[i];
-			remoteObject[ templateInterface.getInfo().hash ] = remoteObject[ templateInterface.getInfo().hash ] ||
-				[]
-			remoteObject[ templateInterface.getInfo().hash ].push( {
-				data: templateInterface.getData()
-			} )
+		for ( var i = 0; i < templateInterfaces.length; i++) {
+			templateInterface = templateInterfaces[i];
+
+			documents.push(
+				Object.assign({},
+					{
+						descriptor: {
+							hash: templateInterface.getInfo().hash
+						},
+						data: templateInterface.getData()
+					},
+					templateInterface.getCustom()
+				)
+			)
 		}
 
-		console.info("Template interface to remote 3")
+		console.info("Template interface to remote 3", templateInterfaces, documents)
 
-		return {
-			"documents": remoteObject
-		}
+		return { documents }
 	}
 }

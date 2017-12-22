@@ -9,6 +9,7 @@ class Template {
 	constructor( info ) {
 		this.data = {}
 		this.info = info
+		this.customPublicInfo = {}
 	}
 
 	getInfo() {
@@ -22,6 +23,13 @@ class Template {
 	setData( data ) {
 		this.data = data
 	}
+
+	// Mainly sed for setting a document's name and tags
+	setCustom( customFields  ){
+		this.customPublicInfo = Object.assign(this.info, customFields )
+	}
+
+	getCustom() { return this.customPublicInfo }
 
 	// @ remote
 
