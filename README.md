@@ -15,6 +15,10 @@ Other examples:
 - firstName, lastName, personNumber, email, phone, mobile, customerName, country
 - postalCode, postalTown, postalAddress
 
+1.2.3
+______________________________________
+-Added ability to set tags and name, through setCustom method
+
 1.2.1-prealpha
 ______________________________________
 - Added possibility to modify recipients ( Add, update, remove )
