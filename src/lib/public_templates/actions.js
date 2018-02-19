@@ -55,8 +55,13 @@ class Actions {
 	getAvailableSigningMethods() {
 		return helpers.getAvailableSigningMethods()
 	}
+	
 	addRecipient( data ) {
 		return helpers.addRecipient( data )
+	}
+
+	addRecipients( data ) {
+		return helpers.addRecipients( data )
 	}
 }
 
