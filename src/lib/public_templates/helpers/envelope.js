@@ -132,6 +132,23 @@ export let EnvelopeHelpers = {
 				body: recipient
 			})
 		})
-	}
+	},
+
+	addRecipients: function addRecipients(recipients) {
+
+			let promises = [];
+			recipients.forEach(function(recipient) {
+				return promises.push(
+					callForData({
+						method: "POST",
+						url: configs.get().envelopesUrl + "/" + state.get().remoteEntities.envelope.id + configs.get().recipientsAppendix,
+						body: recipient
+					})
+				);
+			});
+
+			return Promise.all(promises);
+
+		}
 
 }
